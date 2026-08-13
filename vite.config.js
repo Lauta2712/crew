@@ -11,8 +11,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', 'VITE_')
   const gymName = env.VITE_GYM_DISPLAY_NAME?.trim() || 'Tu gimnasio'
   const shortName = gymName.length > 12 ? `${gymName.slice(0, 11)}…` : gymName
-  const themeColor = env.VITE_THEME_PRIMARY_COLOR?.trim() || '#89CDD0'
-  const logoIcon = env.VITE_THEME_LOGO_URL?.trim() || '/crux_logo.jpg'
+  const themeColor = env.VITE_THEME_PRIMARY_COLOR?.trim() || '#c1432b'
+  const customLogoUrl = env.VITE_THEME_LOGO_URL?.trim()
+  const logoIcon = customLogoUrl || '/favicon.svg'
+  // El logo por defecto es SVG; el de un gimnasio via env var es una URL arbitraria (hoy siempre tratada como jpeg).
+  const logoIconType = customLogoUrl ? 'image/jpeg' : 'image/svg+xml'
 
   return {
     plugins: [
@@ -34,17 +37,17 @@ export default defineConfig(({ mode }) => {
             {
               src: logoIcon,
               sizes: '512x512',
-              type: 'image/jpeg',
+              type: logoIconType,
             },
             {
               src: logoIcon,
               sizes: '192x192',
-              type: 'image/jpeg',
+              type: logoIconType,
             },
             {
               src: logoIcon,
               sizes: '512x512',
-              type: 'image/jpeg',
+              type: logoIconType,
               purpose: 'maskable',
             },
           ],

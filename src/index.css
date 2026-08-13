@@ -1,21 +1,22 @@
 @import 'tailwindcss';
 
 /**
- * Defaults de tema (paleta Crux). Un gimnasio con `gym_settings.data.theme` configurado
- * pisa estas variables en runtime vía `src/utils/theme.js` (`applyTheme`) — sin theme
- * configurado (caso de Crux hoy) quedan estos valores literales, cero cambio visual.
+ * Defaults de tema (paleta Crew, derivada de #C1432B con el mismo algoritmo que
+ * `deriveColorScale` en src/utils/theme.js). Un gimnasio con `gym_settings.data.theme`
+ * configurado pisa estas variables en runtime vía `applyTheme` — sin theme configurado
+ * (gimnasio nuevo, sin marca propia todavía) queda esta paleta base del producto.
  */
 :root {
-  --color-brand-50: #f2fbfc;
-  --color-brand-100: #d9f2f5;
-  --color-brand-200: #b3e3eb;
-  --color-brand-300: #88cedc;
-  --color-brand-400: #5ab2c5;
-  --color-brand-500: #3a91a5;
-  --color-brand-600: #2e7587;
-  --color-brand-700: #255d6b;
-  --color-brand-800: #1e4a55;
-  --color-brand-900: #173842;
+  --color-brand-50: #f8f2f1;
+  --color-brand-100: #f0e3e0;
+  --color-brand-200: #e1c6c1;
+  --color-brand-300: #cda098;
+  --color-brand-400: #ca6f5d;
+  --color-brand-500: #c1432b;
+  --color-brand-600: #c44027;
+  --color-brand-700: #a23520;
+  --color-brand-800: #802a19;
+  --color-brand-900: #5e1f13;
 
   --color-accent-100: #fef7d8;
   --color-accent-200: #fdecae;
@@ -25,7 +26,9 @@
   --color-accent-600: #d99912;
   --color-accent-700: #b17a0f;
 
-  --font-sans: 'Nunito';
+  --font-sans: 'Work Sans';
+  --font-display: 'Big Shoulders Display';
+  --font-mono: 'JetBrains Mono';
 }
 
 html,
@@ -210,4 +213,27 @@ body {
   background-color: var(--color-brand-200);
   color: var(--color-brand-800);
   font-weight: 600;
+}
+
+/* Monograma de fallback en BrandMark cuando el gym no tiene logo propio configurado */
+.brand-mark {
+  background-color: var(--color-brand-500);
+  color: #ffffff;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Sección de precios de Crew (CrewPricingSection) */
+.pricing-card-highlighted {
+  border: 2px solid var(--color-brand-500);
+}
+
+.pricing-badge {
+  background-color: var(--color-brand-500);
+  color: #ffffff;
+}
+
+.pricing-check {
+  color: var(--color-brand-600);
 }

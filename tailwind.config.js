@@ -29,8 +29,12 @@ export default {
         },
       },
       fontFamily: {
-        // Tipografía por defecto de Crux (Nunito); configurable por gimnasio vía --font-sans.
+        // Tipografía por defecto del producto (Work Sans); configurable por gimnasio vía --font-sans.
         sans: ['var(--font-sans)', 'system-ui', 'ui-sans-serif', 'sans-serif'],
+        // Wordmark / headings de marca — fija, no configurable por gimnasio.
+        display: ['var(--font-display)', 'var(--font-sans)', 'sans-serif'],
+        // Datos numéricos tabulares (montos, contadores) — fija, no configurable por gimnasio.
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
     },
   },

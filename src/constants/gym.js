@@ -11,8 +11,8 @@ export const GYM_DISPLAY_NAME = import.meta.env.VITE_GYM_DISPLAY_NAME?.trim() ||
 /**
  * URL de logo para páginas públicas sin sesión (Landing, Login) — mismo motivo que
  * `GYM_DISPLAY_NAME`: ahí no hay `profile.gym_id` resuelto para leer `theme.logoUrl` desde
- * `gym_settings`. `null` cuando no está seteada: los componentes caen al logo de Crux
- * empaquetado (`crux_logo.jpg`). En páginas autenticadas se usa en cambio
+ * `gym_settings`. `null` cuando no está seteada: `BrandMark` cae a un monograma con la
+ * inicial del gym en vez de una imagen. En páginas autenticadas se usa en cambio
  * `useGymCatalog().theme.logoUrl` (GymSettingsContext).
  */
 export const THEME_LOGO_URL = import.meta.env.VITE_THEME_LOGO_URL?.trim() || null

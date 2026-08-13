@@ -393,6 +393,12 @@ verify_jwt = false
 [functions.register-payment]
 verify_jwt = false
 
+[functions.create-crew-checkout]
+verify_jwt = false
+
+[functions.crew-subscription-webhook]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

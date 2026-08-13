@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import cruxLogo from '../../crux_logo.jpg'
+import { BrandMark } from './BrandMark'
 import { useAuth } from '../hooks/useAuth'
 import { GymSettingsProvider, useGymCatalog } from '../contexts/GymSettingsContext'
 
@@ -19,7 +19,7 @@ export function Layout() {
 function LayoutInner() {
   const { profile, isAdmin, isCoach, signOut } = useAuth()
   const { gymName, theme } = useGymCatalog()
-  const logoSrc = theme?.logoUrl || cruxLogo
+  const logoSrc = theme?.logoUrl
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileAnimatingIn, setMobileAnimatingIn] = useState(false)
   const [emailConfirmedNotice, setEmailConfirmedNotice] = useState(false)
@@ -91,11 +91,7 @@ function LayoutInner() {
       <aside className="hidden w-64 shrink-0 flex-col overflow-hidden border-r border-[#d0dde2] bg-[#ecf3f7] p-3 shadow-lg shadow-[#c3d4dd]/60 md:flex">
         <div className="mb-4 flex shrink-0 items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-white shadow">
-            <img
-              src={logoSrc}
-              alt={gymName}
-              className="h-full w-full object-cover"
-            />
+            <BrandMark src={logoSrc} alt={gymName} />
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-800">
@@ -180,7 +176,7 @@ function LayoutInner() {
               </span>
             </button>
             <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow md:hidden">
-              <img src={logoSrc} alt={gymName} className="h-full w-full object-cover" />
+              <BrandMark src={logoSrc} alt={gymName} />
             </div>
             <div className="min-w-0 md:hidden">
               <p className="text-sm font-semibold text-slate-800">

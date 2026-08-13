@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import cruxLogo from '../../crux_logo.jpg'
 import { GYM_DISPLAY_NAME, THEME_LOGO_URL } from '../constants/gym'
 import { toSpanishError } from '../utils/errors'
-
-const logoSrc = THEME_LOGO_URL || cruxLogo
+import { BrandMark } from '../components/BrandMark'
 import { PasswordInput } from '../components/PasswordInput'
 
 export function LoginPage() {
@@ -78,11 +76,7 @@ export function LoginPage() {
       <div className="mx-auto w-full max-w-md rounded-3xl border border-[#d0dde2] bg-white/95 p-8 shadow-2xl shadow-[#b6cad3]/60 backdrop-blur">
         <div className="mb-6 flex flex-col items-center justify-center text-center">
           <div className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
-            <img
-              src={logoSrc}
-              alt={GYM_DISPLAY_NAME}
-              className="h-full w-full object-cover"
-            />
+            <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
           </div>
           <h1 className="text-lg font-semibold text-slate-800">
             {GYM_DISPLAY_NAME}

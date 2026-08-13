@@ -15,8 +15,8 @@ applyTheme({
   font: import.meta.env.VITE_THEME_FONT?.trim() || undefined,
 })
 
-// Título de pestaña, favicon y theme-color: index.html trae los valores de Crux como
-// fallback visual estático (flash mínimo antes de este script, inevitable sin SSR).
+// Título de pestaña, favicon y theme-color: index.html trae los valores base del producto
+// como fallback visual estático (flash mínimo antes de este script, inevitable sin SSR).
 applyBrandChrome({
   name: GYM_DISPLAY_NAME,
   logoUrl: THEME_LOGO_URL ?? undefined,

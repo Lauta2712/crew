@@ -1,6 +1,6 @@
-# CLAUDE.md — crux-admin
+# CLAUDE.md — Crew
 
-Panel de administración para **Crux Escalada**, un gimnasio de escalada. Gestiona asistencia, pagos y planes de los alumnos, con acceso diferenciado por rol.
+Panel de administración para gimnasios boutique (escalada, crossfit, yoga, funcional, etc.). Gestiona asistencia, pagos y planes de los alumnos, con acceso diferenciado por rol. Construido sobre la infraestructura de un proyecto anterior a medida para un gimnasio de escalada (Crux Escalada, hoy discontinuado) — ver `docs/ROADMAP_WHITELABEL.md` para el historial de la generalización.
 
 ## Stack
 
@@ -29,9 +29,33 @@ VITE_THEME_LOGO_URL=
 
 `VITE_GYM_DISPLAY_NAME` — nombre de marca mostrado en las páginas públicas sin sesión (`Landing`, `Login`), donde todavía no hay `profile.gym_id` resuelto para leer `gyms.name` desde la DB. Si no está seteada, cae a un texto genérico (`"Tu gimnasio"`). En páginas autenticadas se usa en cambio `useGymCatalog().gymName` (lee el nombre real desde la tabla `gyms`). Ver `src/constants/gym.js`.
 
-`VITE_THEME_PRIMARY_COLOR` / `VITE_THEME_ACCENT_COLOR` / `VITE_THEME_FONT` / `VITE_THEME_LOGO_URL` — identidad visual de bootstrap (aplicada en `main.jsx` antes de montar React, para que Landing/Login ya se vean con la marca del deploy, y en `vite.config.js` para el manifest de PWA — ese sí solo se resuelve en build time). Un gimnasio con sesión puede pisar color/fuente/logo vía `gym_settings.data.theme` desde Configuración — ver `src/utils/theme.js` (`applyTheme`, `applyBrandChrome`, `deriveColorScale`) y `src/contexts/GymSettingsContext.jsx`. Sin ninguna de estas variables ni `theme` configurado, la app usa la paleta de Crux tal cual (defaults literales en `src/index.css`).
+`VITE_THEME_PRIMARY_COLOR` / `VITE_THEME_ACCENT_COLOR` / `VITE_THEME_FONT` / `VITE_THEME_LOGO_URL` — identidad visual de bootstrap (aplicada en `main.jsx` antes de montar React, para que Landing/Login ya se vean con la marca del deploy, y en `vite.config.js` para el manifest de PWA — ese sí solo se resuelve en build time). Un gimnasio con sesión puede pisar color/fuente/logo vía `gym_settings.data.theme` desde Configuración — ver `src/utils/theme.js` (`applyTheme`, `applyBrandChrome`, `deriveColorScale`) y `src/contexts/GymSettingsContext.jsx`. Sin ninguna de estas variables ni `theme` configurado, la app usa la paleta base del producto (defaults literales en `src/index.css`: rojo `#c1432b`, Work Sans / Big Shoulders Display / JetBrains Mono).
 
 **Importante:** poné los valores hex de `VITE_THEME_PRIMARY_COLOR`/`VITE_THEME_ACCENT_COLOR` entre comillas (`VITE_THEME_PRIMARY_COLOR="#3a91a5"`) — sin comillas, el `#` se interpreta como inicio de comentario y la variable queda vacía.
+
+### Suscripción al producto (cobro a dueños de gimnasio, no a alumnos)
+
+Distinto de todo lo anterior: `crew_subscriptions` (tabla) + `create-crew-checkout` /
+`crew-subscription-webhook` (Edge Functions) manejan el cobro recurrente de **la
+suscripción a Crew en sí** vía Mercado Pago (preapproval), mostrado en la sección de
+precios de `Landing.jsx` (`src/components/CrewPricingSection.jsx`). No confundir con
+`payments`/`subscriptions`, que son los pagos que un alumno le hace a SU gimnasio.
+
+Precios definidos en `src/constants/subscriptionPlans.js` (duplicados server-side en
+`create-crew-checkout/index.ts` a propósito — nunca confiar en un precio mandado por el
+cliente). Secrets de Edge Function (configurar en el dashboard de Supabase, **no** en
+`.env.local` — no llevan prefijo `VITE_` porque no deben llegar al frontend):
+
+```
+MP_ACCESS_TOKEN=       # access token de Mercado Pago
+CREW_SITE_URL=         # dominio público, para el back_url post-pago
+```
+
+Sin `MP_ACCESS_TOKEN` configurado, `create-crew-checkout` responde `501` con un mensaje
+claro en vez de romper — pensado para poder deployar antes de tener las credenciales
+reales de Mercado Pago. El alta del gimnasio (fila en `gyms`, cuenta admin) sigue siendo
+manual una vez que el webhook marca la suscripción como `authorized` — no hay onboarding
+self-serve todavía (Fase 3 de `docs/ROADMAP_WHITELABEL.md`, sin empezar).
 
 ## Comandos
 
