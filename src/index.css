@@ -1,0 +1,213 @@
+@import 'tailwindcss';
+
+/**
+ * Defaults de tema (paleta Crux). Un gimnasio con `gym_settings.data.theme` configurado
+ * pisa estas variables en runtime vía `src/utils/theme.js` (`applyTheme`) — sin theme
+ * configurado (caso de Crux hoy) quedan estos valores literales, cero cambio visual.
+ */
+:root {
+  --color-brand-50: #f2fbfc;
+  --color-brand-100: #d9f2f5;
+  --color-brand-200: #b3e3eb;
+  --color-brand-300: #88cedc;
+  --color-brand-400: #5ab2c5;
+  --color-brand-500: #3a91a5;
+  --color-brand-600: #2e7587;
+  --color-brand-700: #255d6b;
+  --color-brand-800: #1e4a55;
+  --color-brand-900: #173842;
+
+  --color-accent-100: #fef7d8;
+  --color-accent-200: #fdecae;
+  --color-accent-300: #fbdc79;
+  --color-accent-400: #f9c948;
+  --color-accent-500: #f4b41a;
+  --color-accent-600: #d99912;
+  --color-accent-700: #b17a0f;
+
+  --font-sans: 'Nunito';
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  /* Evita scroll horizontal fantasma en mobile (iOS, etc.).
+     overflow-x: clip en lugar de hidden: evita el scroll sin crear un scroll-container,
+     lo que permite que position:fixed funcione correctamente en iOS Safari. */
+  overflow-x: clip;
+}
+
+/* Botones e inputs de envío: pointer al poder actuar; deshabilitado: not-allowed */
+button:not(:disabled),
+input[type='submit']:not(:disabled),
+input[type='button']:not(:disabled),
+input[type='reset']:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+input[type='submit']:disabled,
+input[type='button']:disabled,
+input[type='reset']:disabled {
+  cursor: not-allowed;
+}
+
+body {
+  margin: 0;
+  background-color: #f4fbfc; /* fondo claro inspirado en el logo */
+  color: #0f172a; /* texto principal oscuro */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', sans-serif;
+}
+
+.app-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, #ffffff 0, #f0f7fa 38%),
+    linear-gradient(to bottom right, #f4fbfc, #ddeaf0);
+  color: #0f172a;
+}
+
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid #d0dde2;
+  background-color: #ffffff;
+  padding: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(148, 163, 184, 0.35);
+}
+
+.card-muted {
+  border-radius: 0.75rem;
+  border: 1px solid #d0dde2;
+  background-color: #f7fbfd;
+  padding: 1rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f9fafb;
+  background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-400));
+  box-shadow: 0 4px 12px rgba(148, 163, 184, 0.5);
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1; /* slate-300 */
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.btn-secondary:hover {
+  background-color: #f1f5f9;
+  box-shadow: 0 2px 6px rgba(148, 163, 184, 0.4);
+}
+
+.input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #cbd5e1; /* slate-300 */
+  background-color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem; /* 16px evita el zoom automático en iOS al enfocar inputs */
+  color: #0f172a;
+}
+
+.input::placeholder {
+  color: #6b7280; /* slate-500 */
+}
+
+/* En mobile/touch: 16px en inputs evita el zoom automático de iOS al enfocar */
+@media (max-width: 768px) {
+  .input,
+  input.input,
+  select.input,
+  textarea.input {
+    font-size: 1rem !important;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.table thead tr {
+  border-bottom: 1px solid #d0dde2;
+  background-color: #eef5f8;
+}
+
+.table th {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9ca3af; /* slate-400 */
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.table td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: middle;
+  color: #0f172a; /* texto oscuro */
+}
+
+/* DatePicker day states */
+.cal-day-selected {
+  background-color: var(--color-brand-500);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(58, 145, 165, 0.5);
+}
+
+.cal-day-today {
+  background-color: var(--color-brand-200);
+  color: var(--color-brand-800);
+  font-weight: 600;
+}
