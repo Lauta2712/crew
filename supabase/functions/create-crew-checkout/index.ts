@@ -8,8 +8,8 @@ const corsHeaders = {
 // Fuente de verdad de precios del lado del servidor — nunca confiar en un precio que
 // mande el cliente. Debe reflejar `src/constants/subscriptionPlans.js`.
 const PLANS: Record<string, { name: string; monthlyPriceUsd: number; annualPriceUsd: number }> = {
-  basico: { name: 'Básico', monthlyPriceUsd: 19, annualPriceUsd: 190 },
-  pro: { name: 'Pro', monthlyPriceUsd: 39, annualPriceUsd: 390 },
+  basico: { name: 'Básico', monthlyPriceUsd: 38, annualPriceUsd: 380 },
+  pro: { name: 'Pro', monthlyPriceUsd: 78, annualPriceUsd: 780 },
 }
 
 function jsonResponse(body: unknown, status: number) {

@@ -1,0 +1,107 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.gyms (
+  name text NOT NULL,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT gyms_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.users (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  gym_id uuid,
+  name text NOT NULL,
+  email text,
+  phone text,
+  role text,
+  created_at timestamp without time zone DEFAULT now(),
+  blocked boolean NOT NULL DEFAULT false,
+  deleted_at timestamp with time zone,
+  CONSTRAINT users_pkey PRIMARY KEY (id),
+  CONSTRAINT users_gym_id_fkey FOREIGN KEY (gym_id) REFERENCES public.gyms(id)
+);
+CREATE TABLE public.plans (
+  gym_id uuid,
+  name text,
+  classes_per_month integer,
+  price numeric,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT plans_pkey PRIMARY KEY (id),
+  CONSTRAINT plans_gym_id_fkey FOREIGN KEY (gym_id) REFERENCES public.gyms(id)
+);
+CREATE TABLE public.subscriptions (
+  student_id uuid,
+  plan_id uuid,
+  start_date date,
+  end_date date,
+  classes_total integer,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT subscriptions_pkey PRIMARY KEY (id),
+  CONSTRAINT subscriptions_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.users(id),
+  CONSTRAINT subscriptions_plan_id_fkey FOREIGN KEY (plan_id) REFERENCES public.plans(id)
+);
+CREATE TABLE public.payments (
+  schedule_slot text,
+  subscription_id uuid,
+  amount numeric,
+  payment_method text,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  paid_at timestamp without time zone DEFAULT now(),
+  student_id uuid,
+  pack_type text,
+  schedule_type text,
+  CONSTRAINT payments_pkey PRIMARY KEY (id),
+  CONSTRAINT payments_subscription_id_fkey FOREIGN KEY (subscription_id) REFERENCES public.subscriptions(id),
+  CONSTRAINT payments_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.attendances (
+  schedule_type_id text,
+  student_id uuid,
+  gym_id uuid,
+  checkin_method text,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  attended_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT attendances_pkey PRIMARY KEY (id),
+  CONSTRAINT attendances_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.users(id),
+  CONSTRAINT attendances_gym_id_fkey FOREIGN KEY (gym_id) REFERENCES public.gyms(id)
+);
+CREATE TABLE public.checkin_sessions (
+  gym_id uuid NOT NULL,
+  token uuid NOT NULL UNIQUE,
+  expires_at timestamp without time zone NOT NULL,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  used boolean DEFAULT false,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT checkin_sessions_pkey PRIMARY KEY (id),
+  CONSTRAINT checkin_sessions_gym_id_fkey FOREIGN KEY (gym_id) REFERENCES public.gyms(id)
+);
+CREATE TABLE public.student_projects (
+  student_id uuid NOT NULL,
+  name text NOT NULL,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT student_projects_pkey PRIMARY KEY (id),
+  CONSTRAINT student_projects_student_id_fkey FOREIGN KEY (student_id) REFERENCES public.users(id)
+);
+CREATE TABLE public.courses (
+  gym_id uuid,
+  name text NOT NULL,
+  description text,
+  level text,
+  start_date date,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT courses_pkey PRIMARY KEY (id),
+  CONSTRAINT courses_gym_id_fkey FOREIGN KEY (gym_id) REFERENCES public.gyms(id)
+);
+CREATE TABLE public.coach_assignments (
+  coach_id uuid NOT NULL,
+  schedule_type_id text NOT NULL,
+  gym_id uuid,
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT coach_assignments_pkey PRIMARY KEY (id),
+  CONSTRAINT coach_assignments_coach_id_fkey FOREIGN KEY (coach_id) REFERENCES public.users(id)
+);

@@ -97,24 +97,24 @@ export function StudentClassQrPage() {
   return (
     <div className="flex min-h-0 flex-col gap-3">
       <div className="shrink-0">
-        <h1 className="text-base font-semibold text-slate-800 sm:text-lg">QR Clases</h1>
-        <p className="text-xs text-slate-500">
+        <h1 className="font-display text-base font-bold uppercase tracking-wide text-ink sm:text-lg">QR Clases</h1>
+        <p className="text-xs text-muted">
           Mostralo al entrenador para registrar tu asistencia a clases o grupo.
         </p>
       </div>
 
       <div className="card flex flex-col items-center gap-4 p-4 sm:p-6">
         {!profile ? (
-          <p className="text-sm text-slate-400">Reiniciá sesión para ver el QR.</p>
+          <p className="text-sm text-muted">Reiniciá sesión para ver el QR.</p>
         ) : qrState.loading ? (
           <div className="flex h-48 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-brand-500" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-line border-t-brand-500" />
           </div>
         ) : isActive ? (
           <>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-slate-700">Clases</span>
-              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+              <span className="text-sm font-semibold text-ink">Clases</span>
+              <span className="rounded-full border border-emerald-500/40 bg-emerald-950/40 px-2 py-0.5 text-[11px] font-medium text-emerald-400">
                 Activo
               </span>
             </div>
@@ -130,20 +130,38 @@ export function StudentClassQrPage() {
               alt="QR asistencia a clases"
               className="h-48 w-48 sm:h-60 sm:w-60"
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted">
               Válido hasta{' '}
-              <span className="font-medium text-slate-700">
+              <span className="font-medium text-ink">
                 {inclusiveCycleEndLabel(qrState.validUntil)}
               </span>
             </p>
           </>
         ) : (
           <div className="flex flex-col items-center gap-2 py-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-              <span className="text-2xl">🎫</span>
+            <div className="flex h-14 w-14 items-center justify-center rounded bg-surface-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-6 w-6 text-muted"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 4.5A.75.75 0 0 1 4.5 3.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5Zm0 10.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5Zm10.5-10.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-.75.75h-4.5a.75.75 0 0 1-.75-.75v-4.5Z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 17.25h.75v.75h-.75v-.75ZM17.25 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z"
+                />
+              </svg>
             </div>
-            <p className="text-sm font-semibold text-slate-700">Sin QR activo</p>
-            <p className="max-w-xs text-xs text-slate-500">
+            <p className="text-sm font-semibold text-ink">Sin QR activo</p>
+            <p className="max-w-xs text-xs text-muted">
               Cuando el entrenador registre tu pago de clases o grupo, el QR aparecerá aquí
               automáticamente.
             </p>
@@ -151,7 +169,7 @@ export function StudentClassQrPage() {
         )}
       </div>
 
-      <p className="text-[10px] text-slate-400 text-center">
+      <p className="text-[10px] text-muted text-center">
         La vigencia es de un mes desde la fecha y hora en que se registró el pago (no el mes calendario).
       </p>
     </div>

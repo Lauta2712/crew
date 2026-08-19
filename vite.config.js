@@ -9,9 +9,9 @@ export default defineConfig(({ mode }) => {
   // resto del tema (ver src/utils/theme.js). Mismos defaults genéricos que el resto de la
   // app (VITE_GYM_DISPLAY_NAME etc.) cuando no hay env vars configuradas para este deploy.
   const env = loadEnv(mode, '.', 'VITE_')
-  const gymName = env.VITE_GYM_DISPLAY_NAME?.trim() || 'Tu gimnasio'
+  const gymName = env.VITE_GYM_DISPLAY_NAME?.trim() || 'Crew'
   const shortName = gymName.length > 12 ? `${gymName.slice(0, 11)}…` : gymName
-  const themeColor = env.VITE_THEME_PRIMARY_COLOR?.trim() || '#c1432b'
+  const themeColor = env.VITE_THEME_PRIMARY_COLOR?.trim() || '#ff4500'
   const customLogoUrl = env.VITE_THEME_LOGO_URL?.trim()
   const logoIcon = customLogoUrl || '/favicon.svg'
   // El logo por defecto es SVG; el de un gimnasio via env var es una URL arbitraria (hoy siempre tratada como jpeg).
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
           short_name: shortName,
           description: `Sistema de asistencias y gestión — ${gymName}`,
           theme_color: themeColor,
-          background_color: '#f4fbfc',
+          background_color: '#0b0c10',
           display: 'standalone',
           orientation: 'portrait',
           scope: '/',

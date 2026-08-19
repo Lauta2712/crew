@@ -30,23 +30,18 @@ export function CrewPricingSection() {
   }, [])
 
   return (
-    <section id="precios" className="space-y-3 border-t border-[#d0dde2]/80 pt-3">
-      <div className="text-center">
-        <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-slate-900 sm:text-3xl">
-          Precios
-        </h2>
-        <p className="mt-1 text-xs text-slate-600 sm:text-sm">
-          Un plan por gimnasio, no por alumno. Sin permanencia, cancelás cuando quieras.
-        </p>
-      </div>
+    <section id="precios" className="space-y-2.5">
+      <h2 className="text-center font-display text-2xl font-bold uppercase tracking-wide text-ink sm:text-3xl">
+        Precios
+      </h2>
 
-      <div className="flex justify-center">
-        <div className="inline-flex rounded-full border border-[#d0dde2] bg-white p-0.5 text-xs sm:text-sm">
+      <div className="flex flex-col items-center gap-1.5">
+        <div className="inline-flex rounded bg-surface-2 p-0.5 text-xs sm:text-sm">
           <button
             type="button"
             onClick={() => setBillingPeriod('monthly')}
-            className={`rounded-full px-3 py-1 font-medium transition ${
-              billingPeriod === 'monthly' ? 'btn-primary !py-1' : 'text-slate-600'
+            className={`rounded px-3 py-1 font-medium transition ${
+              billingPeriod === 'monthly' ? 'btn-primary !py-1' : 'text-muted'
             }`}
           >
             Mensual
@@ -54,13 +49,16 @@ export function CrewPricingSection() {
           <button
             type="button"
             onClick={() => setBillingPeriod('annual')}
-            className={`rounded-full px-3 py-1 font-medium transition ${
-              billingPeriod === 'annual' ? 'btn-primary !py-1' : 'text-slate-600'
+            className={`rounded px-3 py-1 font-medium transition ${
+              billingPeriod === 'annual' ? 'btn-primary !py-1' : 'text-muted'
             }`}
           >
             Anual · 2 meses gratis
           </button>
         </div>
+        <p className="font-mono text-[10px] uppercase tracking-wide text-muted">
+          Sin permanencia · cancelás cuando quieras
+        </p>
       </div>
 
       <div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-2">
@@ -86,32 +84,32 @@ function PlanCard({ plan, billingPeriod, usdArsRate, open, onToggleOpen }) {
 
   return (
     <div
-      className={`card relative flex flex-col gap-2.5 !p-4 ${
-        plan.highlighted ? 'pricing-card-highlighted' : ''
+      className={`landing-panel relative flex flex-col gap-2 !p-3.5 ${
+        plan.highlighted ? 'landing-panel-highlighted' : ''
       }`}
     >
       {plan.highlighted && (
-        <span className="pricing-badge absolute -top-2.5 right-4 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+        <span className="pricing-badge absolute top-3 right-3 rounded px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wide">
           Más elegido
         </span>
       )}
 
-      <div>
-        <h3 className="text-sm font-semibold text-slate-900">{plan.name}</h3>
-        <p className="mt-0.5 text-[11px] leading-snug text-slate-600">{plan.description}</p>
+      <div className={plan.highlighted ? 'pr-24' : undefined}>
+        <h3 className="text-sm font-semibold text-ink">{plan.name}</h3>
+        <p className="mt-0.5 text-[11px] leading-snug text-muted">{plan.description}</p>
       </div>
 
       <div>
-        <span className="font-display text-3xl font-bold text-slate-900">US$ {priceUsd}</span>
-        <span className="text-xs text-slate-500">{periodLabel}</span>
+        <span className="font-display text-3xl font-bold text-ink">US$ {priceUsd}</span>
+        <span className="text-xs text-muted">{periodLabel}</span>
         {arsEstimate && (
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-muted">
             ≈ ${arsEstimate.toLocaleString('es-AR')} ARS · cotización aprox.
           </p>
         )}
       </div>
 
-      <ul className="space-y-1 text-[11px] leading-snug text-slate-700">
+      <ul className="space-y-1 text-[11px] leading-snug text-ink">
         {plan.features.map((feature) => (
           <li key={feature} className="flex items-start gap-1.5">
             <span className="pricing-check">✓</span>
@@ -174,7 +172,7 @@ function CheckoutForm({ plan, billingPeriod, onClose }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-1 space-y-1.5 border-t border-[#d0dde2] pt-2">
+    <form onSubmit={handleSubmit} className="mt-2 space-y-1.5">
       <input
         className="input !py-1.5 text-xs"
         placeholder="Tu nombre"
@@ -196,7 +194,7 @@ function CheckoutForm({ plan, billingPeriod, onClose }) {
         value={gymName}
         onChange={(e) => setGymName(e.target.value)}
       />
-      {error && <p className="text-[11px] text-red-600">{error}</p>}
+      {error && <p className="text-[11px] text-red-400">{error}</p>}
       <button type="submit" className="btn-primary w-full" disabled={submitting}>
         {submitting ? 'Redirigiendo a Mercado Pago…' : 'Continuar al pago'}
       </button>

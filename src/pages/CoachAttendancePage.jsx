@@ -76,13 +76,13 @@ export function CoachAttendancePage() {
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="shrink-0 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Asistencias</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Asistencias</h1>
+          <p className="text-sm text-muted">
             Asistencias de tus alumnos.
             {!loading && (
               <>
                 {' '}
-                <span className="font-medium text-slate-700">{todayCount}</span>{' '}
+                <span className="font-medium text-ink">{todayCount}</span>{' '}
                 {todayCount === 1 ? 'asistencia' : 'asistencias'} hoy.
               </>
             )}
@@ -99,15 +99,15 @@ export function CoachAttendancePage() {
       </div>
 
       {error && (
-        <p className="shrink-0 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="shrink-0 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {error}
         </p>
       )}
 
       <div className="card-muted flex min-h-0 flex-1 flex-col">
         <div className="mb-3 flex shrink-0 items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Historial</p>
-          <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 text-[11px]">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">Historial</p>
+          <div className="flex rounded-lg border border-line bg-surface p-0.5 text-[11px]">
             {[
               { id: 'today', label: 'Hoy' },
               { id: 'all', label: 'Todas' },
@@ -117,8 +117,8 @@ export function CoachAttendancePage() {
                 type="button"
                 className={`rounded-md px-2 py-1 font-medium transition ${
                   historyScope === s.id
-                    ? 'bg-brand-500 text-white'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? 'bg-brand-500 text-bg font-semibold'
+                    : 'text-muted hover:bg-bg'
                 }`}
                 onClick={() => setHistoryScope(s.id)}
               >
@@ -130,9 +130,9 @@ export function CoachAttendancePage() {
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           {loading ? (
-            <p className="text-xs text-slate-400">Cargando…</p>
+            <p className="text-xs text-muted">Cargando…</p>
           ) : displayHistory.length === 0 ? (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted">
               {historyScope === 'today'
                 ? 'Nadie registró asistencia hoy.'
                 : 'Sin asistencias registradas.'}
@@ -142,11 +142,11 @@ export function CoachAttendancePage() {
               {displayHistory.map((row) => (
                 <li
                   key={row.id}
-                  className="rounded border border-slate-200 bg-white px-3 py-2 text-xs"
+                  className="rounded border border-line bg-surface px-3 py-2 text-xs"
                 >
-                  <p className="font-medium text-slate-800">{row.user_name}</p>
-                  <p className="text-slate-600">{formatDateTime(row.attended_at)}</p>
-                  <p className="text-[11px] text-slate-500">{formatCheckinMethod(row.method)}</p>
+                  <p className="font-medium text-ink">{row.user_name}</p>
+                  <p className="text-muted">{formatDateTime(row.attended_at)}</p>
+                  <p className="text-[11px] text-muted">{formatCheckinMethod(row.method)}</p>
                 </li>
               ))}
             </ul>

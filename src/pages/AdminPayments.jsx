@@ -282,18 +282,18 @@ export function AdminPaymentsPage() {
     <div className="py-2 sm:py-4">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
         {error && (
-          <p className="shrink-0 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+          <p className="shrink-0 rounded-xl border border-red-500/40 bg-red-950/40 px-3 py-2 text-sm text-red-400">
             {error}
           </p>
         )}
 
         {successMessage && (
-          <p className="shrink-0 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+          <p className="shrink-0 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-sm text-emerald-400">
             {successMessage}
           </p>
         )}
 
-        <div className="shrink-0 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+        <div className="shrink-0 rounded-2xl border border-line bg-surface p-1.5 shadow-sm">
           <div
             className="grid grid-cols-3 gap-1.5"
             role="tablist"
@@ -313,8 +313,8 @@ export function AdminPaymentsPage() {
                   aria-selected={selected}
                   className={`rounded-xl px-2 py-1.5 text-center text-xs font-semibold leading-tight transition sm:px-4 ${
                     selected
-                      ? 'bg-[var(--color-brand-900)] text-white shadow-md ring-2 ring-[var(--color-brand-600)] ring-offset-1 ring-offset-white'
-                      : 'border border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
+                      ? 'bg-[var(--color-brand-900)] text-white shadow-md ring-2 ring-[var(--color-brand-600)] ring-offset-1 ring-offset-surface'
+                      : 'border border-line bg-bg text-ink hover:border-line hover:bg-surface'
                   }`}
                   onClick={() => {
                     setMainTab(t.id)
@@ -330,28 +330,28 @@ export function AdminPaymentsPage() {
         </div>
 
         {mainTab === 'muro' && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-6">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-md sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-              <h2 className="text-lg font-bold text-slate-900">Acceso libre</h2>
-              <div className="flex flex-col gap-0.5 text-xs text-slate-500 sm:flex-row sm:gap-4">
+              <h2 className="text-lg font-bold text-ink">Acceso libre</h2>
+              <div className="flex flex-col gap-0.5 text-xs text-muted sm:flex-row sm:gap-4">
                 <span>
                   Diario:{' '}
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-ink">
                     ${walkIn.priceWithDiscount.toLocaleString('es-AR')}
                   </span>{' '}
                   reducida ·{' '}
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-ink">
                     ${walkIn.priceDefault.toLocaleString('es-AR')}
                   </span>{' '}
                   estándar
                 </span>
                 <span>
                   Mensual:{' '}
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-ink">
                     ${walkIn.monthlyWithDiscount.toLocaleString('es-AR')}
                   </span>{' '}
                   reducida ·{' '}
-                  <span className="font-medium text-slate-700">
+                  <span className="font-medium text-ink">
                     ${walkIn.monthlyDefault.toLocaleString('es-AR')}
                   </span>{' '}
                   estándar
@@ -363,14 +363,14 @@ export function AdminPaymentsPage() {
         )}
 
         {mainTab === 'grupo' && (
-          <div className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-6">
-            <h2 className="text-lg font-bold text-slate-900">Grupo de entrenamiento</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Mismo cupo mensual que <span className="font-semibold text-slate-800">{PACK8_MENSUAL_NAME}</span>.
+          <div className="flex flex-col rounded-2xl border border-line bg-surface p-4 shadow-md sm:p-6">
+            <h2 className="text-lg font-bold text-ink">Grupo de entrenamiento</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Mismo cupo mensual que <span className="font-semibold text-ink">{PACK8_MENSUAL_NAME}</span>.
               Pack:{' '}
-              <span className="font-semibold text-slate-800">{grupoPack?.name ?? 'Grupo'}</span>. Una
+              <span className="font-semibold text-ink">{grupoPack?.name ?? 'Grupo'}</span>. Una
               cuota por alumno y mes para este horario. Franja principal:{' '}
-              <span className="font-medium text-slate-800">{grupoFranjaEjemplo}</span>.
+              <span className="font-medium text-ink">{grupoFranjaEjemplo}</span>.
             </p>
             <form className="mt-4 flex max-w-xl flex-col gap-4 sm:mt-6 sm:gap-5" onSubmit={handleGrupoSubmit}>
               <SelectField
@@ -403,13 +403,13 @@ export function AdminPaymentsPage() {
                   label: `${slot.days} · ${slot.time}`,
                 }))}
               />
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700">
+              <div className="rounded-lg border border-line bg-bg px-3 py-2.5 text-sm text-ink">
                 Monto:{' '}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-ink">
                   ${(grupoPack?.price ?? 0).toLocaleString('es-AR')}
                 </span>
-                <span className="text-slate-400"> · </span>
-                <span className="text-slate-500">Ajustable en Configuración</span>
+                <span className="text-muted"> · </span>
+                <span className="text-muted">Ajustable en Configuración</span>
               </div>
               <button
                 type="submit"
@@ -423,8 +423,8 @@ export function AdminPaymentsPage() {
         )}
 
         {mainTab === 'general' && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md sm:p-6">
-            <h2 className="text-lg font-bold text-slate-900">Escuelas</h2>
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-md sm:p-6">
+            <h2 className="text-lg font-bold text-ink">Escuelas</h2>
             <form className="mt-4 flex flex-col gap-4 sm:mt-6 sm:gap-5" onSubmit={handleSubmit}>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">

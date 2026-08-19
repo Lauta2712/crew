@@ -14,7 +14,7 @@ export function AttendanceHistoryTable({ attendances, loading }) {
     return (
       <div className="card-muted flex h-full min-h-0 flex-1 flex-col">
         <div className="mb-3 flex shrink-0 items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Historial reciente
           </p>
         </div>
@@ -23,7 +23,7 @@ export function AttendanceHistoryTable({ attendances, loading }) {
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="h-16 w-full animate-pulse rounded-xl bg-slate-200"
+                className="h-16 w-full animate-pulse rounded-xl bg-surface-2"
               />
             ))}
           </div>
@@ -31,7 +31,7 @@ export function AttendanceHistoryTable({ attendances, loading }) {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="h-10 w-full animate-pulse rounded bg-slate-200"
+                className="h-10 w-full animate-pulse rounded bg-surface-2"
               />
             ))}
           </div>
@@ -45,7 +45,7 @@ export function AttendanceHistoryTable({ attendances, loading }) {
   return (
     <div className="card-muted flex h-full min-h-0 flex-1 flex-col">
       <div className="mb-3 flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           Historial reciente
         </p>
         <div className="flex items-center gap-3">
@@ -54,9 +54,9 @@ export function AttendanceHistoryTable({ attendances, loading }) {
             placeholder="Buscar por nombre…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-brand-400 sm:w-48"
+            className="w-full rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink placeholder-muted focus:outline-none focus:ring-1 focus:ring-brand-400 sm:w-48"
           />
-          <p className="shrink-0 text-xs text-slate-500">
+          <p className="shrink-0 text-xs text-muted">
             {searchQuery.trim()
               ? `${filteredAttendances.length} / ${attendances?.length ?? 0}`
               : `Total: ${attendances?.length ?? 0}`}
@@ -68,22 +68,22 @@ export function AttendanceHistoryTable({ attendances, loading }) {
         {/* Mobile: lista de tarjetas sin scroll horizontal */}
         <div className="space-y-2 md:hidden">
           {filteredAttendances.length === 0 ? (
-            <p className="py-4 text-center text-xs text-slate-500">
+            <p className="py-4 text-center text-xs text-muted">
               {searchQuery.trim() ? 'Sin resultados para esa búsqueda.' : 'Aún no hay asistencias registradas.'}
             </p>
           ) : (
             filteredAttendances.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm"
+                className="flex flex-col gap-1 rounded-xl border border-line bg-surface px-3 py-2.5 shadow-sm"
               >
-                <p className="font-medium text-slate-800">
+                <p className="font-medium text-ink">
                   {item.user_name ?? '—'}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="font-mono text-xs text-muted">
                   {formatDate(item.attended_at)}
                 </p>
-                <p className="text-[11px] capitalize text-slate-400">
+                <p className="text-[11px] capitalize text-muted">
                   {item.method ?? 'manual'}
                 </p>
               </div>
@@ -106,7 +106,7 @@ export function AttendanceHistoryTable({ attendances, loading }) {
                 <tr>
                   <td
                     colSpan={3}
-                    className="py-6 text-center text-xs text-slate-500"
+                    className="py-6 text-center text-xs text-muted"
                   >
                     {searchQuery.trim() ? 'Sin resultados para esa búsqueda.' : 'Aún no hay asistencias registradas.'}
                   </td>
@@ -114,13 +114,13 @@ export function AttendanceHistoryTable({ attendances, loading }) {
               ) : (
                 filteredAttendances.map((item) => (
                   <tr key={item.id}>
-                    <td className="font-medium text-slate-800">
+                    <td className="font-medium text-ink">
                       {item.user_name ?? '—'}
                     </td>
-                    <td className="text-slate-600">
+                    <td className="font-mono text-muted">
                       {formatDate(item.attended_at)}
                     </td>
-                    <td className="capitalize text-slate-500">
+                    <td className="capitalize text-muted">
                       {item.method ?? 'manual'}
                     </td>
                   </tr>

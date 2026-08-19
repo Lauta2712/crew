@@ -79,8 +79,8 @@ export function AttendancePage() {
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="shrink-0 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Asistencias</h1>
-          <p className="text-sm text-slate-500">Historial de los últimos 200 registros.</p>
+          <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Asistencias</h1>
+          <p className="text-sm text-muted">Historial de los últimos 200 registros.</p>
         </div>
         <div className="flex flex-wrap gap-2 shrink-0">
           <Link
@@ -99,7 +99,7 @@ export function AttendancePage() {
       </div>
 
       {error && (
-        <p className="shrink-0 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="shrink-0 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {error}
         </p>
       )}

@@ -61,7 +61,7 @@ export function StudentTable({
     return (
       <div className="card-muted">
         <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           Alumnos
         </p>
         </div>
@@ -69,7 +69,7 @@ export function StudentTable({
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="h-10 w-full animate-pulse rounded bg-slate-100"
+              className="h-10 w-full animate-pulse rounded bg-surface"
             />
           ))}
         </div>
@@ -80,7 +80,7 @@ export function StudentTable({
   return (
     <div className="card-muted overflow-hidden">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">
           Alumnos
         </p>
         <div className="flex items-center gap-3">
@@ -89,9 +89,9 @@ export function StudentTable({
             placeholder="Buscar por nombre…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-brand-400 sm:w-48"
+            className="w-full rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink placeholder-muted focus:outline-none focus:ring-1 focus:ring-brand-400 sm:w-48"
           />
-          <p className="shrink-0 text-xs text-slate-500">
+          <p className="shrink-0 text-xs text-muted">
             {searchQuery.trim()
               ? `${filteredStudents.length} / ${students?.length ?? 0}`
               : `Total: ${students?.length ?? 0}`}
@@ -104,32 +104,32 @@ export function StudentTable({
         {filteredStudents.map((student) => (
           <div
             key={student.id}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-800 shadow-sm"
+            className="rounded-lg bg-surface px-3 py-2 text-xs text-ink"
           >
             <div className="flex items-baseline justify-between gap-2">
               <button
                 type="button"
-                className="text-left font-semibold text-slate-800 underline-offset-2 hover:underline"
+                className="text-left font-semibold text-ink underline-offset-2 hover:underline"
                 onClick={() => setDetailStudent(student)}
               >
                 {student.name}
               </button>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-[11px] text-muted">
                 {student.plan_name ?? 'Sin plan'}
               </span>
             </div>
             <div className="mt-1 grid grid-cols-3 gap-2">
               <div>
-                <p className="text-[10px] uppercase text-slate-500">Cupo pack</p>
-                <p className="text-slate-700">{student.classes_per_month ?? '—'}</p>
+                <p className="text-[10px] uppercase text-muted">Cupo pack</p>
+                <p className="font-mono tabular-nums text-ink">{student.classes_per_month ?? '—'}</p>
               </div>
               <div>
-                <p className="text-[10px] uppercase text-slate-500">Usadas (período)</p>
-                <p className="text-slate-700">{student.classes_used_this_month ?? 0}</p>
+                <p className="text-[10px] uppercase text-muted">Usadas (período)</p>
+                <p className="font-mono tabular-nums text-ink">{student.classes_used_this_month ?? 0}</p>
               </div>
               <div>
-                <p className="text-[10px] uppercase text-slate-500">Restantes</p>
-                <p className="font-semibold text-brand-600">
+                <p className="text-[10px] uppercase text-muted">Restantes</p>
+                <p className="font-mono tabular-nums font-semibold text-brand-600">
                   {student.classes_remaining ?? '—'}
                 </p>
               </div>
@@ -178,7 +178,7 @@ export function StudentTable({
           </div>
         ))}
         {filteredStudents.length === 0 && (
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-muted">
             {searchQuery.trim() ? 'Sin resultados para esa búsqueda.' : 'No hay alumnos cargados.'}
           </p>
         )}
@@ -202,7 +202,7 @@ export function StudentTable({
           <tbody>
             {filteredStudents.map((student) => (
               <tr key={student.id}>
-                <td className="font-medium text-slate-800">
+                <td className="font-medium text-ink">
                   <button
                     type="button"
                     className="text-left underline-offset-2 hover:underline"
@@ -211,17 +211,17 @@ export function StudentTable({
                     {student.name}
                   </button>
                   {student.blocked && (
-                    <span className="ml-1.5 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] text-amber-700">
+                    <span className="ml-1.5 rounded border border-amber-500/40 bg-amber-950/40 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-amber-400">
                       Suspendido
                     </span>
                   )}
                 </td>
-                <td className="text-slate-500">
+                <td className="text-muted">
                   {student.plan_name ?? 'Sin plan'}
                 </td>
-                <td className="text-slate-700">{student.classes_per_month ?? '—'}</td>
-                <td className="text-slate-700">{student.classes_used_this_month ?? 0}</td>
-                <td className="font-semibold text-brand-600">
+                <td className="font-mono tabular-nums text-ink">{student.classes_per_month ?? '—'}</td>
+                <td className="font-mono tabular-nums text-ink">{student.classes_used_this_month ?? 0}</td>
+                <td className="font-mono tabular-nums font-semibold text-brand-600">
                   {student.classes_remaining ?? '—'}
                 </td>
                 {isAdmin && (onRegisterPayment || onBlockStudent || onDeleteStudent) && (
@@ -278,8 +278,8 @@ export function StudentTable({
       {/* Modal confirmar suspender / desuspender */}
       {confirmBlock && (
         <div className="fixed inset-0 z-40 flex h-dvh items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-sm rounded-2xl border border-[#d0dde2] bg-white p-4 shadow-xl">
-            <p className="text-sm text-slate-700">
+          <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-4">
+            <p className="text-sm text-ink">
               {confirmBlock.blocked
                 ? `¿Suspender a ${confirmBlock.name}? No podrá iniciar sesión hasta que lo desuspendas.`
                 : `¿Desuspender a ${confirmBlock.name}?`}
@@ -310,8 +310,8 @@ export function StudentTable({
       {/* Modal confirmar eliminar */}
       {confirmDelete && (
         <div className="fixed inset-0 z-40 flex h-dvh items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-sm rounded-2xl border border-[#d0dde2] bg-white p-4 shadow-xl">
-            <p className="text-sm text-slate-700">
+          <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-4">
+            <p className="text-sm text-ink">
               ¿Eliminar definitivamente a <strong>{confirmDelete.name}</strong>? Se borrarán también los registros asociados (pagos, asistencias, suscripciones y proyectos). Esta acción no se puede revertir desde la app.
             </p>
             <div className="mt-4 flex justify-end gap-2">
@@ -371,9 +371,9 @@ export function StudentTable({
 
       {isAdmin && onRegisterPayment && selectedStudentId && (
         <div className="fixed inset-0 z-40 flex h-dvh items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-sm rounded-2xl border border-[#d0dde2] bg-white p-4 shadow-xl">
-            <h2 className="text-sm font-semibold text-slate-800">Registrar pago</h2>
-            <p className="mt-1 text-[11px] text-slate-500">
+          <div className="w-full max-w-sm rounded-lg border border-line bg-surface p-4">
+            <h2 className="text-sm font-semibold text-ink">Registrar pago</h2>
+            <p className="mt-1 text-[11px] text-muted">
               Elegí pack y horario. El pago se registra con la fecha y hora de ahora.
             </p>
 
@@ -416,14 +416,14 @@ export function StudentTable({
                   />
                 )}
                 {!requiresSlotPick && selectedScheduleSlots.length === 1 && (
-                  <div className="rounded-lg border border-[#d0dde2] bg-[#f7fbfd] px-3 py-2 text-[11px] text-slate-600">
+                  <div className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">
                     Turno:{' '}
-                    <span className="font-semibold text-slate-800">
+                    <span className="font-semibold text-ink">
                       {selectedScheduleSlots[0].days} · {selectedScheduleSlots[0].time}
                     </span>
                   </div>
                 )}
-                <p className="text-[10px] text-slate-400">
+                <p className="text-[10px] text-muted">
                   Los días y horarios detallados se verán en el calendario del alumno.
                 </p>
               </div>

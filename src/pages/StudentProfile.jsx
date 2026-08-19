@@ -89,12 +89,12 @@ export function StudentProfilePage() {
   return (
     <div className="flex min-h-0 flex-col gap-3">
       <div className="shrink-0">
-        <h1 className="text-base font-semibold text-slate-800 sm:text-lg">Mi perfil</h1>
-        <p className="text-xs text-slate-500">Datos de contacto y proyectos de escalada.</p>
+        <h1 className="font-display text-base font-bold uppercase tracking-wide text-ink sm:text-lg">Mi perfil</h1>
+        <p className="text-xs text-muted">Datos de contacto y proyectos de escalada.</p>
       </div>
 
       {error && (
-        <p className="shrink-0 rounded border border-red-200 bg-red-50 px-2 py-1.5 text-[11px] text-red-700">
+        <p className="shrink-0 rounded border border-red-500/40 bg-red-950/40 px-2 py-1.5 text-[11px] text-red-400">
           {error}
         </p>
       )}
@@ -105,7 +105,7 @@ export function StudentProfilePage() {
           className="card flex min-h-0 flex-col gap-3 p-3 sm:p-4"
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-slate-200 text-sm font-semibold text-slate-700">
+            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-surface-2 text-sm font-semibold text-ink">
               {avatarPreview ? (
                 <img src={avatarPreview} alt="Foto de perfil previa" className="h-full w-full object-cover" />
               ) : (
@@ -117,12 +117,12 @@ export function StudentProfilePage() {
               )}
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs font-semibold text-slate-700">
+              <p className="text-xs font-semibold text-ink">
                 {profile?.name || 'Tu nombre'}
               </p>
               <button
                 type="button"
-                className="text-[11px] font-medium text-brand-600 hover:text-brand-700"
+                className="text-[11px] font-medium text-brand-600 hover:text-brand-400"
                 onClick={() => avatarInputRef.current?.click()}
               >
                 Cambiar foto
@@ -141,11 +141,11 @@ export function StudentProfilePage() {
             </div>
           </div>
 
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
             Datos personales
           </p>
           <div className="space-y-1.5">
-            <label htmlFor="name" className="block text-[11px] font-medium text-slate-600">
+            <label htmlFor="name" className="block text-[11px] font-medium text-muted">
               Nombre
             </label>
             <input
@@ -158,7 +158,7 @@ export function StudentProfilePage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="email" className="block text-[11px] font-medium text-slate-600">
+            <label htmlFor="email" className="block text-[11px] font-medium text-muted">
               Correo
             </label>
             <input
@@ -169,7 +169,7 @@ export function StudentProfilePage() {
             />
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="phone" className="block text-[11px] font-medium text-slate-600">
+            <label htmlFor="phone" className="block text-[11px] font-medium text-muted">
               Teléfono
             </label>
             <input
@@ -191,7 +191,7 @@ export function StudentProfilePage() {
         </form>
 
         <div className="card min-h-0 flex-1 space-y-1.5 overflow-auto p-3">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
             Proyectos
           </p>
           <form onSubmit={handleAddProject} className="flex flex-col gap-1.5 sm:flex-row">
@@ -212,20 +212,20 @@ export function StudentProfilePage() {
           {loadingProjects ? (
             <div className="space-y-1">
               {[0, 1, 2].map((i) => (
-                <div key={i} className="h-6 animate-pulse rounded bg-slate-100" />
+                <div key={i} className="h-6 animate-pulse rounded bg-surface-2" />
               ))}
             </div>
           ) : projects.length === 0 ? (
-            <p className="text-[11px] text-slate-500">Sin proyectos. Añadí tus vías objetivo.</p>
+            <p className="text-[11px] text-muted">Sin proyectos. Añadí tus vías objetivo.</p>
           ) : (
-            <ul className="mt-1 grid grid-cols-1 gap-1.5 text-[11px] text-slate-700 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-1 grid grid-cols-1 gap-1.5 text-[11px] text-ink sm:grid-cols-2 lg:grid-cols-3">
               {projects.slice(0, 9).map((project) => (
-                <li key={project.id} className="rounded border border-slate-200 bg-white px-2 py-1">
+                <li key={project.id} className="rounded border border-line bg-surface px-2 py-1">
                   {project.name}
                 </li>
               ))}
               {projects.length > 9 && (
-                <li className="text-[10px] text-slate-400">+{projects.length - 9} más</li>
+                <li className="text-[10px] text-muted">+{projects.length - 9} más</li>
               )}
             </ul>
           )}

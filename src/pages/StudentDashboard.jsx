@@ -322,42 +322,42 @@ export function StudentDashboardPage() {
   return (
     <div className="flex min-h-0 flex-col gap-4">
       <div className="shrink-0">
-        <h1 className="text-base font-semibold text-slate-800 sm:text-lg">
+        <h1 className="text-base font-semibold text-ink sm:text-lg">
           Hola{profile?.name ? `, ${profile.name}` : ''}
         </h1>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-muted">
           Resumen de tu actividad en {gymName}.
         </p>
       </div>
 
       {error && (
-        <p className="shrink-0 rounded border border-red-200 bg-red-50 px-2 py-1.5 text-[11px] text-red-700">
+        <p className="shrink-0 rounded border border-red-500/40 bg-red-950/40 px-2 py-1.5 text-[11px] text-red-400">
           {error}
         </p>
       )}
 
       <div className="grid min-h-0 flex-1 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
         <div className="card col-span-2 p-3 sm:col-span-1 sm:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
             Tu plan
           </p>
           {loading ? (
-            <div className="mt-2 h-6 w-24 animate-pulse rounded bg-slate-100" />
+            <div className="mt-2 h-6 w-24 animate-pulse rounded bg-surface" />
           ) : (
-            <p className="mt-1 text-base font-semibold text-slate-800">
+            <p className="mt-1 text-base font-semibold text-ink">
               {summary?.planName ?? '—'}
             </p>
           )}
         </div>
 
         <div className="card p-3 sm:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
             Clases en el período
           </p>
           {loading ? (
-            <div className="mt-2 h-6 w-20 animate-pulse rounded bg-slate-100" />
+            <div className="mt-2 h-6 w-20 animate-pulse rounded bg-surface" />
           ) : (
-            <p className="mt-1 text-base font-semibold text-slate-800">
+            <p className="mt-1 text-base font-semibold text-ink">
               {summary != null
                 ? summary.onlyMuro
                   ? '∞'
@@ -368,11 +368,11 @@ export function StudentDashboardPage() {
         </div>
 
         <div className="card p-3 sm:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
             Clases restantes
           </p>
           {loading ? (
-            <div className="mt-2 h-8 w-16 animate-pulse rounded bg-slate-100" />
+            <div className="mt-2 h-8 w-16 animate-pulse rounded bg-surface" />
           ) : (
             <p className="mt-1 text-2xl font-bold text-brand-600">
               {summary?.onlyMuro ? '∞' : (summary?.remaining ?? '—')}
@@ -382,13 +382,13 @@ export function StudentDashboardPage() {
 
         {classValidUntil && (
           <div className="card col-span-2 p-3 sm:col-span-1 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Vigencia del pack
             </p>
             {loading ? (
-              <div className="mt-2 h-6 w-28 animate-pulse rounded bg-slate-100" />
+              <div className="mt-2 h-6 w-28 animate-pulse rounded bg-surface" />
             ) : (
-              <p className="mt-1 text-sm font-medium text-slate-800">
+              <p className="mt-1 text-sm font-medium text-ink">
                 Válido hasta {inclusiveCycleEndLabel(classValidUntil)}
               </p>
             )}
@@ -397,13 +397,13 @@ export function StudentDashboardPage() {
 
         {muroValidUntil && (
           <div className="card col-span-2 p-3 sm:col-span-1 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Muro libre mensual
             </p>
             {loading ? (
-              <div className="mt-2 h-6 w-28 animate-pulse rounded bg-slate-100" />
+              <div className="mt-2 h-6 w-28 animate-pulse rounded bg-surface" />
             ) : (
-              <p className="mt-1 text-sm font-medium text-slate-800">
+              <p className="mt-1 text-sm font-medium text-ink">
                 Válido hasta {inclusiveCycleEndLabel(muroValidUntil)}
               </p>
             )}
@@ -412,20 +412,20 @@ export function StudentDashboardPage() {
 
         {lastAttendance != null && (
           <div className="card p-3 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Última clase
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-800 sm:text-sm">
+            <p className="mt-1 text-xs font-medium text-ink sm:text-sm">
               {formatDateTime(lastAttendance)}
             </p>
           </div>
         )}
         {lastMuroAttendance != null && (
           <div className="card p-3 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Último muro libre
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-800 sm:text-sm">
+            <p className="mt-1 text-xs font-medium text-ink sm:text-sm">
               {formatDateTime(lastMuroAttendance)}
             </p>
           </div>
@@ -433,10 +433,10 @@ export function StudentDashboardPage() {
 
         {nextClass && (
           <div className="card col-span-2 p-3 sm:col-span-1 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Próxima clase
             </p>
-            <p className="mt-1 text-sm font-medium text-slate-800">
+            <p className="mt-1 text-sm font-medium text-ink">
               {nextClass.toLocaleDateString('es-AR', {
                 timeZone: 'America/Argentina/Buenos_Aires',
                 weekday: 'long',
@@ -451,18 +451,18 @@ export function StudentDashboardPage() {
 
         {nextCourse && (
           <div className="card col-span-2 p-3 sm:p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
               Próximo curso
             </p>
-            <p className="mt-1 text-sm font-medium text-slate-800">
+            <p className="mt-1 text-sm font-medium text-ink">
               {nextCourse.name}
             </p>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-muted">
               {formatDateLong(nextCourse.start_date)}
             </p>
             <Link
               to="/app/courses"
-              className="mt-2 inline-block text-xs font-medium text-brand-600 hover:text-brand-700"
+              className="mt-2 inline-block text-xs font-medium text-brand-600 hover:text-brand-400"
             >
               Ver cursos →
             </Link>
@@ -471,17 +471,11 @@ export function StudentDashboardPage() {
       </div>
 
       <div className="flex shrink-0 flex-wrap gap-2">
-        <Link
-          to="/app/qr"
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-        >
-          🎫 QR Clases/Grupo
+        <Link to="/app/qr" className="btn-secondary px-4 py-2 text-sm">
+          QR Clases/Grupo
         </Link>
-        <Link
-          to="/app/walkin-qr"
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-        >
-          🔓 QR Acceso libre
+        <Link to="/app/walkin-qr" className="btn-secondary px-4 py-2 text-sm">
+          QR Acceso libre
         </Link>
       </div>
     </div>

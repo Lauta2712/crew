@@ -1,0 +1,74 @@
+<!--
+  Pegar en: Supabase Dashboard → Authentication → Email Templates → Confirm signup.
+  Asunto sugerido: Confirmá tu cuenta en Crew
+
+  Notas:
+  - Bulletproof HTML de email (tablas + estilos inline) — los clientes de correo no
+    soportan CSS moderno ni fuentes custom, así que no se puede reusar el CSS de la app.
+  - Todos los fondos se declaran explícitos por celda para evitar que Gmail/Outlook
+    inviertan colores en modo oscuro y dejen el botón ilegible.
+  - {{ .ConfirmationURL }} es la variable que reemplaza Supabase — no tocar.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark light" />
+<meta name="supported-color-schemes" content="dark light" />
+<title>Confirmá tu cuenta en Crew</title>
+</head>
+<body style="margin:0; padding:0; background-color:#0b0c10;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0b0c10;">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+        <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px; width:100%; background-color:#15181f; border-radius:6px;">
+          <tr>
+            <td style="padding:32px 32px 24px 32px; text-align:center;">
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 20px auto;">
+                <tr>
+                  <td style="width:44px; height:44px; background-color:#ff4500; border-radius:6px; text-align:center; vertical-align:middle;">
+                    <span style="font-family:Arial, Helvetica, sans-serif; font-size:22px; font-weight:800; color:#0b0c10; line-height:44px;">C</span>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 4px 0; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#ff4500;">
+                Crew
+              </p>
+              <h1 style="margin:0 0 12px 0; font-family:Arial, Helvetica, sans-serif; font-size:20px; font-weight:800; letter-spacing:0.5px; text-transform:uppercase; color:#f4f5f7;">
+                Confirmá tu cuenta
+              </h1>
+              <p style="margin:0 0 28px 0; font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#8e95a5;">
+                Falta un paso para empezar a usar Crew. Confirmá tu email para activar tu cuenta.
+              </p>
+
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                <tr>
+                  <td style="background-color:#ff4500; border-radius:4px;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block; padding:12px 28px; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:700; color:#0b0c10; text-decoration:none;">
+                      Confirmar email
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:28px 0 0 0; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; color:#5a6070;">
+                Si el botón no funciona, copiá y pegá este link en tu navegador:<br />
+                <a href="{{ .ConfirmationURL }}" style="color:#1e90ff; word-break:break-all;">{{ .ConfirmationURL }}</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 32px; border-top:1px solid #2a2e3b; text-align:center;">
+              <p style="margin:0; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#5a6070;">
+                Si no creaste esta cuenta, podés ignorar este email.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

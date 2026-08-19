@@ -59,7 +59,7 @@ function CarouselSection({ title, items, renderCard, selectedId }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
           {title}
         </p>
         <div className="hidden gap-1 sm:flex">
@@ -68,10 +68,10 @@ function CarouselSection({ title, items, renderCard, selectedId }) {
             onClick={() => carousel.scrollBy(-1)}
             disabled={!carousel.canScrollLeft}
             aria-label="Anterior"
-            className="flex items-center justify-center rounded-full border border-slate-200 bg-white p-1.5 shadow-sm transition hover:border-brand-400 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex items-center justify-center rounded-full border border-line bg-surface p-1.5 shadow-sm transition hover:border-brand-400 hover:bg-brand-900/25 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <svg
-              className="h-3.5 w-3.5 text-slate-600"
+              className="h-3.5 w-3.5 text-muted"
               fill="none"
               stroke="currentColor"
               strokeWidth={2.5}
@@ -86,10 +86,10 @@ function CarouselSection({ title, items, renderCard, selectedId }) {
             onClick={() => carousel.scrollBy(1)}
             disabled={!carousel.canScrollRight}
             aria-label="Siguiente"
-            className="flex items-center justify-center rounded-full border border-slate-200 bg-white p-1.5 shadow-sm transition hover:border-brand-400 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-30"
+            className="flex items-center justify-center rounded-full border border-line bg-surface p-1.5 shadow-sm transition hover:border-brand-400 hover:bg-brand-900/25 disabled:cursor-not-allowed disabled:opacity-30"
           >
             <svg
-              className="h-3.5 w-3.5 text-slate-600"
+              className="h-3.5 w-3.5 text-muted"
               fill="none"
               stroke="currentColor"
               strokeWidth={2.5}
@@ -126,7 +126,7 @@ function CarouselSection({ title, items, renderCard, selectedId }) {
               className={`h-1.5 rounded-full transition-all duration-200 ${
                 i === carousel.activePage
                   ? 'w-4 bg-brand-500'
-                  : 'w-1.5 bg-slate-300 hover:bg-slate-400'
+                  : 'w-1.5 bg-surface-2 hover:bg-line'
               }`}
             />
           ))}
@@ -138,7 +138,7 @@ function CarouselSection({ title, items, renderCard, selectedId }) {
 
 function ActiveBadge({ label }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-100 px-2.5 py-0.5 text-[10px] font-semibold text-brand-700 shrink-0">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/40 bg-brand-900/35 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 shrink-0">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
       {label}
     </span>
@@ -148,21 +148,21 @@ function ActiveBadge({ label }) {
 function PackCard({ pack, isSelected, walkIn, className = '' }) {
   return (
     <div
-      className={`rounded-xl border border-slate-200 p-4 overflow-hidden transition-all duration-200 ${
-        isSelected ? 'bg-brand-50/70 shadow-sm' : 'bg-white'
+      className={`rounded-xl border border-line p-4 overflow-hidden transition-all duration-200 ${
+        isSelected ? 'bg-brand-900/70 shadow-sm' : 'bg-surface'
       } ${className}`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
         {pack.name}
       </p>
-      <p className="mt-2 text-2xl font-semibold text-slate-900">
+      <p className="mt-2 text-2xl font-semibold text-ink">
         {pack.unlimited
           ? `$${walkIn.monthlyWithDiscount.toLocaleString('es-AR')} / $${walkIn.monthlyDefault.toLocaleString('es-AR')}`
           : pack.price != null
             ? `$${pack.price.toLocaleString('es-AR')}`
             : 'Precio a confirmar'}
       </p>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-muted">
         {pack.unlimited
           ? 'Pago mensual: acceso ilimitado en los horarios habilitados'
           : pack.classes_per_month === 1
@@ -170,7 +170,7 @@ function PackCard({ pack, isSelected, walkIn, className = '' }) {
             : `Incluye ${pack.classes_per_month} clases mensuales por período de vigencia (un mes desde el pago)`}
       </p>
       {isSelected && (
-        <p className="mt-3 inline-flex items-center gap-1 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-0.5 text-[10px] font-semibold text-brand-700 shadow-sm">
+        <p className="mt-3 inline-flex items-center gap-1 rounded-full border border-brand-500/40 bg-brand-900/25 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 shadow-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
           Tu pack
         </p>
@@ -182,24 +182,24 @@ function PackCard({ pack, isSelected, walkIn, className = '' }) {
 function ScheduleCard({ schedule, isSelected, className = '' }) {
   return (
     <div
-      className={`rounded-xl border border-slate-200 p-4 overflow-hidden transition-all duration-200 ${
-        isSelected ? 'bg-brand-50/70 shadow-sm' : 'bg-white'
+      className={`rounded-xl border border-line p-4 overflow-hidden transition-all duration-200 ${
+        isSelected ? 'bg-brand-900/70 shadow-sm' : 'bg-surface'
       } ${className}`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
         {schedule.name}
       </p>
-      <div className="mt-2 space-y-1.5 text-xs text-slate-600">
+      <div className="mt-2 space-y-1.5 text-xs text-muted">
         {schedule.slots.map((slot) => (
           <p key={`${schedule.id}-${slot.days}-${slot.time}`}>
             <span className="font-semibold">{slot.days}</span>
-            <span className="mx-1 text-slate-400">·</span>
+            <span className="mx-1 text-muted">·</span>
             <span>{slot.time}</span>
           </p>
         ))}
       </div>
       {isSelected && (
-        <p className="mt-3 inline-flex items-center gap-1 rounded-full border border-brand-200 bg-brand-50 px-2.5 py-0.5 text-[10px] font-semibold text-brand-700 shadow-sm">
+        <p className="mt-3 inline-flex items-center gap-1 rounded-full border border-brand-500/40 bg-brand-900/25 px-2.5 py-0.5 text-[10px] font-semibold text-brand-400 shadow-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
           Tu horario
         </p>
@@ -211,14 +211,14 @@ function ScheduleCard({ schedule, isSelected, className = '' }) {
 function CategorySection({ title, description, active, badge, children }) {
   return (
     <div
-      className={`space-y-4 rounded-xl border border-slate-200 p-4 sm:p-5 transition-colors ${
-        active ? 'bg-brand-50/40 shadow-sm' : 'bg-white'
+      className={`space-y-4 rounded-xl border border-line p-4 sm:p-5 transition-colors ${
+        active ? 'bg-brand-900/40 shadow-sm' : 'bg-surface'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
-          {description && <p className="mt-0.5 text-xs text-slate-500">{description}</p>}
+          <h2 className="text-sm font-semibold text-ink">{title}</h2>
+          {description && <p className="mt-0.5 text-xs text-muted">{description}</p>}
         </div>
         {active && badge && <ActiveBadge label={badge} />}
       </div>
@@ -332,8 +332,8 @@ export function StudentSchedulePage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold text-slate-800">Horarios y packs</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Horarios y packs</h1>
+        <p className="text-sm text-muted">
           Opciones disponibles en {gymName}. Se resalta tu modalidad activa este mes.
         </p>
       </div>

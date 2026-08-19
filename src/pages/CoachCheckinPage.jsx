@@ -188,19 +188,19 @@ export function CoachCheckinPage() {
   return (
     <div className="py-2 sm:py-4">
       <div className="mx-auto max-w-sm">
-        <h1 className="text-xl font-semibold text-slate-800">Check-in Manual</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Check-in Manual</h1>
+        <p className="mt-1 text-sm text-muted">
           Registrá la asistencia de hoy para tus alumnos.
         </p>
 
         <div className="card mt-5 space-y-4">
           {error && (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+            <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
               {error}
             </p>
           )}
           {successMessage && (
-            <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+            <p className="rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-400">
               {successMessage}
             </p>
           )}
@@ -229,7 +229,7 @@ export function CoachCheckinPage() {
           />
 
           {selectedStudent && (
-            <div className="rounded border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-700">
+            <div className="rounded border border-line bg-bg px-2 py-2 text-xs text-ink">
               <p>
                 <span className="font-semibold">Alumno:</span> {selectedStudent.name}
               </p>
@@ -237,14 +237,14 @@ export function CoachCheckinPage() {
                 <span className="font-semibold">Horario:</span> {selectedStudent.schedule_name}
               </p>
               {selectedLatestAttendance?.attended_at && (
-                <p className="mt-1 text-slate-600">
+                <p className="mt-1 text-muted">
                   <span className="font-semibold">Última asistencia:</span>{' '}
                   {formatDateTime(selectedLatestAttendance.attended_at)} (
                   {formatCheckinMethod(selectedLatestAttendance.method)})
                 </p>
               )}
               {alreadyCheckedToday && (
-                <p className="mt-1 text-red-600">Ya tiene asistencia hoy.</p>
+                <p className="mt-1 text-red-400">Ya tiene asistencia hoy.</p>
               )}
             </div>
           )}

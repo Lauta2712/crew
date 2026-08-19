@@ -32,27 +32,27 @@ export function ScheduleTypesEditor({ value, onChange }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-slate-600">
+      <p className="text-xs text-muted">
         Editá el nombre que ven los alumnos y cada franja horaria. Los días podés escribirlos en
         texto libre (ej. «Lunes y Miércoles»). El identificador interno no se modifica.
       </p>
       {value.map((sched, si) => (
         <div
           key={sched.id}
-          className="rounded-xl border border-slate-200 bg-slate-50/80 p-3 shadow-sm sm:p-4"
+          className="rounded-xl border border-line bg-bg/80 p-3 shadow-sm sm:p-4"
         >
-          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-200 pb-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
             <label className="min-w-0 flex-1">
-              <span className="text-xs font-medium text-slate-500">Nombre del horario</span>
+              <span className="text-xs font-medium text-muted">Nombre del horario</span>
               <input
                 type="text"
-                className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm font-medium text-slate-900"
+                className="mt-1 w-full rounded-lg border border-line bg-surface px-2 py-1.5 text-sm font-medium text-ink"
                 value={sched.name}
                 onChange={(e) => updateSchedule(si, { name: e.target.value })}
               />
             </label>
             <span
-              className="shrink-0 rounded bg-slate-200/80 px-2 py-0.5 font-mono text-[10px] text-slate-600"
+              className="shrink-0 rounded bg-surface-2/80 px-2 py-0.5 font-mono text-[10px] text-muted"
               title="No editable: lo usa el sistema"
             >
               id: {sched.id}
@@ -60,29 +60,29 @@ export function ScheduleTypesEditor({ value, onChange }) {
           </div>
 
           <div className="mt-3 space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
               Franjas
             </p>
             {(sched.slots ?? []).map((slot, li) => (
               <div
                 key={`${sched.id}-slot-${li}`}
-                className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-white p-2 sm:flex-row sm:items-end"
+                className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-2 sm:flex-row sm:items-end"
               >
                 <label className="min-w-0 flex-1">
-                  <span className="text-[11px] font-medium text-slate-500">Días</span>
+                  <span className="text-[11px] font-medium text-muted">Días</span>
                   <input
                     type="text"
-                    className="mt-0.5 w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm"
+                    className="mt-0.5 w-full rounded-md border border-line px-2 py-1.5 text-sm"
                     value={slot.days}
                     onChange={(e) => updateSlot(si, li, { days: e.target.value })}
                     placeholder="Ej. Martes y Jueves"
                   />
                 </label>
                 <label className="min-w-0 flex-1">
-                  <span className="text-[11px] font-medium text-slate-500">Horario</span>
+                  <span className="text-[11px] font-medium text-muted">Horario</span>
                   <input
                     type="text"
-                    className="mt-0.5 w-full rounded-md border border-slate-200 px-2 py-1.5 text-sm"
+                    className="mt-0.5 w-full rounded-md border border-line px-2 py-1.5 text-sm"
                     value={slot.time}
                     onChange={(e) => updateSlot(si, li, { time: e.target.value })}
                     placeholder="Ej. 19:00 – 22:00"
@@ -90,7 +90,7 @@ export function ScheduleTypesEditor({ value, onChange }) {
                 </label>
                 <button
                   type="button"
-                  className="shrink-0 rounded-md border border-slate-300 px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 sm:mb-0.5"
+                  className="shrink-0 rounded-md border border-line px-2 py-1.5 text-xs font-medium text-muted hover:bg-bg sm:mb-0.5"
                   onClick={() => removeSlot(si, li)}
                   disabled={(sched.slots?.length ?? 0) <= 1}
                 >
@@ -100,7 +100,7 @@ export function ScheduleTypesEditor({ value, onChange }) {
             ))}
             <button
               type="button"
-              className="text-xs font-medium text-brand-700 underline-offset-2 hover:underline"
+              className="text-xs font-medium text-brand-400 underline-offset-2 hover:underline"
               onClick={() => addSlot(si)}
             >
               + Agregar otra franja

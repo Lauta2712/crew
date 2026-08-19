@@ -113,10 +113,10 @@ export function AdminConfigurationPage() {
       const primaryColor = themeDraft.primaryColor.trim()
       const accentColor = themeDraft.accentColor.trim()
       if (primaryColor && !HEX_COLOR_RE.test(primaryColor)) {
-        throw new Error('El color primario debe ser un hex válido, ej. #3a91a5.')
+        throw new Error('El color primario debe ser un hex válido, ej. #ff4500.')
       }
       if (accentColor && !HEX_COLOR_RE.test(accentColor)) {
-        throw new Error('El color de acento debe ser un hex válido, ej. #f4b41a.')
+        throw new Error('El color de acento debe ser un hex válido, ej. #1e90ff.')
       }
       const themeOut = {}
       if (primaryColor) themeOut.primaryColor = primaryColor
@@ -235,41 +235,41 @@ export function AdminConfigurationPage() {
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col gap-8 py-2">
       <div>
-        <h1 className="text-xl font-semibold text-slate-800">Configuración del gimnasio</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Configuración del gimnasio</h1>
+        <p className="mt-1 text-sm text-muted">
           Precios, horarios visibles para alumnos y herramientas de mantenimiento (solo administradores).
         </p>
       </div>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-800">Precios y horarios</h2>
-        <p className="mt-1 text-xs text-slate-500">
+      <section className="rounded-xl border border-line bg-surface p-4 shadow-sm">
+        <h2 className="text-sm font-semibold text-ink">Precios y horarios</h2>
+        <p className="mt-1 text-xs text-muted">
           Los montos se guardan en la base y se combinan con los valores por defecto del sistema. Los
           horarios se editan con el formulario de abajo (sin código).
         </p>
 
         {settingsError && (
-          <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+          <p className="mt-3 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
             {settingsError}
           </p>
         )}
         {settingsOk && (
-          <p className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          <p className="mt-3 rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-400">
             {settingsOk}
           </p>
         )}
 
         <form className="mt-4 space-y-5" onSubmit={handleSaveSettings}>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Packs (ARS)</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted">Packs (ARS)</p>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
               {classPacks.filter((p) => p.price != null).map((p) => (
                 <label key={p.id} className="block text-sm">
-                  <span className="text-slate-600">{p.name}</span>
+                  <span className="text-muted">{p.name}</span>
                   <input
                     type="number"
                     min={0}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                    className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
                     value={packPrices[p.id] ?? ''}
                     onChange={(e) =>
                       setPackPrices((prev) => ({ ...prev, [p.id]: e.target.value }))
@@ -281,8 +281,8 @@ export function AdminConfigurationPage() {
           </div>
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Acceso libre (ARS)</p>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted">Acceso libre (ARS)</p>
+            <p className="mt-1 text-[11px] text-muted">
               Tarifa reducida: {WALK_IN_DISCOUNT_ELIGIBLE_LABEL}. Tarifa estándar:{' '}
               {WALK_IN_STANDARD_LABEL}.
             </p>
@@ -294,11 +294,11 @@ export function AdminConfigurationPage() {
                 ['monthlyWithDiscount', `Mensual acceso libre — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
               ].map(([key, label]) => (
                 <label key={key} className="block text-sm">
-                  <span className="text-slate-600">{label}</span>
+                  <span className="text-muted">{label}</span>
                   <input
                     type="number"
                     min={0}
-                    className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                    className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
                     value={fw[key] ?? ''}
                     onChange={(e) => setFw((prev) => ({ ...prev, [key]: e.target.value }))}
                   />
@@ -308,9 +308,9 @@ export function AdminConfigurationPage() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-800">Horarios que ven los alumnos</h3>
+            <h3 className="text-sm font-semibold text-ink">Horarios que ven los alumnos</h3>
             {catalogLoading ? (
-              <p className="mt-2 text-sm text-slate-400">Cargando…</p>
+              <p className="mt-2 text-sm text-muted">Cargando…</p>
             ) : (
               <div className="mt-3">
                 <ScheduleTypesEditor value={scheduleDraft} onChange={setScheduleDraft} />
@@ -319,12 +319,12 @@ export function AdminConfigurationPage() {
           </div>
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted">
               Identidad visual
             </p>
-            <p className="mt-1 text-[11px] text-slate-500">
+            <p className="mt-1 text-[11px] text-muted">
               Color primario y de acento del gimnasio. Sin configurar, se usa la paleta por
-              defecto (celeste/amarillo).
+              defecto (volt/naranja).
             </p>
             <div className="mt-2 grid gap-3 sm:grid-cols-2">
               {[
@@ -332,11 +332,11 @@ export function AdminConfigurationPage() {
                 ['accentColor', 'Color de acento'],
               ].map(([key, label]) => (
                 <label key={key} className="block text-sm">
-                  <span className="text-slate-600">{label}</span>
+                  <span className="text-muted">{label}</span>
                   <div className="mt-1 flex items-center gap-2">
                     <input
                       type="color"
-                      className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-slate-200 p-0.5"
+                      className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-line p-0.5"
                       value={HEX_COLOR_RE.test(themeDraft[key]) ? themeDraft[key] : '#ffffff'}
                       onChange={(e) =>
                         setThemeDraft((prev) => ({ ...prev, [key]: e.target.value }))
@@ -344,8 +344,8 @@ export function AdminConfigurationPage() {
                     />
                     <input
                       type="text"
-                      placeholder="#3a91a5"
-                      className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                      placeholder={key === 'primaryColor' ? '#ff4500' : '#1e90ff'}
+                      className="w-full rounded-lg border border-line px-2 py-1.5 text-sm"
                       value={themeDraft[key]}
                       onChange={(e) =>
                         setThemeDraft((prev) => ({ ...prev, [key]: e.target.value }))
@@ -364,11 +364,11 @@ export function AdminConfigurationPage() {
                 variant="light"
               />
               <label className="block text-sm">
-                <span className="text-slate-600">URL del logo</span>
+                <span className="text-muted">URL del logo</span>
                 <input
                   type="text"
                   placeholder="https://…/logo.png"
-                  className="mt-1 w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm"
+                  className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
                   value={themeDraft.logoUrl}
                   onChange={(e) =>
                     setThemeDraft((prev) => ({ ...prev, logoUrl: e.target.value }))
@@ -388,22 +388,22 @@ export function AdminConfigurationPage() {
         </form>
       </section>
 
-      <section className="rounded-xl border border-amber-200 bg-amber-50/80 p-4">
-        <h2 className="text-sm font-semibold text-amber-950">Zona peligrosa — borrado masivo</h2>
-        <p className="mt-1 text-xs text-amber-900/90">
+      <section className="rounded-xl border border-amber-500/40 bg-amber-950/40/80 p-4">
+        <h2 className="text-sm font-semibold text-amber-400">Zona peligrosa — borrado masivo</h2>
+        <p className="mt-1 text-xs text-amber-400/90">
           Elimina <span className="font-semibold">todos</span> los alumnos o{' '}
           <span className="font-semibold">todos</span> los profesores visibles para tu alcance
-          (mismo criterio que las listas: si tenés <code className="rounded bg-white/80 px-0.5">gym_id</code>, solo
+          (mismo criterio que las listas: si tenés <code className="rounded bg-surface/80 px-0.5">gym_id</code>, solo
           ese gimnasio y filas sin gimnasio). Requiere las edge functions{' '}
-          <code className="rounded bg-white/80 px-0.5">delete-student</code> y{' '}
-          <code className="rounded bg-white/80 px-0.5">delete-coach-user</code>.
+          <code className="rounded bg-surface/80 px-0.5">delete-student</code> y{' '}
+          <code className="rounded bg-surface/80 px-0.5">delete-coach-user</code>.
         </p>
 
-        <label className="mt-3 block text-sm text-amber-950">
+        <label className="mt-3 block text-sm text-amber-400">
           Para confirmar, escribí: <span className="font-mono font-semibold">{BULK_CONFIRM_PHRASE}</span>
           <input
             type="text"
-            className="mt-1 w-full max-w-md rounded-lg border border-amber-300 bg-white px-2 py-1.5 text-sm"
+            className="mt-1 w-full max-w-md rounded-lg border border-amber-500/40 bg-surface px-2 py-1.5 text-sm"
             value={bulkPhrase}
             onChange={(e) => setBulkPhrase(e.target.value)}
             autoComplete="off"
@@ -411,16 +411,16 @@ export function AdminConfigurationPage() {
         </label>
 
         {bulkError && (
-          <p className="mt-2 text-xs font-medium text-red-700">{bulkError}</p>
+          <p className="mt-2 text-xs font-medium text-red-400">{bulkError}</p>
         )}
         {bulkLog && (
-          <p className="mt-2 text-xs text-amber-900">{bulkLog}</p>
+          <p className="mt-2 text-xs text-amber-400">{bulkLog}</p>
         )}
 
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             type="button"
-            className="rounded-lg border border-red-300 bg-red-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-red-700 disabled:opacity-50"
+            className="rounded-lg border border-red-500/40 bg-red-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-red-700 disabled:opacity-50"
             disabled={!!bulkBusy}
             onClick={runBulkDeleteStudents}
           >
@@ -428,7 +428,7 @@ export function AdminConfigurationPage() {
           </button>
           <button
             type="button"
-            className="rounded-lg border border-red-400 bg-white px-3 py-2 text-xs font-semibold text-red-800 shadow-sm hover:bg-red-50 disabled:opacity-50"
+            className="rounded-lg border border-red-400 bg-surface px-3 py-2 text-xs font-semibold text-red-400 shadow-sm hover:bg-red-950/40 disabled:opacity-50"
             disabled={!!bulkBusy}
             onClick={runBulkDeleteCoaches}
           >

@@ -56,14 +56,14 @@ export function StudentCoursesPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold text-slate-800">Cursos</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Cursos</h1>
+        <p className="text-sm text-muted">
           Próximos cursos y clínicas que dictará el gimnasio.
         </p>
       </div>
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {error}
         </p>
       )}
@@ -72,28 +72,28 @@ export function StudentCoursesPage() {
         {loading
           ? Array.from({ length: 2 }).map((_, index) => (
               <div key={index} className="card">
-                <div className="h-16 animate-pulse rounded bg-slate-100" />
+                <div className="h-16 animate-pulse rounded bg-surface-2" />
               </div>
             ))
           : courses.length === 0 && !error
             ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted">
                 Aún no hay cursos publicados. Consulta las redes del gimnasio
                 para enterarte de las próximas fechas.
               </p>
               )
             : courses.map((course) => (
                 <div key={course.id} className="card">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted">
                     {course.level ?? 'General'}
                   </p>
-                  <h2 className="mt-1 text-base font-semibold text-slate-800">
+                  <h2 className="mt-1 text-base font-semibold text-ink">
                     {course.name}
                   </h2>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-muted">
                     {course.description}
                   </p>
-                  <p className="mt-2 text-xs text-slate-500">
+                  <p className="mt-2 text-xs text-muted">
                     Fecha:{' '}
                     <span className="font-medium">
                       {course.start_date

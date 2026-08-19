@@ -72,16 +72,16 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#f4fbfc] via-[#ecf5f7] to-[#ddeaf0] px-4">
-      <div className="mx-auto w-full max-w-md rounded-3xl border border-[#d0dde2] bg-white/95 p-8 shadow-2xl shadow-[#b6cad3]/60 backdrop-blur">
+    <div className="flex min-h-screen items-center justify-center bg-bg px-4">
+      <div className="mx-auto w-full max-w-md rounded border border-line bg-surface/95 p-8 backdrop-blur">
         <div className="mb-6 flex flex-col items-center justify-center text-center">
-          <div className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md">
+          <div className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded bg-bg">
             <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
           </div>
-          <h1 className="text-lg font-semibold text-slate-800">
+          <h1 className="font-display text-lg font-bold uppercase tracking-wide text-ink">
             {GYM_DISPLAY_NAME}
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Sistema de asistencias
           </p>
         </div>
@@ -89,24 +89,24 @@ export function LoginPage() {
         <div className="mb-6">
           <Link
             to="/"
-            className="mb-3 inline-flex items-center gap-1 text-xs font-medium text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
+            className="mb-3 inline-flex items-center gap-1 text-xs font-medium text-muted underline-offset-2 hover:text-ink hover:underline"
           >
             ← Volver al inicio
           </Link>
-          <h2 className="text-base font-semibold text-slate-800">
+          <h2 className="text-base font-semibold text-ink">
             {mode === 'login' ? 'Inicia sesión' : 'Crea una cuenta'}
           </h2>
         </div>
 
         {blockedAccount && (
-          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800">
+          <div className="mb-4 rounded-xl border border-amber-500/40 bg-amber-950/40 px-3 py-2.5 text-sm text-amber-400">
             <p className="font-medium">Tu cuenta está suspendida.</p>
-            <p className="mt-0.5 text-xs text-amber-700">
+            <p className="mt-0.5 text-xs text-amber-400">
               Contactá al administrador del gimnasio para poder volver a acceder.
             </p>
             <button
               type="button"
-              className="mt-2 text-xs font-semibold text-amber-700 underline-offset-2 hover:underline"
+              className="mt-2 text-xs font-semibold text-amber-400 underline-offset-2 hover:underline"
               onClick={clearBlockedMessage}
             >
               Entendido
@@ -115,7 +115,7 @@ export function LoginPage() {
         )}
 
         {success && (
-          <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">
+          <div className="mb-4 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-3 py-2.5 text-sm text-emerald-400">
             <p>{success}</p>
           </div>
         )}
@@ -125,7 +125,7 @@ export function LoginPage() {
             <div>
               <label
                 htmlFor="name"
-                className="mb-1 block text-xs font-medium text-slate-600"
+                className="mb-1 block text-xs font-medium text-muted"
               >
                 Nombre y apellido
               </label>
@@ -144,7 +144,7 @@ export function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="mb-1 block text-xs font-medium text-slate-600"
+              className="mb-1 block text-xs font-medium text-muted"
             >
               Correo electrónico
             </label>
@@ -162,7 +162,7 @@ export function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="mb-1 block text-xs font-medium text-slate-600"
+              className="mb-1 block text-xs font-medium text-muted"
             >
               Contraseña
             </label>
@@ -180,7 +180,7 @@ export function LoginPage() {
           </div>
 
           {error && (
-            <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+            <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
               {error}
             </p>
           )}
@@ -200,13 +200,13 @@ export function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-4 text-center text-xs text-slate-600">
+        <div className="mt-4 text-center text-xs text-muted">
           {mode === 'login' ? (
             <>
               ¿No tienes cuenta?{' '}
               <button
                 type="button"
-                className="font-semibold text-brand-600 underline-offset-2 hover:underline"
+                className="font-semibold text-accent-500 underline-offset-2 hover:underline"
                 onClick={() => {
                   setMode('register')
                   setError(null)
@@ -221,7 +221,7 @@ export function LoginPage() {
               ¿Ya tienes cuenta?{' '}
               <button
                 type="button"
-                className="font-semibold text-brand-600 underline-offset-2 hover:underline"
+                className="font-semibold text-accent-500 underline-offset-2 hover:underline"
                 onClick={() => {
                   setMode('login')
                   setError(null)

@@ -332,26 +332,26 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
   const heading = title ?? (mode === 'admin' ? 'Acceso libre' : 'Registrar pagos — acceso libre')
 
   const pricesCard = (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+    <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
         Precios de referencia
       </p>
       <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
-        <div className="rounded-lg bg-slate-50 px-3 py-2">
-          <dt className="text-xs font-medium text-slate-500">Pase diario (acceso libre)</dt>
-          <dd className="mt-0.5 font-semibold text-slate-900">
+        <div className="rounded-lg bg-bg px-3 py-2">
+          <dt className="text-xs font-medium text-muted">Pase diario (acceso libre)</dt>
+          <dd className="mt-0.5 font-semibold text-ink">
             ${walkIn.priceWithDiscount.toLocaleString('es-AR')} · {WALK_IN_DISCOUNT_ELIGIBLE_SHORT}
           </dd>
-          <dd className="text-slate-600">
+          <dd className="text-muted">
             ${walkIn.priceDefault.toLocaleString('es-AR')} · {WALK_IN_STANDARD_SHORT}
           </dd>
         </div>
-        <div className="rounded-lg bg-slate-50 px-3 py-2">
-          <dt className="text-xs font-medium text-slate-500">Pase mensual</dt>
-          <dd className="mt-0.5 font-semibold text-slate-900">
+        <div className="rounded-lg bg-bg px-3 py-2">
+          <dt className="text-xs font-medium text-muted">Pase mensual</dt>
+          <dd className="mt-0.5 font-semibold text-ink">
             ${walkIn.monthlyWithDiscount.toLocaleString('es-AR')} · {WALK_IN_DISCOUNT_ELIGIBLE_SHORT}
           </dd>
-          <dd className="text-slate-600">
+          <dd className="text-muted">
             ${walkIn.monthlyDefault.toLocaleString('es-AR')} · {WALK_IN_STANDARD_SHORT}
           </dd>
         </div>
@@ -360,13 +360,13 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
   )
 
   const tabSwitcher = (
-    <div className="flex rounded-xl border border-slate-200 bg-slate-100/80 p-1">
+    <div className="flex rounded-xl border border-line bg-surface/80 p-1">
       <button
         type="button"
         className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
           activeTab === 'cuota'
-            ? 'bg-white text-slate-900 shadow-sm'
-            : 'text-slate-600 hover:text-slate-900'
+            ? 'bg-surface text-ink shadow-sm'
+            : 'text-muted hover:text-ink'
         }`}
         onClick={() => { setActiveTab('cuota'); clearMessages() }}
       >
@@ -376,8 +376,8 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
         type="button"
         className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
           activeTab === 'mensual'
-            ? 'bg-white text-slate-900 shadow-sm'
-            : 'text-slate-600 hover:text-slate-900'
+            ? 'bg-surface text-ink shadow-sm'
+            : 'text-muted hover:text-ink'
         }`}
         onClick={() => { setActiveTab('mensual'); clearMessages() }}
       >
@@ -387,13 +387,13 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
   )
 
   const formCard = (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
       {loadingProfiles ? (
-        <p className="text-sm text-slate-400">Cargando alumnos…</p>
+        <p className="text-sm text-muted">Cargando alumnos…</p>
       ) : activeTab === 'cuota' ? (
         <div className="space-y-4">
           {mode !== 'admin' && (
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted">
               Visitantes: un registro por cada pago del día. Alumnos: un pago de acceso libre por mes
               por persona.
             </p>
@@ -408,7 +408,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
             variant="light"
           />
           {selectedPaymentStudent && (
-            <p className="rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900">
+            <p className="rounded-lg bg-brand-900/25 px-3 py-2 text-sm text-brand-400">
               <span className="font-semibold">Total a cobrar:</span>{' '}
               ${selectedPaymentStudent.freeWallPrice.toLocaleString('es-AR')}
               {selectedPaymentStudent.isVisitor
@@ -430,7 +430,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
       ) : (
         <div className="space-y-4">
           {mode !== 'admin' && (
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted">
               Acceso ilimitado durante el mes. Un solo registro por alumno y por mes.
             </p>
           )}
@@ -447,7 +447,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
             variant="light"
           />
           {selectedMonthlyMuroStudent && (
-            <p className="rounded-lg bg-brand-50 px-3 py-2 text-sm text-brand-900">
+            <p className="rounded-lg bg-brand-900/25 px-3 py-2 text-sm text-brand-400">
               <span className="font-semibold">Total a cobrar:</span>{' '}
               ${selectedMonthlyMuroStudent.freeWallMonthlyPrice.toLocaleString('es-AR')}
               {selectedMonthlyMuroStudent.muroDiscount
@@ -471,7 +471,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
   const refreshButton = (
     <button
       type="button"
-      className="text-sm text-slate-500 underline-offset-2 hover:text-slate-700 hover:underline"
+      className="text-sm text-muted underline-offset-2 hover:text-ink hover:underline"
       disabled={loading}
       onClick={() => loadFreeWallPaymentProfiles()}
     >
@@ -483,8 +483,8 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
     <div className={`flex w-full ${mode === 'admin' ? '' : 'max-w-lg'} flex-col gap-4 ${className}`}>
       {!hideHeading && (
         <div>
-          <h2 className="text-lg font-semibold text-slate-800">{heading}</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <h2 className="text-lg font-semibold text-ink">{heading}</h2>
+          <p className="mt-1 text-sm text-muted">
             Pase diario o mensual de acceso libre. Visitantes sin cuenta: tarifa estándar. Alumnos con{' '}
             {WALK_IN_DISCOUNT_ELIGIBLE_LABEL}: tarifa reducida.
           </p>
@@ -492,20 +492,20 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
       )}
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-sm text-red-400">
           {error}
         </p>
       )}
       {successMessage && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+        <p className="rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-sm text-emerald-400">
           {successMessage}
         </p>
       )}
 
       {mode === 'coach' && loadingAssignments ? (
-        <p className="text-sm text-slate-400">Comprobando tu asignación…</p>
+        <p className="text-sm text-muted">Comprobando tu asignación…</p>
       ) : !canUseForm ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        <div className="rounded-xl border border-amber-500/40 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
           No tenés el horario <span className="font-semibold">Acceso libre</span> asignado. Pedile a un
           administrador que te lo cargue en Profesores; esta pantalla solo aplica a ese rol.
         </div>

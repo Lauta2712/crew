@@ -204,32 +204,32 @@ export function CheckinManualPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
       <div className="shrink-0 flex flex-col gap-2">
-        <h1 className="flex items-center gap-2 text-xl font-semibold text-slate-800">
+        <h1 className="flex items-center gap-2 font-display text-xl font-bold uppercase tracking-wide text-ink">
           Check-in Manual
           <BetaBadge />
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-muted">
           Registrá la asistencia manual eligiendo al alumno y confirmando una sola vez.
         </p>
       </div>
 
       {error && (
-        <p className="shrink-0 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="shrink-0 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {error}
         </p>
       )}
       {successMessage && (
-        <p className="shrink-0 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+        <p className="shrink-0 rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-400">
           {successMessage}
         </p>
       )}
 
       <div className="flex flex-col gap-4 lg:flex-row lg:flex-1 lg:min-h-0 lg:items-stretch">
         <div className="card shrink-0 space-y-4 lg:w-[min(100%,24rem)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Check-in manual
           </p>
-          <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-600">
+          <p className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">
             1) Seleccioná al alumno. 2) Ajustá la fecha si es una asistencia pasada. 3) Tocá en
             &quot;Registrar asistencia&quot;.
           </p>
@@ -252,7 +252,7 @@ export function CheckinManualPage() {
           />
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">
+            <label className="block text-xs font-medium text-ink">
               Fecha de asistencia
             </label>
             <DatePicker
@@ -269,25 +269,25 @@ export function CheckinManualPage() {
           </div>
 
           {isPastDate && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
+            <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-[11px] text-amber-400">
               Registrando asistencia pasada — se guardará como &ldquo;Retroactivo&rdquo;.
             </p>
           )}
 
           {selectedStudent && (
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600">
+            <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs text-muted">
               <p>
-                <span className="font-medium text-slate-800">Alumno:</span>{' '}
+                <span className="font-medium text-ink">Alumno:</span>{' '}
                 {selectedStudent.name || selectedStudent.email || 'Sin nombre'}
               </p>
               <p className="mt-1">
-                <span className="font-medium text-slate-800">Última asistencia:</span>{' '}
+                <span className="font-medium text-ink">Última asistencia:</span>{' '}
                 {latestAttendanceForSelected?.attended_at
                   ? formatDateTime(latestAttendanceForSelected.attended_at)
                   : 'Sin registros recientes'}
               </p>
               {alreadyCheckedOnDate && (
-                <p className="mt-1 text-red-600">Ya tiene asistencia registrada ese día.</p>
+                <p className="mt-1 text-red-400">Ya tiene asistencia registrada ese día.</p>
               )}
             </div>
           )}

@@ -162,7 +162,7 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
     <div>
       {/* Vencimiento banner */}
       {policy.validUntil && (
-        <div className="mb-2 flex items-center gap-1.5 rounded-lg border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-[10px] text-rose-800">
+        <div className="mb-2 flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-950/40 px-2.5 py-1.5 text-[10px] text-rose-400">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
           <span>
             Pack activo —{' '}
@@ -178,18 +178,18 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
         <button
           type="button"
           onClick={() => shiftMonth(-1)}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-sm font-medium text-ink shadow-sm hover:bg-bg"
           aria-label="Mes anterior"
         >
           ‹
         </button>
-        <p className="min-w-0 flex-1 text-center text-xs font-semibold capitalize text-slate-800">
+        <p className="min-w-0 flex-1 text-center text-xs font-semibold capitalize text-ink">
           {formatMonthYearES(displayRef)}
         </p>
         <button
           type="button"
           onClick={() => shiftMonth(1)}
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-sm font-medium text-ink shadow-sm hover:bg-bg"
           aria-label="Mes siguiente"
         >
           ›
@@ -197,7 +197,7 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
         {!isViewingCurrentMonth && (
           <button
             type="button"
-            className="ml-1 rounded-md border border-brand-200 bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-800 hover:bg-brand-100"
+            className="ml-1 rounded-md border border-brand-500/40 bg-brand-900/25 px-2 py-0.5 text-[10px] font-medium text-brand-400 hover:bg-brand-900/35"
             onClick={() => {
               const n = new Date()
               setViewYM({ y: n.getFullYear(), m: n.getMonth() })
@@ -209,18 +209,18 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
       </div>
 
       {/* Referencia */}
-      <div className="mb-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5">
-        <span className="inline-flex items-center gap-1 text-[9px] text-slate-700">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-[#3a91a5]" />
+      <div className="mb-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 rounded-lg border border-line bg-bg px-2 py-1.5">
+        <span className="inline-flex items-center gap-1 text-[9px] text-ink">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-sky-400" />
           Asistencia
         </span>
-        <span className="text-slate-300" aria-hidden>·</span>
-        <span className="inline-flex items-center gap-1 text-[9px] text-slate-700">
+        <span className="text-muted" aria-hidden>·</span>
+        <span className="inline-flex items-center gap-1 text-[9px] text-ink">
           <span className="h-2 w-2 shrink-0 rounded-full bg-indigo-400" />
           Horarios posibles
         </span>
-        <span className="text-slate-300" aria-hidden>·</span>
-        <span className="inline-flex items-center gap-1 text-[9px] text-slate-700">
+        <span className="text-muted" aria-hidden>·</span>
+        <span className="inline-flex items-center gap-1 text-[9px] text-ink">
           <span className="h-2 w-2 shrink-0 rounded-full bg-rose-400" />
           Vencimiento
         </span>
@@ -229,7 +229,7 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
       {/* Grilla */}
       <div className="grid grid-cols-7 gap-0.5">
         {DOW_LABELS.map((d) => (
-          <div key={d} className="py-0.5 text-center text-[10px] font-semibold text-slate-500">
+          <div key={d} className="py-0.5 text-center text-[10px] font-semibold text-muted">
             {d}
           </div>
         ))}
@@ -253,48 +253,48 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
           return (
             <div
               key={date.getDate()}
-              style={isToday ? { boxShadow: '0 0 0 2px #b3e3eb' } : undefined}
+              style={isToday ? { boxShadow: '0 0 0 2px var(--color-brand-500)' } : undefined}
               className={`flex min-h-0 flex-col rounded-md border p-1 text-left ${
                 hasAttendance
-                  ? 'border-l-2 border-[#c5e8ef] border-l-[#3a91a5] bg-[#f2fbfc]'
+                  ? 'border-l-2 border-sky-500/40 border-l-sky-400 bg-sky-950/40'
                   : isToday
-                    ? 'border-brand-300 bg-brand-50/30'
-                    : 'border-slate-200 bg-white'
+                    ? 'border-brand-500/40 bg-brand-900/20'
+                    : 'border-line bg-surface'
               }`}
             >
               <span
                 className={`shrink-0 text-center text-[10px] font-semibold leading-none sm:text-xs ${
-                  isToday ? 'text-brand-600' : 'text-slate-800'
+                  isToday ? 'text-brand-600' : 'text-ink'
                 }`}
               >
                 {date.getDate()}
               </span>
               <div className="mt-0.5 flex min-h-0 flex-1 flex-col gap-0.5 overflow-hidden text-[7px] leading-snug sm:text-[8px]">
                 {!hasContent && (
-                  <span className="flex flex-1 items-center justify-center text-[8px] text-slate-300">
+                  <span className="flex flex-1 items-center justify-center text-[8px] text-muted">
                     —
                   </span>
                 )}
                 {atts.map((a) => (
                   <div
                     key={a.id}
-                    className="flex items-start gap-0.5 rounded bg-[#d9f2f5] px-0.5 font-semibold text-[#173842]"
+                    className="flex items-start gap-0.5 rounded bg-sky-950/40 px-0.5 font-semibold text-sky-400"
                   >
-                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#3a91a5]" />
+                    <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
                     <span>Asistencia</span>
                   </div>
                 ))}
                 {possibleLabels.map((label) => (
                   <div
                     key={label}
-                    className="flex items-start gap-0.5 rounded bg-indigo-50 px-0.5 text-indigo-900"
+                    className="flex items-start gap-0.5 rounded bg-indigo-950/40 px-0.5 text-indigo-400"
                   >
                     <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
                     <span>{label}</span>
                   </div>
                 ))}
                 {expiryOnDay && (
-                  <div className="flex items-start gap-0.5 rounded bg-rose-50 px-0.5 font-semibold text-rose-700">
+                  <div className="flex items-start gap-0.5 rounded bg-rose-950/40 px-0.5 font-semibold text-rose-400">
                     <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
                     <span>Vence</span>
                   </div>
@@ -421,10 +421,10 @@ export function StudentDetailModal({
     .toUpperCase()
 
   const statusCls = student.blocked
-    ? 'border-amber-200 bg-amber-50 text-amber-700'
+    ? 'border-amber-500/40 bg-amber-950/40 text-amber-400'
     : currentPayment
-      ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-      : 'border-slate-200 bg-slate-100 text-slate-500'
+      ? 'border-emerald-500/40 bg-emerald-950/40 text-emerald-400'
+      : 'border-line bg-surface text-muted'
   const statusLabel = student.blocked ? 'Suspendido' : currentPayment ? 'Activo' : 'Sin plan activo'
 
   return (
@@ -437,28 +437,28 @@ export function StudentDetailModal({
       }}
     >
       <div
-        className="flex w-full flex-col rounded-t-2xl border border-[#d0dde2] bg-white shadow-xl sm:max-w-lg sm:rounded-2xl"
+        className="flex w-full flex-col rounded-t-lg border border-line bg-surface sm:max-w-lg sm:rounded-lg"
         style={{ maxHeight: '90dvh' }}
       >
         {/* Header */}
-        <div className="flex shrink-0 items-start gap-3 border-b border-slate-100 px-4 py-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">
+        <div className="flex shrink-0 items-start gap-3 border-b border-line px-4 py-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-bg">
             {initials}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-semibold text-slate-800">{student.name}</p>
-              <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${statusCls}`}>
+              <p className="font-semibold text-ink">{student.name}</p>
+              <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wide ${statusCls}`}>
                 {statusLabel}
               </span>
             </div>
-            <p className="text-xs text-slate-500">{student.email}</p>
+            <p className="text-xs text-muted">{student.email}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="shrink-0 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            className="shrink-0 rounded-lg p-1 text-muted hover:bg-surface hover:text-muted"
           >
             <svg
               className="h-4 w-4"
@@ -477,23 +477,23 @@ export function StudentDetailModal({
           {loading ? (
             <div className="flex flex-col gap-3 p-4">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-8 animate-pulse rounded-lg bg-slate-100" />
+                <div key={i} className="h-8 animate-pulse rounded-lg bg-surface" />
               ))}
             </div>
           ) : (
             <div className="space-y-4 p-4">
               {/* Pack actual */}
               <div>
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
                   Pack actual
                 </p>
                 {currentPack ? (
-                  <div className="rounded-xl border border-[#d0dde2] bg-[#f7fbfd] p-3">
+                  <div className="rounded-xl border border-line bg-bg p-3">
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <p className="text-sm font-semibold text-slate-800">{currentPack.name}</p>
+                        <p className="text-sm font-semibold text-ink">{currentPack.name}</p>
                         {currentSchedule && (
-                          <p className="text-xs text-slate-600">{currentSchedule.name}</p>
+                          <p className="text-xs text-muted">{currentSchedule.name}</p>
                         )}
                         {slotLabel && (
                           <p className="text-[11px] font-medium text-brand-600">{slotLabel}</p>
@@ -501,28 +501,28 @@ export function StudentDetailModal({
                       </div>
                       <div className="text-right">
                         {paymentDateLabel && (
-                          <p className="text-[11px] text-slate-500">
+                          <p className="text-[11px] text-muted">
                             Pago:{' '}
-                            <span className="font-medium text-slate-700">{paymentDateLabel}</span>
+                            <span className="font-medium text-ink">{paymentDateLabel}</span>
                           </p>
                         )}
                         {expiryLabel && (
-                          <p className="text-[11px] text-slate-500">
+                          <p className="text-[11px] text-muted">
                             Vence:{' '}
-                            <span className="font-medium text-slate-700">{expiryLabel}</span>
+                            <span className="font-medium text-ink">{expiryLabel}</span>
                           </p>
                         )}
                       </div>
                     </div>
                     {!isUnlimited && total > 0 && (
                       <div className="mt-2">
-                        <div className="mb-1 flex justify-between text-[10px] text-slate-500">
+                        <div className="mb-1 flex justify-between text-[10px] text-muted">
                           <span>{used} usadas</span>
                           <span>
                             {remaining ?? 0} restantes / {total}
                           </span>
                         </div>
-                        <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+                        <div className="h-1.5 overflow-hidden rounded-full bg-surface-2">
                           <div
                             className="h-full rounded-full bg-brand-500 transition-all"
                             style={{ width: `${progressPct}%` }}
@@ -531,16 +531,16 @@ export function StudentDetailModal({
                       </div>
                     )}
                     {isUnlimited && (
-                      <p className="mt-1 text-[11px] font-medium text-emerald-600">
+                      <p className="mt-1 text-[11px] font-medium text-emerald-400">
                         Acceso ilimitado
                       </p>
                     )}
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-[#d0dde2] bg-[#f7fbfd] p-3">
-                    <p className="text-xs text-slate-500">Sin plan activo este mes.</p>
+                  <div className="rounded-xl border border-line bg-bg p-3">
+                    <p className="text-xs text-muted">Sin plan activo este mes.</p>
                     {policy.latestQualifyingPayment && (
-                      <p className="mt-1 text-[11px] text-slate-400">
+                      <p className="mt-1 text-[11px] text-muted">
                         Último pago: {formatDate(policy.latestQualifyingPayment.paid_at)}
                       </p>
                     )}
@@ -550,10 +550,10 @@ export function StudentDetailModal({
 
               {/* Calendario */}
               <div>
-                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
                   Calendario
                 </p>
-                <div className="rounded-xl border border-[#d0dde2] bg-white p-3">
+                <div className="rounded-xl border border-line bg-bg p-3">
                   <StudentDetailCalendar
                     attendances={attendances}
                     policy={policy}
@@ -566,7 +566,7 @@ export function StudentDetailModal({
               {/* Historial de pagos */}
               {payments.length > 0 && (
                 <div>
-                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted">
                     Historial de pagos
                   </p>
                   <ul className="space-y-1.5">
@@ -584,21 +584,21 @@ export function StudentDetailModal({
                       return (
                         <li
                           key={p.id}
-                          className="flex items-start justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-[11px]"
+                          className="flex items-start justify-between gap-2 rounded-lg border border-line bg-surface px-3 py-2 text-[11px]"
                         >
                           <div className="min-w-0">
-                            <p className="font-medium text-slate-700">{pack?.name ?? p.pack_type}</p>
+                            <p className="font-medium text-ink">{pack?.name ?? p.pack_type}</p>
                             {sched && (
-                              <p className="text-slate-500">
+                              <p className="text-muted">
                                 {sched.name}
                                 {slot ? ` · ${slot}` : ''}
                               </p>
                             )}
                           </div>
                           <div className="shrink-0 text-right">
-                            <p className="font-medium text-slate-700">{formatDate(p.paid_at)}</p>
+                            <p className="font-medium text-ink">{formatDate(p.paid_at)}</p>
                             {p.amount != null && (
-                              <p className="text-slate-400">
+                              <p className="text-muted">
                                 ${Number(p.amount).toLocaleString('es-AR')}
                               </p>
                             )}
@@ -611,7 +611,7 @@ export function StudentDetailModal({
               )}
 
               {payments.length === 0 && (
-                <p className="text-center text-xs text-slate-400">
+                <p className="text-center text-xs text-muted">
                   Sin pagos registrados en los últimos 18 meses.
                 </p>
               )}
@@ -621,7 +621,7 @@ export function StudentDetailModal({
 
         {/* Footer acciones admin */}
         {isAdmin && (
-          <div className="flex shrink-0 flex-wrap gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3">
+          <div className="flex shrink-0 flex-wrap gap-2 border-t border-line bg-bg/60 px-4 py-3">
             {onRegisterPayment && (
               <button
                 type="button"

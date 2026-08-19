@@ -6,7 +6,7 @@ export const DEFAULT_GYM_ID = '0c758fed-a971-4051-ab3d-77e3363d18da'
  * `profile.gym_id` resuelto para leer `gyms.name` desde la DB. En páginas autenticadas se usa
  * en cambio `useGymCatalog().gymName` (GymSettingsContext), que sí lee el nombre real del gym.
  */
-export const GYM_DISPLAY_NAME = import.meta.env.VITE_GYM_DISPLAY_NAME?.trim() || 'Tu gimnasio'
+export const GYM_DISPLAY_NAME = import.meta.env.VITE_GYM_DISPLAY_NAME?.trim() || 'Crew'
 
 /**
  * URL de logo para páginas públicas sin sesión (Landing, Login) — mismo motivo que

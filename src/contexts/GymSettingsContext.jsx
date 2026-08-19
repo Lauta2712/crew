@@ -7,7 +7,7 @@ import { applyTheme, applyBrandChrome } from '../utils/theme'
 const GymSettingsContext = createContext(null)
 
 /** Nombre mostrado cuando el gimnasio no tiene `gyms.name` cargado (o no hay sesión aún). */
-const DEFAULT_GYM_DISPLAY_NAME = 'Tu gimnasio'
+const DEFAULT_GYM_DISPLAY_NAME = 'Crew'
 
 export function GymSettingsProvider({ children }) {
   const { profile } = useAuth()

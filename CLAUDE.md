@@ -27,7 +27,7 @@ VITE_THEME_FONT=
 VITE_THEME_LOGO_URL=
 ```
 
-`VITE_GYM_DISPLAY_NAME` — nombre de marca mostrado en las páginas públicas sin sesión (`Landing`, `Login`), donde todavía no hay `profile.gym_id` resuelto para leer `gyms.name` desde la DB. Si no está seteada, cae a un texto genérico (`"Tu gimnasio"`). En páginas autenticadas se usa en cambio `useGymCatalog().gymName` (lee el nombre real desde la tabla `gyms`). Ver `src/constants/gym.js`.
+`VITE_GYM_DISPLAY_NAME` — nombre de marca mostrado en las páginas públicas sin sesión (`Landing`, `Login`), donde todavía no hay `profile.gym_id` resuelto para leer `gyms.name` desde la DB. Si no está seteada, cae al nombre del producto (`"Crew"`). En páginas autenticadas se usa en cambio `useGymCatalog().gymName` (lee el nombre real desde la tabla `gyms`). Ver `src/constants/gym.js`.
 
 `VITE_THEME_PRIMARY_COLOR` / `VITE_THEME_ACCENT_COLOR` / `VITE_THEME_FONT` / `VITE_THEME_LOGO_URL` — identidad visual de bootstrap (aplicada en `main.jsx` antes de montar React, para que Landing/Login ya se vean con la marca del deploy, y en `vite.config.js` para el manifest de PWA — ese sí solo se resuelve en build time). Un gimnasio con sesión puede pisar color/fuente/logo vía `gym_settings.data.theme` desde Configuración — ver `src/utils/theme.js` (`applyTheme`, `applyBrandChrome`, `deriveColorScale`) y `src/contexts/GymSettingsContext.jsx`. Sin ninguna de estas variables ni `theme` configurado, la app usa la paleta base del producto (defaults literales en `src/index.css`: rojo `#c1432b`, Work Sans / Big Shoulders Display / JetBrains Mono).
 
@@ -53,7 +53,16 @@ CREW_SITE_URL=         # dominio público, para el back_url post-pago
 
 Sin `MP_ACCESS_TOKEN` configurado, `create-crew-checkout` responde `501` con un mensaje
 claro en vez de romper — pensado para poder deployar antes de tener las credenciales
-reales de Mercado Pago. El alta del gimnasio (fila en `gyms`, cuenta admin) sigue siendo
+reales de Mercado Pago.
+
+> ⚠️ **Pendiente (proyecto Supabase "CREW", creado 2026-08-18):** `MP_ACCESS_TOKEN` y
+> `CREW_SITE_URL` todavía NO están configurados como secrets de Edge Function en este
+> proyecto. La base de datos, RLS y las 8 Edge Functions ya están desplegadas y activas
+> (ver `supabase/schema_completo.sql`), pero la sección de precios de la Landing
+> (`CrewPricingSection.jsx`) va a responder `501` hasta que se carguen estos dos
+> secrets en el dashboard de Supabase → Edge Functions → Secrets.
+
+El alta del gimnasio (fila en `gyms`, cuenta admin) sigue siendo
 manual una vez que el webhook marca la suscripción como `authorized` — no hay onboarding
 self-serve todavía (Fase 3 de `docs/ROADMAP_WHITELABEL.md`, sin empezar).
 

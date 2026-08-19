@@ -145,7 +145,7 @@ export function DatePicker({ value, max, onChange, className = '' }) {
     <div
       ref={dropdownRef}
       style={{ position: 'fixed', top: coords.top, left: coords.left, width: DROPDOWN_W, zIndex: 9999 }}
-      className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-2xl shadow-slate-300/50"
+      className="rounded-xl border border-line bg-surface p-3.5"
     >
       {/* Month navigation */}
       <div className="mb-3 flex items-center justify-between">
@@ -154,11 +154,11 @@ export function DatePicker({ value, max, onChange, className = '' }) {
           onClick={prevMonth}
           disabled={!canGoPrev}
           aria-label="Mes anterior"
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-xl leading-none text-slate-500 transition hover:bg-slate-100 disabled:opacity-25"
+          className="flex h-7 w-7 items-center justify-center rounded-lg text-xl leading-none text-muted transition hover:bg-surface disabled:opacity-25"
         >
           ‹
         </button>
-        <p className="text-[13px] font-semibold capitalize text-slate-700">
+        <p className="text-[13px] font-semibold capitalize text-ink">
           {MONTHS[viewMonth]} {viewYear}
         </p>
         <button
@@ -166,7 +166,7 @@ export function DatePicker({ value, max, onChange, className = '' }) {
           onClick={nextMonth}
           disabled={!canGoNext}
           aria-label="Mes siguiente"
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-xl leading-none text-slate-500 transition hover:bg-slate-100 disabled:opacity-25"
+          className="flex h-7 w-7 items-center justify-center rounded-lg text-xl leading-none text-muted transition hover:bg-surface disabled:opacity-25"
         >
           ›
         </button>
@@ -175,7 +175,7 @@ export function DatePicker({ value, max, onChange, className = '' }) {
       {/* Day-of-week headers */}
       <div className="mb-1.5 grid grid-cols-7">
         {DAYS.map((d) => (
-          <div key={d} className="text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+          <div key={d} className="text-center text-[10px] font-semibold uppercase tracking-wide text-muted">
             {d}
           </div>
         ))}
@@ -204,8 +204,8 @@ export function DatePicker({ value, max, onChange, className = '' }) {
                   : tod
                     ? 'cal-day-today'
                     : disabled
-                      ? 'cursor-not-allowed text-slate-300'
-                      : 'cursor-pointer text-slate-700 hover:bg-slate-100',
+                      ? 'cursor-not-allowed text-muted'
+                      : 'cursor-pointer text-ink hover:bg-surface',
               ].join(' ')}
             >
               {day}
@@ -215,11 +215,11 @@ export function DatePicker({ value, max, onChange, className = '' }) {
       </div>
 
       {/* Footer */}
-      <div className="mt-3 flex items-center justify-end border-t border-slate-100 pt-2.5">
+      <div className="mt-3 flex items-center justify-end border-t border-line pt-2.5">
         <button
           type="button"
           onClick={goToday}
-          className="rounded-md px-2.5 py-1 text-xs font-medium text-brand-600 transition hover:bg-brand-50"
+          className="rounded-md px-2.5 py-1 text-xs font-medium text-brand-600 transition hover:bg-brand-900/25"
         >
           Hoy
         </button>
@@ -237,15 +237,15 @@ export function DatePicker({ value, max, onChange, className = '' }) {
         onClick={openPicker}
         className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-xs transition focus:outline-none ${
           open
-            ? 'border-brand-400 ring-1 ring-brand-300'
-            : 'border-slate-300 hover:border-slate-400'
-        } bg-white`}
+            ? 'border-brand-400 ring-1 ring-brand-500/40'
+            : 'border-line hover:border-line'
+        } bg-surface`}
       >
-        <span className={valueParsed ? 'text-slate-800' : 'italic text-slate-400'}>
+        <span className={valueParsed ? 'text-ink' : 'italic text-muted'}>
           {displayLabel}
         </span>
         <svg
-          className={`h-3.5 w-3.5 shrink-0 transition ${open ? 'text-brand-500' : 'text-slate-400'}`}
+          className={`h-3.5 w-3.5 shrink-0 transition ${open ? 'text-brand-500' : 'text-muted'}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
         >
           <path strokeLinecap="round" strokeLinejoin="round"

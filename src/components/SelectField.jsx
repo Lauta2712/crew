@@ -5,34 +5,34 @@ const MENU_MAX_PX = 224 // ~max-h-56
 
 const variants = {
   dark: {
-    label: 'text-xs font-semibold uppercase tracking-wide text-slate-400',
+    label: 'text-xs font-semibold uppercase tracking-wide text-muted',
     trigger: {
       base: 'flex w-full items-center justify-between rounded-xl border px-3 py-3 text-sm transition-colors duration-200',
-      disabled: 'cursor-not-allowed border-slate-700 bg-slate-800/70 text-slate-500',
-      enabled: 'border-slate-600 bg-slate-900 text-slate-100 hover:border-brand-400',
+      disabled: 'cursor-not-allowed border-line bg-surface-2/70 text-muted',
+      enabled: 'border-line bg-bg text-ink hover:border-brand-400',
     },
-    triggerPlaceholder: 'text-slate-500',
-    chevron: 'text-slate-400',
-    dropdown: 'rounded-xl border border-slate-600 bg-slate-900 py-1 shadow-xl',
+    triggerPlaceholder: 'text-muted',
+    chevron: 'text-muted',
+    dropdown: 'rounded-xl border border-line bg-bg py-1 shadow-xl',
     option: (selected) =>
       selected
         ? 'bg-brand-600/30 text-brand-50'
-        : 'text-slate-100 hover:bg-slate-800',
+        : 'text-ink hover:bg-surface-2',
   },
   light: {
-    label: 'text-xs font-semibold uppercase tracking-wide text-slate-600',
+    label: 'text-xs font-semibold uppercase tracking-wide text-muted',
     trigger: {
       base: 'flex w-full items-center justify-between rounded-xl border px-3 py-3 text-sm transition-colors duration-200',
-      disabled: 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500',
-      enabled: 'border-slate-300 bg-white text-slate-800 hover:border-brand-400',
+      disabled: 'cursor-not-allowed border-line bg-surface text-muted',
+      enabled: 'border-line bg-surface text-ink hover:border-brand-400',
     },
-    triggerPlaceholder: 'text-slate-500',
-    chevron: 'text-slate-500',
-    dropdown: 'rounded-xl border border-slate-200 bg-white py-1 shadow-lg',
+    triggerPlaceholder: 'text-muted',
+    chevron: 'text-muted',
+    dropdown: 'rounded-xl border border-line bg-surface py-1 shadow-lg',
     option: (selected) =>
       selected
-        ? 'bg-brand-100 text-brand-800'
-        : 'text-slate-800 hover:bg-slate-50',
+        ? 'bg-brand-900/35 text-brand-400'
+        : 'text-ink hover:bg-bg',
   },
 }
 

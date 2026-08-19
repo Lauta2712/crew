@@ -130,9 +130,9 @@ function formatMonthYearES(d) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
-/** Celestes del logo (tailwind brand-200 / brand-300) — inline para evitar fallos de utilidades en v4. */
-const CAL_EDGE_TODAY = '0 0 0 2px #b3e3eb'
-const CAL_EDGE_ATTENDANCE = '0 0 0 1px #c5e8ef'
+/** Anillos de celda del calendario — inline para evitar fallos de utilidades en v4. */
+const CAL_EDGE_TODAY = '0 0 0 2px var(--color-brand-500)'
+const CAL_EDGE_ATTENDANCE = '0 0 0 1px rgba(56, 189, 248, 0.5)' // sky-400 @ 50%
 
 function monthAnchor(y, m) {
   return new Date(y, m, 1)
@@ -363,14 +363,14 @@ export function StudentCalendarPage() {
   return (
     <div className="flex min-h-0 min-w-0 w-full flex-1 flex-col gap-1 max-sm:-mx-2.5 max-sm:w-[calc(100%+1.25rem)] sm:mx-0 sm:w-full">
       {error && (
-        <p className="shrink-0 rounded border border-red-200 bg-red-50 px-2 py-1 text-[10px] text-red-700 max-sm:mx-2.5 sm:mx-0">
+        <p className="shrink-0 rounded border border-red-500/40 bg-red-950/40 px-2 py-1 text-[10px] text-red-400 max-sm:mx-2.5 sm:mx-0">
           {error}
         </p>
       )}
 
       <div className="card flex min-h-0 min-w-0 flex-1 flex-col px-1 py-1.5 sm:p-2">
         {policy.validUntil && (
-          <div className="mb-1 shrink-0 flex items-center gap-1.5 rounded-lg border border-rose-100 bg-rose-50 px-2.5 py-1.5 text-[10px] text-rose-800 sm:text-xs">
+          <div className="mb-1 shrink-0 flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-950/40 px-2.5 py-1.5 text-[10px] text-rose-400 sm:text-xs">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
             <span>
               Pack activo —{' '}
@@ -383,18 +383,18 @@ export function StudentCalendarPage() {
           <div className="flex items-center justify-center gap-0.5 sm:justify-start">
             <button
               type="button"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-2 text-sm font-medium text-ink hover:bg-bg"
               aria-label="Mes anterior"
               onClick={() => shiftViewMonth(-1)}
             >
               ‹
             </button>
-            <p className="min-w-[9.5rem] flex-1 text-center text-xs font-semibold text-slate-800 sm:min-w-[11rem] sm:flex-none">
+            <p className="min-w-[9.5rem] flex-1 text-center text-xs font-semibold text-ink sm:min-w-[11rem] sm:flex-none">
               {monthTitle}
             </p>
             <button
               type="button"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-2 text-sm font-medium text-ink hover:bg-bg"
               aria-label="Mes siguiente"
               onClick={() => shiftViewMonth(1)}
             >
@@ -403,7 +403,7 @@ export function StudentCalendarPage() {
             {!isViewingCurrentMonth && (
               <button
                 type="button"
-                className="ml-1 rounded-md border border-brand-200 bg-brand-50 px-2 py-0.5 text-[10px] font-medium text-brand-800 hover:bg-brand-100"
+                className="ml-1 rounded-md border border-brand-500/40 bg-brand-900/25 px-2 py-0.5 text-[10px] font-medium text-brand-400 hover:bg-brand-900/35"
                 onClick={goToCurrentMonth}
               >
                 Hoy
@@ -412,69 +412,69 @@ export function StudentCalendarPage() {
           </div>
           <div className="flex w-full justify-center sm:w-auto sm:justify-end">
             <div
-              className="w-full rounded-lg border border-slate-200 bg-slate-50/90 px-2 py-1 shadow-sm sm:w-auto sm:px-2.5 sm:py-1.5"
+              className="w-full rounded-lg bg-bg/90 px-2 py-1 sm:w-auto sm:px-2.5 sm:py-1.5"
               aria-label="Referencia del calendario"
             >
-              <p className="mb-0.5 text-center text-[8px] font-semibold uppercase tracking-wide text-slate-500 sm:mb-1 sm:text-left sm:text-[9px]">
+              <p className="mb-0.5 text-center text-[8px] font-semibold uppercase tracking-wide text-muted sm:mb-1 sm:text-left sm:text-[9px]">
                 Referencia
               </p>
               <div className="flex flex-row flex-wrap items-center justify-center gap-x-1 gap-y-0.5 sm:justify-end sm:gap-x-2 sm:gap-y-0">
-                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span
-                    className="h-2 w-2 shrink-0 rounded-full bg-[#3a91a5] sm:h-2.5 sm:w-2.5"
-                    style={{ boxShadow: '0 0 0 1px #b3e3eb' }}
+                    className="h-2 w-2 shrink-0 rounded-full bg-sky-400 sm:h-2.5 sm:w-2.5"
+                    style={{ boxShadow: CAL_EDGE_ATTENDANCE }}
                     aria-hidden
                   />
-                  <span className="font-medium text-slate-800">Clase</span>
+                  <span className="font-medium text-ink">Clase</span>
                 </span>
-                <span className="shrink-0 text-slate-300" aria-hidden>
+                <span className="shrink-0 text-muted" aria-hidden>
                   ·
                 </span>
-                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400 sm:h-2.5 sm:w-2.5" aria-hidden />
-                  <span className="font-medium text-slate-800">Acceso libre</span>
+                  <span className="font-medium text-ink">Acceso libre</span>
                 </span>
-                <span className="shrink-0 text-slate-300" aria-hidden>
+                <span className="shrink-0 text-muted" aria-hidden>
                   ·
                 </span>
-                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span
-                    className="h-2 w-2 shrink-0 rounded-full bg-[#fbbf24] sm:h-2.5 sm:w-2.5"
-                    style={{ boxShadow: '0 0 0 1px #fde68a' }}
+                    className="h-2 w-2 shrink-0 rounded-full bg-amber-400 sm:h-2.5 sm:w-2.5"
+                    style={{ boxShadow: '0 0 0 1px rgba(251, 191, 36, 0.4)' }}
                     aria-hidden
                   />
-                  <span className="font-medium text-slate-800">Pago clase</span>
+                  <span className="font-medium text-ink">Pago clase</span>
                 </span>
-                <span className="shrink-0 text-slate-300" aria-hidden>
+                <span className="shrink-0 text-muted" aria-hidden>
                   ·
                 </span>
-                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 whitespace-nowrap text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-violet-400 sm:h-2.5 sm:w-2.5" aria-hidden />
-                  <span className="font-medium text-slate-800">Pago acceso libre</span>
+                  <span className="font-medium text-ink">Pago acceso libre</span>
                 </span>
-                <span className="shrink-0 text-slate-300" aria-hidden>
+                <span className="shrink-0 text-muted" aria-hidden>
                   ·
                 </span>
-                <span className="inline-flex items-center gap-0.5 text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span
-                    className="h-2 w-2 shrink-0 rounded-full bg-[#6366f1] sm:h-2.5 sm:w-2.5"
-                    style={{ boxShadow: '0 0 0 1px #c7d2fe' }}
+                    className="h-2 w-2 shrink-0 rounded-full bg-indigo-400 sm:h-2.5 sm:w-2.5"
+                    style={{ boxShadow: '0 0 0 1px rgba(129, 140, 248, 0.4)' }}
                     aria-hidden
                   />
-                  <span className="font-medium leading-tight text-slate-800 sm:whitespace-nowrap">
+                  <span className="font-medium leading-tight text-ink sm:whitespace-nowrap">
                     <span className="sm:hidden">Horarios</span>
                     <span className="hidden sm:inline">Horarios posibles</span>
                   </span>
                 </span>
-                <span className="shrink-0 text-slate-300" aria-hidden>
+                <span className="shrink-0 text-muted" aria-hidden>
                   ·
                 </span>
-                <span className="inline-flex items-center gap-0.5 text-[8px] text-slate-700 sm:gap-1.5 sm:text-[11px]">
+                <span className="inline-flex items-center gap-0.5 text-[8px] text-ink sm:gap-1.5 sm:text-[11px]">
                   <span
                     className="h-2 w-2 shrink-0 rounded-full bg-rose-400 sm:h-2.5 sm:w-2.5"
                     aria-hidden
                   />
-                  <span className="font-medium text-slate-800">Vencimiento</span>
+                  <span className="font-medium text-ink">Vencimiento</span>
                 </span>
               </div>
             </div>
@@ -486,7 +486,7 @@ export function StudentCalendarPage() {
             {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((label) => (
               <div
                 key={label}
-                className="py-0.5 text-[10px] font-semibold leading-none text-slate-500 sm:text-[11px]"
+                className="py-0.5 text-[10px] font-semibold leading-none text-muted sm:text-[11px]"
               >
                 {label}
               </div>
@@ -504,7 +504,7 @@ export function StudentCalendarPage() {
               ? Array.from({ length: totalGridCells }).map((_, i) => (
                   <div
                     key={i}
-                    className="min-h-0 animate-pulse rounded-md border border-slate-100 bg-slate-50"
+                    className="min-h-0 animate-pulse rounded-md border border-line bg-bg"
                   />
                 ))
               : null}
@@ -542,23 +542,23 @@ export function StudentCalendarPage() {
                     style={cellEdgeStyle}
                     className={`flex min-h-0 h-full min-w-0 flex-col rounded-md border border-solid p-1 text-left sm:p-1.5 ${
                       hasAttendance
-                        ? 'border-[#c5e8ef] border-l-[3px] border-l-[#3a91a5] bg-[#f2fbfc]'
-                        : 'border-[#d0dde2] bg-white'
+                        ? 'border-sky-500/40 border-l-[3px] border-l-sky-400 bg-sky-950/40'
+                        : 'border-line bg-surface'
                     }`}
                   >
-                    <span className="shrink-0 text-center text-xs font-semibold leading-none text-slate-800 sm:text-sm">
+                    <span className="shrink-0 text-center text-xs font-semibold leading-none text-ink sm:text-sm">
                       {dayNum}
                     </span>
-                    <div className="mt-1 flex min-h-0 min-w-0 flex-1 flex-col gap-0.5 overflow-y-auto overflow-x-hidden text-[8px] leading-snug text-slate-700 sm:text-[9px]">
+                    <div className="mt-1 flex min-h-0 min-w-0 flex-1 flex-col gap-0.5 overflow-y-auto overflow-x-hidden text-[8px] leading-snug text-ink sm:text-[9px]">
                       {!hasContent && (
-                        <span className="flex flex-1 items-center justify-center text-[9px] text-slate-300 sm:text-[10px]">
+                        <span className="flex flex-1 items-center justify-center text-[9px] text-muted sm:text-[10px]">
                           —
                         </span>
                       )}
                       {classPayItems.map((p) => (
                         <div
                           key={p.id}
-                          className="flex items-start gap-0.5 rounded bg-amber-50 px-0.5 py-0.5 text-amber-950"
+                          className="flex items-start gap-0.5 rounded bg-amber-950/40 px-0.5 py-0.5 text-amber-400"
                           title={`Pago — ${packShortLabel(p.pack_type, classPacks)}`}
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
@@ -575,7 +575,7 @@ export function StudentCalendarPage() {
                       {muroPayItems.map((p) => (
                         <div
                           key={p.id}
-                          className="flex items-start gap-0.5 rounded bg-violet-50 px-0.5 py-0.5 text-violet-950"
+                          className="flex items-start gap-0.5 rounded bg-violet-950/40 px-0.5 py-0.5 text-violet-400"
                           title="Pago acceso libre"
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
@@ -588,12 +588,12 @@ export function StudentCalendarPage() {
                       {classAtts.map((a) => (
                         <div
                           key={a.id}
-                          className="flex items-start gap-0.5 rounded-md border border-solid border-[#88cedc] bg-[#d9f2f5] px-0.5 py-0.5 font-semibold text-[#173842] sm:px-1"
+                          className="flex items-start gap-0.5 rounded-md border border-solid border-sky-500/40 bg-sky-950/40 px-0.5 py-0.5 font-semibold text-sky-400 sm:px-1"
                           title="Asistencia clase"
                         >
                           <span
-                            className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#3a91a5]"
-                            style={{ boxShadow: '0 0 0 1px #b3e3eb' }}
+                            className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400"
+                            style={{ boxShadow: CAL_EDGE_ATTENDANCE }}
                           />
                           <span className="break-words">{formatClock(a.attended_at)}</span>
                         </div>
@@ -601,7 +601,7 @@ export function StudentCalendarPage() {
                       {muroAtts.map((a) => (
                         <div
                           key={a.id}
-                          className="flex items-start gap-0.5 rounded-md border border-solid border-emerald-200 bg-emerald-50 px-0.5 py-0.5 font-semibold text-emerald-900 sm:px-1"
+                          className="flex items-start gap-0.5 rounded-md border border-solid border-emerald-500/40 bg-emerald-950/40 px-0.5 py-0.5 font-semibold text-emerald-400 sm:px-1"
                           title="Acceso libre"
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
@@ -611,7 +611,7 @@ export function StudentCalendarPage() {
                       {possibleLabels.map((label) => (
                         <div
                           key={label}
-                          className="flex items-start gap-0.5 rounded bg-indigo-50 px-0.5 py-0.5 text-indigo-950"
+                          className="flex items-start gap-0.5 rounded bg-indigo-950/40 px-0.5 py-0.5 text-indigo-400"
                           title="Horario posible con cupo"
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" />
@@ -620,7 +620,7 @@ export function StudentCalendarPage() {
                       ))}
                       {expiryOnDay && (
                         <div
-                          className="flex items-start gap-0.5 rounded bg-rose-50 px-0.5 py-0.5 font-semibold text-rose-700"
+                          className="flex items-start gap-0.5 rounded bg-rose-950/40 px-0.5 py-0.5 font-semibold text-rose-400"
                           title="El pack vence este día"
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />

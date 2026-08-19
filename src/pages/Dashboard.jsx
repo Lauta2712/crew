@@ -19,7 +19,7 @@ import { isWalkInSchedule } from '../constants/packs'
 import { toSpanishError } from '../utils/errors'
 import { formatDateTime } from '../utils/dateFormatting'
 
-const CHART_COLORS = ['#3a91a5', '#f4b41a', '#88cedc', '#5ab2c5', '#f9c948', '#2e7587', '#b3e3eb']
+const CHART_COLORS = ['#ff4500', '#1e90ff', '#38bdf8', '#a78bfa', '#fbbf24', '#34d399', '#fb7185']
 const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
 const DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
@@ -229,14 +229,14 @@ export function DashboardPage() {
     <div className="flex flex-col gap-5">
       <div className="shrink-0 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">Dashboard general</h1>
-          <p className="text-sm text-slate-500">Vista rápida de alumnos, asistencias y pagos.</p>
+          <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Dashboard general</h1>
+          <p className="text-sm text-muted">Vista rápida de alumnos, asistencias y pagos.</p>
         </div>
         <button
           type="button"
           onClick={() => loadData()}
           disabled={loading}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+          className="btn-secondary px-3 py-1.5 text-sm"
         >
           {loading ? 'Actualizando…' : 'Actualizar'}
         </button>
@@ -251,18 +251,18 @@ export function DashboardPage() {
       {/* KPI cards */}
       <div className="grid shrink-0 gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard label="Alumnos activos" loading={loading}>
-          <p className="text-2xl font-semibold text-slate-900 sm:text-3xl">{stats?.studentsCount ?? 0}</p>
+          <p className="font-mono text-2xl font-semibold text-ink sm:text-3xl">{stats?.studentsCount ?? 0}</p>
         </StatCard>
         <StatCard label="Asistencias este mes" loading={loading}>
-          <p className="text-2xl font-semibold text-brand-500 sm:text-3xl">{stats?.attendancesCount ?? 0}</p>
+          <p className="font-mono text-2xl font-semibold text-brand-500 sm:text-3xl">{stats?.attendancesCount ?? 0}</p>
         </StatCard>
         <StatCard label="Asistencias hoy" loading={loading}>
-          <p className="text-2xl font-semibold text-slate-800 sm:text-3xl">{stats?.attendancesTodayCount ?? 0}</p>
+          <p className="font-mono text-2xl font-semibold text-ink sm:text-3xl">{stats?.attendancesTodayCount ?? 0}</p>
         </StatCard>
         <StatCard label="Pagos este mes" loading={loading}>
-          <p className="text-2xl font-semibold text-slate-900 sm:text-3xl">{stats?.paymentsCount ?? 0}</p>
+          <p className="font-mono text-2xl font-semibold text-ink sm:text-3xl">{stats?.paymentsCount ?? 0}</p>
           {stats?.paymentsTotal != null && stats.paymentsTotal > 0 && (
-            <p className="mt-0.5 text-xs font-medium text-slate-600">
+            <p className="mt-0.5 font-mono text-xs font-medium text-muted">
               ${Number(stats.paymentsTotal).toLocaleString('es-AR')} total
             </p>
           )}
@@ -272,7 +272,7 @@ export function DashboardPage() {
       {/* Chart row 1: daily attendance + pack donut */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="card p-4 lg:col-span-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
             Asistencias por día — {currentMonthLabel}
           </p>
           <div className="mt-3 h-36 sm:h-48">
@@ -281,23 +281,23 @@ export function DashboardPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData?.dailyAttendance ?? []} barCategoryGap="20%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3b" vertical={false} />
                   <XAxis
                     dataKey="dia"
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     interval={Math.max(0, Math.floor((chartData?.dailyAttendance?.length ?? 1) / 10) - 1)}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     allowDecimals={false}
                     axisLine={false}
                     tickLine={false}
                     width={24}
                   />
-                  <Tooltip content={<CountTooltip suffix="asistencias" />} cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="asistencias" fill="#3a91a5" radius={[4, 4, 0, 0]} />
+                  <Tooltip content={<CountTooltip suffix="asistencias" />} cursor={{ fill: 'rgba(244, 245, 247, 0.06)' }} />
+                  <Bar dataKey="asistencias" fill="#ff4500" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -305,7 +305,7 @@ export function DashboardPage() {
         </div>
 
         <div className="card p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
             Packs contratados — {currentMonthLabel}
           </p>
           {loading ? (
@@ -313,7 +313,7 @@ export function DashboardPage() {
               <DonutSkeleton />
             </div>
           ) : !chartData?.packDistribution?.length ? (
-            <p className="mt-3 text-sm text-slate-500">Aún no hay pagos este mes.</p>
+            <p className="mt-3 text-sm text-muted">Aún no hay pagos este mes.</p>
           ) : (
             <>
               <div className="mt-2 h-36">
@@ -343,10 +343,10 @@ export function DashboardPage() {
                       className="h-2 w-2 shrink-0 rounded-full"
                       style={{ background: CHART_COLORS[i % CHART_COLORS.length] }}
                     />
-                    <span className="min-w-0 truncate text-slate-600" title={item.name}>
+                    <span className="min-w-0 truncate text-muted" title={item.name}>
                       {item.name}
                     </span>
-                    <span className="ml-auto shrink-0 font-semibold text-slate-800">{item.value}</span>
+                    <span className="ml-auto shrink-0 font-semibold text-ink">{item.value}</span>
                   </li>
                 ))}
               </ul>
@@ -358,7 +358,7 @@ export function DashboardPage() {
       {/* Chart row 2: monthly revenue + weekday breakdown */}
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="card p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
             Recaudación — últimos 6 meses
           </p>
           <div className="mt-3 h-36 sm:h-48">
@@ -367,22 +367,22 @@ export function DashboardPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData?.monthlyRevenue ?? []} barCategoryGap="30%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3b" vertical={false} />
                   <XAxis
                     dataKey="mes"
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     axisLine={false}
                     tickLine={false}
                     width={44}
                     tickFormatter={(v) => (v === 0 ? '$0' : `$${Math.round(v / 1000)}k`)}
                   />
-                  <Tooltip content={<CurrencyTooltip />} cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="recaudacion" fill="#f4b41a" radius={[4, 4, 0, 0]} />
+                  <Tooltip content={<CurrencyTooltip />} cursor={{ fill: 'rgba(244, 245, 247, 0.06)' }} />
+                  <Bar dataKey="recaudacion" fill="#1e90ff" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -390,7 +390,7 @@ export function DashboardPage() {
         </div>
 
         <div className="card p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
             Asistencias por día de semana — {currentMonthLabel}
           </p>
           <div className="mt-3 h-36 sm:h-48">
@@ -399,22 +399,22 @@ export function DashboardPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData?.weekdayAttendance ?? []} barCategoryGap="20%">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2e3b" vertical={false} />
                   <XAxis
                     dataKey="dia"
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
+                    tick={{ fontSize: 11, fill: '#8e95a5'}}
                     allowDecimals={false}
                     axisLine={false}
                     tickLine={false}
                     width={24}
                   />
-                  <Tooltip content={<CountTooltip suffix="asistencias" />} cursor={{ fill: '#f8fafc' }} />
-                  <Bar dataKey="asistencias" fill="#88cedc" radius={[4, 4, 0, 0]} />
+                  <Tooltip content={<CountTooltip suffix="asistencias" />} cursor={{ fill: 'rgba(244, 245, 247, 0.06)' }} />
+                  <Bar dataKey="asistencias" fill="#38bdf8" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -424,26 +424,26 @@ export function DashboardPage() {
 
       {/* Recent attendances */}
       <div className="card flex flex-col p-4">
-        <p className="shrink-0 text-xs font-medium uppercase tracking-wide text-slate-500">
+        <p className="shrink-0 text-xs font-medium uppercase tracking-wide text-muted">
           Últimas asistencias
         </p>
         {loading ? (
           <div className="mt-3 shrink-0 space-y-2">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-8 w-full animate-pulse rounded bg-slate-100" />
+              <div key={i} className="h-8 w-full animate-pulse rounded bg-surface-2" />
             ))}
           </div>
         ) : recentAttendances.length === 0 ? (
-          <p className="mt-2 shrink-0 text-sm text-slate-500">Sin asistencias recientes.</p>
+          <p className="mt-2 shrink-0 text-sm text-muted">Sin asistencias recientes.</p>
         ) : (
           <ul className="mt-2 space-y-1.5">
             {recentAttendances.map((a) => (
               <li
                 key={a.id}
-                className="flex items-center justify-between gap-2 border-b border-slate-100 pb-1.5 last:border-0 last:pb-0 text-xs"
+                className="flex items-center justify-between gap-2 border-b border-line pb-1.5 last:border-0 last:pb-0 text-xs"
               >
-                <span className="truncate font-medium text-slate-800">{a.studentName}</span>
-                <span className="shrink-0 text-slate-500">{formatDateTime(a.attended_at)}</span>
+                <span className="truncate font-medium text-ink">{a.studentName}</span>
+                <span className="shrink-0 font-mono text-muted">{formatDateTime(a.attended_at)}</span>
               </li>
             ))}
           </ul>
@@ -452,30 +452,18 @@ export function DashboardPage() {
 
       {/* Quick links */}
       <div className="shrink-0">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">Accesos rápidos</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted">Accesos rápidos</p>
         <div className="flex flex-wrap gap-2">
-          <Link
-            to="/app/payments"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
+          <Link to="/app/payments" className="btn-secondary px-4 py-2 text-sm">
             Registrar pago
           </Link>
-          <Link
-            to="/app/scan"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
+          <Link to="/app/scan" className="btn-secondary px-4 py-2 text-sm">
             Escanear QR
           </Link>
-          <Link
-            to="/app/students"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
+          <Link to="/app/students" className="btn-secondary px-4 py-2 text-sm">
             Ver alumnos
           </Link>
-          <Link
-            to="/app/attendance"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
+          <Link to="/app/attendance" className="btn-secondary px-4 py-2 text-sm">
             Asistencias
           </Link>
         </div>
@@ -487,14 +475,14 @@ export function DashboardPage() {
 function StatCard({ label, loading, children }) {
   return (
     <div className="card p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="text-xs font-medium uppercase tracking-wide text-muted">{label}</p>
       {loading ? <SkeletonLine /> : <div className="mt-2">{children}</div>}
     </div>
   )
 }
 
 function SkeletonLine() {
-  return <div className="mt-4 h-8 w-16 animate-pulse rounded bg-slate-200" />
+  return <div className="mt-4 h-8 w-16 animate-pulse rounded bg-surface-2" />
 }
 
 function ChartSkeleton({ bars = 12 }) {
@@ -504,7 +492,7 @@ function ChartSkeleton({ bars = 12 }) {
       {Array.from({ length: bars }, (_, i) => (
         <div
           key={i}
-          className="flex-1 animate-pulse rounded-t bg-slate-100"
+          className="flex-1 animate-pulse rounded-t bg-surface-2"
           style={{ height: `${heights[i % heights.length]}%` }}
         />
       ))}
@@ -515,7 +503,7 @@ function ChartSkeleton({ bars = 12 }) {
 function DonutSkeleton() {
   return (
     <div className="flex h-full items-center justify-center">
-      <div className="h-28 w-28 animate-pulse rounded-full bg-slate-100" />
+      <div className="h-28 w-28 animate-pulse rounded-full bg-surface-2" />
     </div>
   )
 }
@@ -523,8 +511,8 @@ function DonutSkeleton() {
 function CountTooltip({ active, payload, label, suffix = '' }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow">
-      <p className="font-semibold text-slate-700">{label}</p>
+    <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs shadow">
+      <p className="font-semibold text-ink">{label}</p>
       <p className="text-brand-500">
         {payload[0].value} {suffix}
       </p>
@@ -535,8 +523,8 @@ function CountTooltip({ active, payload, label, suffix = '' }) {
 function CurrencyTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow">
-      <p className="font-semibold text-slate-700">{label}</p>
+    <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs shadow">
+      <p className="font-semibold text-ink">{label}</p>
       <p className="text-accent-600">${Number(payload[0].value).toLocaleString('es-AR')}</p>
     </div>
   )
@@ -546,8 +534,8 @@ function PieTooltip({ active, payload }) {
   if (!active || !payload?.length) return null
   const { name, value } = payload[0]
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow">
-      <p className="font-semibold text-slate-700">{name}</p>
+    <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs shadow">
+      <p className="font-semibold text-ink">{name}</p>
       <p className="text-brand-500">{value} {value === 1 ? 'pack' : 'packs'}</p>
     </div>
   )

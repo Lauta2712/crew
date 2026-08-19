@@ -78,7 +78,7 @@ export function CoachScanPage() {
 
   if (!isCoach) {
     return (
-      <p className="text-sm text-red-600">
+      <p className="text-sm text-red-400">
         Solo los profesores pueden usar esta pantalla.
       </p>
     )
@@ -87,7 +87,7 @@ export function CoachScanPage() {
   return (
     <div className="space-y-4">
       {loadError && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {loadError}
         </p>
       )}

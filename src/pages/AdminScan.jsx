@@ -46,7 +46,7 @@ export function AdminScanPage() {
 
   if (!isAdmin) {
     return (
-      <p className="text-sm text-red-600">
+      <p className="text-sm text-red-400">
         Solo los administradores pueden usar esta pantalla.
       </p>
     )

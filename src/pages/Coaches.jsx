@@ -275,19 +275,19 @@ export function CoachesPage() {
   return (
     <div className="space-y-4">
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold text-slate-800">Profesores</h1>
-        <p className="text-sm text-slate-500">
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Profesores</h1>
+        <p className="text-sm text-muted">
           Creá cuentas de profesores y asignales el horario que pueden gestionar.
         </p>
       </div>
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+        <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">
           {error}
         </p>
       )}
       {successMessage && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+        <p className="rounded-lg border border-emerald-500/40 bg-emerald-950/40 px-3 py-2 text-xs text-emerald-400">
           {successMessage}
         </p>
       )}
@@ -297,11 +297,11 @@ export function CoachesPage() {
           onSubmit={handleSubmit}
           className="card space-y-3"
         >
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Crear profesor
           </p>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-600">Nombre</label>
+            <label className="text-xs font-medium text-muted">Nombre</label>
             <input
               className="input py-2 text-sm"
               value={form.name}
@@ -310,18 +310,18 @@ export function CoachesPage() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-600">Email</label>
+            <label className="text-xs font-medium text-muted">Email</label>
             <input
               className="input py-2 text-sm"
               type="email"
               required
               value={form.email}
               onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-              placeholder="profe@crux.com"
+              placeholder="profe@gimnasio.com"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-600">
+            <label className="text-xs font-medium text-muted">
               Contraseña inicial
             </label>
             <PasswordInput
@@ -357,28 +357,28 @@ export function CoachesPage() {
 
         <div className="card-muted space-y-2">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
               Profesores activos
             </p>
-            <p className="text-xs text-slate-500">Total: {coaches.length}</p>
+            <p className="text-xs text-muted">Total: {coaches.length}</p>
           </div>
           {loading ? (
-            <p className="text-xs text-slate-500">Cargando…</p>
+            <p className="text-xs text-muted">Cargando…</p>
           ) : coaches.length === 0 ? (
-            <p className="text-xs text-slate-500">Aún no hay profesores creados.</p>
+            <p className="text-xs text-muted">Aún no hay profesores creados.</p>
           ) : (
             <ul className="space-y-2">
               {coaches.map((c) => (
                 <li
                   key={c.id}
-                  className="flex flex-col gap-2 rounded border border-slate-200 bg-white px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded border border-line bg-surface px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-800">
+                    <p className="text-sm font-medium text-ink">
                       {c.name || c.email}
                     </p>
-                    <p className="text-xs text-slate-500">{c.email}</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-muted">{c.email}</p>
+                    <p className="text-[11px] text-muted">
                       Horario: {scheduleLabel(c.schedule_type_id, scheduleTypes)}
                     </p>
                   </div>
@@ -393,7 +393,7 @@ export function CoachesPage() {
                     </button>
                     <button
                       type="button"
-                      className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-[11px] font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                      className="rounded-lg border border-red-500/40 bg-surface px-3 py-1.5 text-[11px] font-medium text-red-400 hover:bg-red-950/40 disabled:opacity-50"
                       onClick={() => {
                         setConfirmDeleteId(c.id)
                         setError(null)
@@ -412,7 +412,7 @@ export function CoachesPage() {
 
       {editingCoach && (
         <div
-          className="fixed inset-0 z-50 flex h-dvh items-center justify-center bg-slate-900/50 p-4"
+          className="fixed inset-0 z-50 flex h-dvh items-center justify-center bg-bg/50 p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="edit-coach-title"
@@ -423,15 +423,15 @@ export function CoachesPage() {
           >
             <h2
               id="edit-coach-title"
-              className="text-lg font-semibold text-slate-800"
+              className="text-lg font-semibold text-ink"
             >
               Editar profesor
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-muted">
               Dejá la contraseña vacía si no querés cambiarla.
             </p>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600">Nombre</label>
+              <label className="text-xs font-medium text-muted">Nombre</label>
               <input
                 className="input py-2 text-sm"
                 value={editForm.name}
@@ -441,7 +441,7 @@ export function CoachesPage() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600">Email</label>
+              <label className="text-xs font-medium text-muted">Email</label>
               <input
                 className="input py-2 text-sm"
                 type="email"
@@ -453,7 +453,7 @@ export function CoachesPage() {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label className="text-xs font-medium text-muted">
                 Nueva contraseña (opcional)
               </label>
               <PasswordInput
@@ -500,15 +500,15 @@ export function CoachesPage() {
 
       {confirmDeleteId && coachToDelete && (
         <div
-          className="fixed inset-0 z-50 flex h-dvh items-center justify-center bg-slate-900/50 p-4"
+          className="fixed inset-0 z-50 flex h-dvh items-center justify-center bg-bg/50 p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-5 shadow-lg">
-            <h2 className="text-lg font-semibold text-slate-800">
+          <div className="w-full max-w-sm rounded-xl border border-line bg-surface p-5 shadow-lg">
+            <h2 className="text-lg font-semibold text-ink">
               Eliminar profesor
             </h2>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-muted">
               Se va a borrar la cuenta de{' '}
               <strong>{coachToDelete.name || coachToDelete.email}</strong> en la
               base y en Authentication. Esta acción no se puede deshacer.
@@ -518,7 +518,7 @@ export function CoachesPage() {
                 type="button"
                 onClick={() => setConfirmDeleteId(null)}
                 disabled={deleting}
-                className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="flex-1 rounded-lg border border-line bg-surface px-3 py-2 text-sm font-medium text-ink hover:bg-bg disabled:opacity-50"
               >
                 Cancelar
               </button>
@@ -526,7 +526,7 @@ export function CoachesPage() {
                 type="button"
                 onClick={handleDeleteCoach}
                 disabled={deleting}
-                className="flex-1 rounded-lg border border-red-300 bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                className="flex-1 rounded-lg border border-red-500/40 bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
               >
                 {deleting ? 'Eliminando…' : 'Eliminar'}
               </button>

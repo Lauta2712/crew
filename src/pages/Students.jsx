@@ -414,8 +414,8 @@ export function StudentsPage() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1 space-y-2">
-          <h1 className="text-xl font-semibold text-slate-800">Alumnos</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">Alumnos</h1>
+          <p className="text-sm text-muted">
             Consulta el plan de cada alumno y el uso de clases según el ciclo
             de vigencia del pago activo (desde la fecha del pago hasta un mes
             después).
@@ -428,7 +428,7 @@ export function StudentsPage() {
               onClick={handleDownloadStudentList}
               disabled={loading || students.length === 0}
               title="Genera un archivo CSV que se abre con Excel, Google Sheets o Numbers"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-brand-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink shadow-sm transition-colors hover:border-brand-400 hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               <svg
                 className="h-4 w-4 shrink-0"
@@ -446,7 +446,7 @@ export function StudentsPage() {
               </svg>
               Descargar lista
             </button>
-            <p className="mt-1 text-center text-[10px] text-slate-400 sm:text-left">
+            <p className="mt-1 text-center text-[10px] text-muted sm:text-left">
               Archivo CSV (compatible con Excel)
             </p>
           </div>

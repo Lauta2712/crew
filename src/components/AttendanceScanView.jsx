@@ -735,8 +735,8 @@ export function AttendanceScanView({
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold text-slate-800">{title}</h1>
-        <p className="text-sm text-slate-500">{subtitle}</p>
+        <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">{title}</h1>
+        <p className="text-sm text-muted">{subtitle}</p>
       </div>
 
       {/* Processing spinner — shown while validating the QR after detection */}
@@ -745,9 +745,9 @@ export function AttendanceScanView({
           className="fixed inset-0 z-50 flex items-center justify-center"
           aria-label="Procesando QR…"
         >
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-white px-10 py-8 shadow-2xl">
-            <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-brand-500" />
-            <p className="text-sm font-medium text-slate-700">Verificando…</p>
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface px-10 py-8 shadow-2xl">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-line border-t-brand-500" />
+            <p className="text-sm font-medium text-ink">Verificando…</p>
           </div>
         </div>
       )}
@@ -762,15 +762,15 @@ export function AttendanceScanView({
           <div
             className={`w-full max-w-xs rounded-2xl p-8 text-center shadow-2xl ${
               feedback.type === 'success'
-                ? 'border-2 border-emerald-200 bg-white'
-                : 'border-2 border-red-200 bg-white'
+                ? 'border-2 border-emerald-500/40 bg-surface'
+                : 'border-2 border-red-500/40 bg-surface'
             }`}
           >
             {feedback.type === 'success' ? (
               <>
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-950/40">
                   <svg
-                    className="h-9 w-9 text-emerald-600"
+                    className="h-9 w-9 text-emerald-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -779,18 +779,18 @@ export function AttendanceScanView({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="mt-4 text-2xl font-bold text-slate-800">
+                <p className="mt-4 text-2xl font-bold text-ink">
                   {feedback.studentName}
                 </p>
-                <p className="mt-1 text-sm font-medium text-emerald-600">
+                <p className="mt-1 text-sm font-medium text-emerald-400">
                   Asistencia registrada
                 </p>
               </>
             ) : (
               <>
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-950/40">
                   <svg
-                    className="h-9 w-9 text-red-600"
+                    className="h-9 w-9 text-red-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -799,11 +799,11 @@ export function AttendanceScanView({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <p className="mt-4 text-sm font-medium text-red-700">{feedback.message}</p>
+                <p className="mt-4 text-sm font-medium text-red-400">{feedback.message}</p>
                 <button
                   type="button"
                   onClick={() => setFeedback(null)}
-                  className="mt-5 rounded-lg border border-slate-200 px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                  className="mt-5 rounded-lg border border-line px-4 py-2 text-xs font-medium text-muted hover:bg-bg"
                 >
                   Cerrar
                 </button>
@@ -821,10 +821,10 @@ export function AttendanceScanView({
           aria-modal="true"
           aria-labelledby="confirm-attendance-title"
         >
-          <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-5 shadow-lg">
+          <div className="w-full max-w-sm rounded-xl border border-line bg-surface p-5 shadow-lg">
             <h2
               id="confirm-attendance-title"
-              className="text-lg font-semibold text-slate-800"
+              className="text-lg font-semibold text-ink"
             >
               Registrar asistencia
             </h2>
@@ -833,14 +833,14 @@ export function AttendanceScanView({
                 className={`mt-2 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${
                   isUnlimitedPack(pendingAttendance.pack_type, classPacks) ||
                   isWalkInDailyPack(pendingAttendance.pack_type, walkIn)
-                    ? 'bg-sky-50 text-sky-700 border border-sky-200'
-                    : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    ? 'bg-sky-950/40 text-sky-400 border border-sky-500/40'
+                    : 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/40'
                 }`}
               >
                 {pendingAttendance.packLabel}
               </span>
             )}
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-muted">
               ¿Registrar asistencia de{' '}
               <strong>{pendingAttendance.studentName}</strong>
               {pendingAttendance.method === 'retroactivo' ||
@@ -850,8 +850,8 @@ export function AttendanceScanView({
               ?
             </p>
             {pendingAttendance.scheduleSlot && (
-              <p className="mt-1 text-xs text-slate-500">
-                <span className="font-medium text-slate-700">Horario:</span>{' '}
+              <p className="mt-1 text-xs text-muted">
+                <span className="font-medium text-ink">Horario:</span>{' '}
                 {pendingAttendance.scheduleSlot}
               </p>
             )}
@@ -860,7 +860,7 @@ export function AttendanceScanView({
                 type="button"
                 onClick={handleCancelPendingAttendance}
                 disabled={submitting}
-                className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="flex-1 rounded-lg border border-line bg-surface px-3 py-2 text-sm font-medium text-ink hover:bg-bg disabled:opacity-50"
               >
                 Cancelar
               </button>
@@ -878,13 +878,13 @@ export function AttendanceScanView({
       )}
 
       {/* Mobile tab switcher — solo visible en < lg y cuando no es cameraOnly */}
-      {!cameraOnly && <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-1 gap-1 lg:hidden">
+      {!cameraOnly && <div className="flex rounded-xl border border-line bg-bg p-1 gap-1 lg:hidden">
         <button
           type="button"
           className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
             mobileView === 'camera'
-              ? 'bg-white shadow text-slate-900'
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-surface shadow text-ink'
+              : 'text-muted hover:text-ink'
           }`}
           onClick={() => setMobileView('camera')}
         >
@@ -894,8 +894,8 @@ export function AttendanceScanView({
           type="button"
           className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
             mobileView === 'manual'
-              ? 'bg-white shadow text-slate-900'
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-surface shadow text-ink'
+              : 'text-muted hover:text-ink'
           }`}
           onClick={() => {
             if (cameraActive) stopCamera()
@@ -908,15 +908,15 @@ export function AttendanceScanView({
 
       <div className={cameraOnly ? '' : 'grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]'}>
         <div className={`card space-y-3 ${!cameraOnly && mobileView === 'manual' ? 'hidden lg:block' : ''}`}>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Escaneo con cámara
           </p>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted">
             Apuntá al QR del alumno y esperá a que se marque en verde.
           </p>
 
           <div className="mt-2 flex flex-col items-center gap-2">
-            <div className="relative w-full max-w-xs overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+            <div className="relative w-full max-w-xs overflow-hidden rounded-xl border border-line bg-surface">
               <video
                 ref={videoRef}
                 className="h-64 w-full object-cover"
@@ -924,7 +924,7 @@ export function AttendanceScanView({
                 playsInline
               />
               {!cameraActive && (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/10 text-[11px] text-slate-600">
+                <div className="absolute inset-0 flex items-center justify-center bg-bg/10 text-[11px] text-muted">
                   Cámara inactiva
                 </div>
               )}
@@ -940,11 +940,11 @@ export function AttendanceScanView({
         </div>
 
         {!cameraOnly && <div className={`card space-y-4 ${mobileView === 'camera' ? 'hidden lg:block' : ''}`}>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Manual
           </p>
 
-          <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-600">
+          <p className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">
             Misma lógica que el QR: se valida pack y clases. Elegí al alumno y
             confirmá en el siguiente paso.
           </p>
@@ -968,7 +968,7 @@ export function AttendanceScanView({
           />
 
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-slate-700">
+            <label className="block text-xs font-medium text-ink">
               Fecha de asistencia
             </label>
             <DatePicker
@@ -984,25 +984,25 @@ export function AttendanceScanView({
           </div>
 
           {isManualPastDate && (
-            <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] text-amber-700">
+            <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-[11px] text-amber-400">
               Registrando asistencia pasada — se guardará como &ldquo;Retroactivo&rdquo;.
             </p>
           )}
 
           {selectedStudent && (
-            <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600">
+            <div className="rounded-lg border border-line bg-surface px-3 py-2 text-xs text-muted">
               <p>
-                <span className="font-medium text-slate-800">Alumno:</span>{' '}
+                <span className="font-medium text-ink">Alumno:</span>{' '}
                 {selectedStudent.name || selectedStudent.email || 'Sin nombre'}
               </p>
               <p className="mt-1">
-                <span className="font-medium text-slate-800">Última asistencia:</span>{' '}
+                <span className="font-medium text-ink">Última asistencia:</span>{' '}
                 {latestAttendanceForSelected?.attended_at
                   ? formatDateTime(latestAttendanceForSelected.attended_at)
                   : 'Sin registros recientes'}
               </p>
               {alreadyCheckedOnManualDate && (
-                <p className="mt-1 text-red-600">Ya tiene asistencia registrada ese día.</p>
+                <p className="mt-1 text-red-400">Ya tiene asistencia registrada ese día.</p>
               )}
             </div>
           )}
@@ -1010,24 +1010,24 @@ export function AttendanceScanView({
           {/* Pack selector — shown once a student is selected */}
           {selectedStudentId && (
             loadingStudentPacks ? (
-              <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-xs text-slate-500">
-                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-brand-500" />
+              <div className="flex items-center gap-2 rounded-lg border border-line bg-bg px-3 py-2.5 text-xs text-muted">
+                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-line border-t-brand-500" />
                 Cargando packs activos…
               </div>
             ) : studentPacks.length === 0 ? (
-              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+              <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-xs text-amber-400">
                 Este alumno no tiene packs activos. Verificá que tenga un pago vigente.
               </p>
             ) : (
               <div className="space-y-1.5">
-                <p className="text-xs font-medium text-slate-700">Pack a registrar</p>
+                <p className="text-xs font-medium text-ink">Pack a registrar</p>
                 {studentPacks.map((pack) => (
                   <label
                     key={pack.id}
                     className={`flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-2.5 transition ${
                       selectedPackType === pack.id
-                        ? 'border-brand-400 bg-brand-50 ring-1 ring-brand-300'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
+                        ? 'border-brand-400 bg-brand-900/25 ring-1 ring-brand-500/40'
+                        : 'border-line bg-surface hover:border-line'
                     }`}
                   >
                     <input
@@ -1039,8 +1039,8 @@ export function AttendanceScanView({
                       className="mt-0.5 accent-brand-500"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800">{pack.label}</p>
-                      <p className="text-[11px] text-slate-500">{pack.detail}</p>
+                      <p className="text-xs font-medium text-ink">{pack.label}</p>
+                      <p className="text-[11px] text-muted">{pack.detail}</p>
                     </div>
                   </label>
                 ))}
@@ -1051,10 +1051,10 @@ export function AttendanceScanView({
           {/* Slot selector — shown when the pack has multiple possible slots */}
           {selectedPackType && currentSlots.length > 1 && (
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-slate-700">
+              <p className="text-xs font-medium text-ink">
                 Horario
                 {currentSchedule && (
-                  <span className="ml-1 font-normal text-slate-400">({currentSchedule.name})</span>
+                  <span className="ml-1 font-normal text-muted">({currentSchedule.name})</span>
                 )}
               </p>
               {currentSlots.map((slot) => {
@@ -1064,8 +1064,8 @@ export function AttendanceScanView({
                     key={slotLabel}
                     className={`flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition ${
                       selectedSlot === slotLabel
-                        ? 'border-brand-400 bg-brand-50 ring-1 ring-brand-300'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
+                        ? 'border-brand-400 bg-brand-900/25 ring-1 ring-brand-500/40'
+                        : 'border-line bg-surface hover:border-line'
                     }`}
                   >
                     <input
@@ -1077,8 +1077,8 @@ export function AttendanceScanView({
                       className="accent-brand-500"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800">{slot.days}</p>
-                      <p className="text-[11px] text-slate-500">{slot.time}</p>
+                      <p className="text-xs font-medium text-ink">{slot.days}</p>
+                      <p className="text-[11px] text-muted">{slot.time}</p>
                     </div>
                   </label>
                 )
@@ -1088,8 +1088,8 @@ export function AttendanceScanView({
 
           {/* Info when slot is auto-selected (only 1 option) */}
           {selectedPackType && currentSlots.length === 1 && (
-            <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] text-slate-600">
-              <span className="font-medium text-slate-700">Horario:</span>{' '}
+            <p className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">
+              <span className="font-medium text-ink">Horario:</span>{' '}
               {currentSlots[0].days} — {currentSlots[0].time}
             </p>
           )}

@@ -39,7 +39,7 @@ export function PasswordInput({
         type="button"
         tabIndex={-1}
         disabled={disabled}
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-[11px] font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-[11px] font-semibold text-muted hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
         aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
         onClick={() => setVisible((v) => !v)}
       >

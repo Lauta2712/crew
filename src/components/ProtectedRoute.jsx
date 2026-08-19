@@ -7,7 +7,7 @@ export function ProtectedRoute({ requireAdmin = false, allowedRoles = null }) {
   if (authLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-slate-600 border-t-brand-400" />
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-line border-t-brand-400" />
       </div>
     )
   }

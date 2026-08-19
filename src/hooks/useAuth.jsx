@@ -212,8 +212,11 @@ function useProvideAuth() {
     const authUser = data.user
 
     if (authUser) {
-      // Aseguramos que exista el perfil aunque el trigger no funcione:
-      // upsert por id para no duplicar si ya hay fila.
+      // Respaldo por si el trigger handle_new_user no corrió: intenta crear/actualizar
+      // el perfil. No-fatal — si Supabase requiere confirmación por email, este upsert
+      // corre sin sesión activa (auth.uid() es null) y RLS lo bloquea; el trigger
+      // (SECURITY DEFINER, no pasa por RLS) ya creó la fila igual, así que un error acá
+      // no debe mostrarse como si el registro hubiera fallado.
       const { error: profileError } = await supabase.from('users').upsert(
         {
           id: authUser.id,
@@ -226,7 +229,8 @@ function useProvideAuth() {
       )
 
       if (profileError) {
-        throw profileError
+        // eslint-disable-next-line no-console
+        console.warn('No se pudo sincronizar el perfil tras el registro (no fatal)', profileError)
       }
     }
 
