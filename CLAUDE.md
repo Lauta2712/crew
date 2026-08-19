@@ -2,6 +2,8 @@
 
 Panel de administración para gimnasios boutique (escalada, crossfit, yoga, funcional, etc.). Gestiona asistencia, pagos y planes de los alumnos, con acceso diferenciado por rol. Construido sobre la infraestructura de un proyecto anterior a medida para un gimnasio de escalada (Crux Escalada, hoy discontinuado) — ver `docs/ROADMAP_WHITELABEL.md` para el historial de la generalización.
 
+> ⚠️ **Multi-tenant, no un deploy por gimnasio.** Este único proyecto/deploy (una sola instancia de la app, un solo Supabase) está pensado para vender **suscripciones a N gimnasios distintos** (escalada, gym normal, crossfit, funcional, yoga...), cada uno como una fila en `gyms` con su propio `gym_id`. **No asumir nunca que "este deploy" es para un gimnasio específico** — antes de tratar cualquier contenido (nombre, packs, horarios, precios) como "el contenido real de este gimnasio", verificar cuántas filas hay en `gyms` (hoy, en desarrollo, solo hay una: la de pruebas). Por la misma razón, **ningún dato específico de un gimnasio (nombres de clases, precios, horarios) debe hardcodearse como default compartido** en `src/constants/` — ver el contenido de Crux Escalada todavía hardcodeado en `CLASS_PACKS`/`SCHEDULE_TYPES` (`src/constants/packs.js`) como ejemplo de lo que NO hay que repetir. El alta de cada gimnasio cliente (fila en `gyms` + cuenta admin) es manual hoy (Fase 3 de `docs/ROADMAP_WHITELABEL.md`, sin onboarding self-serve todavía), y el registro público de alumnos (`Login.jsx` → `signUpWithEmail`) todavía asigna a todos los que se registran al mismo `DEFAULT_GYM_ID` (`src/constants/gym.js`) — no hay todavía selección de gimnasio en el alta, es una tarea pendiente de esa misma fase.
+
 ## Stack
 
 - **React 19** + **Vite** — SPA con HMR rápido

@@ -20,17 +20,42 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 -- ---------------------------------------------------------------------
 -- Función + trigger: crea la fila en public.users cuando alguien se
--- registra vía Supabase Auth (rol 'student' por defecto, sin gym_id).
+-- registra vía Supabase Auth (rol 'student' por defecto).
+--
+-- gym_id sale de raw_user_meta_data->>'gym_id' (pasado por signUpWithEmail
+-- vía options.data, ver src/hooks/useAuth.jsx) — resuelve el link de
+-- invitación por gimnasio (/login?gym=<id>, Crew es multi-tenant: N
+-- gimnasios comparten este proyecto). Se valida contra public.gyms acá
+-- mismo (no confiar en el cliente) y cae a null si no vino o no existe;
+-- corre en el trigger (no en un upsert posterior desde el cliente) para
+-- no depender de que haya sesión activa — si el proyecto requiere
+-- confirmación por email, un upsert posterior correría sin auth.uid() y
+-- RLS lo bloquearía.
 -- ---------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
+declare
+  requested_gym_id uuid;
+  resolved_gym_id uuid;
 begin
+  begin
+    requested_gym_id := (new.raw_user_meta_data->>'gym_id')::uuid;
+  exception when others then
+    requested_gym_id := null;
+  end;
+
+  if requested_gym_id is not null and exists (select 1 from public.gyms where id = requested_gym_id) then
+    resolved_gym_id := requested_gym_id;
+  else
+    resolved_gym_id := null;
+  end if;
+
   insert into public.users (id, gym_id, name, email, role, phone)
   values (
     new.id,
-    null,
+    resolved_gym_id,
     coalesce(new.raw_user_meta_data->>'name', ''),
     new.email,
     'student',
@@ -413,6 +438,32 @@ ALTER TABLE "public"."crew_subscriptions" ENABLE ROW LEVEL SECURITY;
 -- coach ve los alumnos de su gym. Sin política de INSERT a propósito — el
 -- alta pasa por el trigger handle_new_user (SECURITY DEFINER, no pasa por
 -- RLS) o por Edge Functions con service_role (create-coach-user, etc.).
+--
+-- Las policies de admin/coach NO subconsultan public.users directamente:
+-- eso causaba "infinite recursion detected in policy for relation users"
+-- (evaluar la policy dispara RLS sobre users de nuevo, que vuelve a evaluar
+-- la misma policy). Se resuelve con funciones SECURITY DEFINER (dueño
+-- "postgres", que tiene BYPASSRLS) que leen el rol/gym_id del usuario
+-- actual sin volver a pasar por RLS. Fix aplicado en prod 2026-08-19.
+CREATE OR REPLACE FUNCTION "public"."current_user_role"() RETURNS "text"
+    LANGUAGE "sql" SECURITY DEFINER STABLE
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT role FROM public.users WHERE id = auth.uid();
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."current_user_gym_id"() RETURNS "uuid"
+    LANGUAGE "sql" SECURITY DEFINER STABLE
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT gym_id FROM public.users WHERE id = auth.uid();
+$$;
+
+REVOKE ALL ON FUNCTION "public"."current_user_role"() FROM "public";
+REVOKE ALL ON FUNCTION "public"."current_user_gym_id"() FROM "public";
+GRANT EXECUTE ON FUNCTION "public"."current_user_role"() TO "authenticated";
+GRANT EXECUTE ON FUNCTION "public"."current_user_gym_id"() TO "authenticated";
+
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "users_select_own" ON "public"."users"
@@ -423,37 +474,26 @@ FOR UPDATE TO "authenticated" USING (id = auth.uid()) WITH CHECK (id = auth.uid(
 
 CREATE POLICY "users_select_admin_scoped" ON "public"."users"
 FOR SELECT TO "authenticated" USING (
-  EXISTS (
-    SELECT 1 FROM public.users me
-    WHERE me.id = auth.uid() AND me.role = 'admin'
-      AND (me.gym_id IS NULL OR users.gym_id IS NULL OR users.gym_id = me.gym_id)
-  )
+  public.current_user_role() = 'admin'
+  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
 );
 
 CREATE POLICY "users_update_admin_scoped" ON "public"."users"
 FOR UPDATE TO "authenticated"
 USING (
-  EXISTS (
-    SELECT 1 FROM public.users me
-    WHERE me.id = auth.uid() AND me.role = 'admin'
-      AND (me.gym_id IS NULL OR users.gym_id IS NULL OR users.gym_id = me.gym_id)
-  )
+  public.current_user_role() = 'admin'
+  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
 )
 WITH CHECK (
-  EXISTS (
-    SELECT 1 FROM public.users me
-    WHERE me.id = auth.uid() AND me.role = 'admin'
-      AND (me.gym_id IS NULL OR users.gym_id IS NULL OR users.gym_id = me.gym_id)
-  )
+  public.current_user_role() = 'admin'
+  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
 );
 
 CREATE POLICY "users_select_coach_scoped" ON "public"."users"
 FOR SELECT TO "authenticated" USING (
-  users.role = 'student' AND EXISTS (
-    SELECT 1 FROM public.users me
-    WHERE me.id = auth.uid() AND me.role = 'coach'
-      AND (me.gym_id IS NULL OR users.gym_id IS NULL OR users.gym_id = me.gym_id)
-  )
+  users.role = 'student'
+  AND public.current_user_role() = 'coach'
+  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
 );
 
 -- gyms: cualquier autenticado puede leer el nombre de SU gimnasio (lo necesitan
@@ -466,6 +506,12 @@ FOR SELECT TO "authenticated" USING (
   id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
   OR EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin' AND u.gym_id IS NULL)
 );
+
+-- Lectura pública (sin sesión): solo id/name viven en esta tabla, nada sensible.
+-- Necesaria para /login?gym=<id> (link de invitación por gimnasio, ver Login.jsx) —
+-- ahí todavía no hay sesión para que aplique gyms_select_own.
+CREATE POLICY "gyms_select_public" ON "public"."gyms"
+FOR SELECT TO "anon", "authenticated" USING (true);
 
 -- plans: lectura scoped por gym (usada por AdminPayments/Students para
 -- alinear el pack pagado con un plan). Sin escritura desde el cliente hoy.

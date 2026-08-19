@@ -25,7 +25,7 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col justify-center overflow-y-auto px-4 py-3 sm:py-4">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-3 sm:py-4 lg:justify-center">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 lg:gap-6">
           <section className="relative isolate space-y-3">
             <div

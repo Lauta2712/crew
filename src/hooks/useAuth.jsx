@@ -181,10 +181,14 @@ function useProvideAuth() {
     return data
   }
 
-  const signUpWithEmail = async (email, password, name) => {
+  const signUpWithEmail = async (email, password, name, gymId) => {
     const normalizedEmail = String(email ?? '')
       .trim()
       .toLowerCase()
+    // gymId viene del link de invitación del gimnasio (/login?gym=<id>) — Crew es
+    // compartido por varios gimnasios, sin link válido cae al gimnasio por defecto
+    // (comportamiento histórico, de cuando el sistema era de un solo gimnasio).
+    const resolvedGymId = gymId || DEFAULT_GYM_ID
 
     // Validación previa: evitar enviar correo de registro si ya existe un usuario
     // (por ejemplo, un profesor) con el mismo email en el mismo gimnasio.
@@ -192,7 +196,7 @@ function useProvideAuth() {
       .from('users')
       .select('id, role')
       .eq('email', normalizedEmail)
-      .eq('gym_id', DEFAULT_GYM_ID)
+      .eq('gym_id', resolvedGymId)
       .limit(1)
       .maybeSingle()
 
@@ -206,6 +210,12 @@ function useProvideAuth() {
     const { data, error } = await supabase.auth.signUp({
       email: normalizedEmail,
       password,
+      options: {
+        // handle_new_user (trigger, SECURITY DEFINER) lee esto para asignar el gimnasio
+        // correcto ya en el insert — necesario porque si el proyecto requiere confirmación
+        // por email, el upsert de más abajo corre sin sesión y RLS lo bloquea.
+        data: { name: name || '', gym_id: resolvedGymId },
+      },
     })
     if (error) throw error
 
@@ -223,7 +233,7 @@ function useProvideAuth() {
           email: normalizedEmail,
           name: name || authUser.email,
           role: 'student',
-          gym_id: DEFAULT_GYM_ID,
+          gym_id: resolvedGymId,
         },
         { onConflict: 'id' },
       )

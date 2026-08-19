@@ -8,6 +8,51 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+function NavItem({ item, onClick }) {
+  return (
+    <NavLink
+      to={item.to}
+      end={item.end ?? item.to === '/app'}
+      onClick={onClick}
+      className={({ isActive }) =>
+        classNames(
+          'flex items-center justify-between rounded px-3 py-2 text-sm font-medium transition',
+          isActive
+            ? 'bg-brand-500 text-bg font-semibold'
+            : 'text-muted hover:bg-surface-2 hover:text-ink',
+        )
+      }
+    >
+      <span>{item.name}</span>
+      {item.badge && (
+        <span className="rounded border border-amber-500/40 bg-amber-950/40 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide text-amber-400">
+          {item.badge}
+        </span>
+      )}
+    </NavLink>
+  )
+}
+
+function NavGroups({ groups, onItemClick }) {
+  return groups.map((group, groupIndex) => (
+    <div
+      key={group.section ?? `group-${groupIndex}`}
+      className={groupIndex > 0 ? 'mt-3 border-t border-line pt-3' : ''}
+    >
+      {group.section && (
+        <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wide text-muted/70">
+          {group.section}
+        </p>
+      )}
+      <div className="space-y-0.5">
+        {group.items.map((item) => (
+          <NavItem key={item.name} item={item} onClick={onItemClick} />
+        ))}
+      </div>
+    </div>
+  ))
+}
+
 export function Layout() {
   return (
     <GymSettingsProvider>
@@ -26,32 +71,78 @@ function LayoutInner() {
   const navigate = useNavigate()
 
   const adminNavigation = [
-    { name: 'Dashboard', to: '/app' },
-    { name: 'Alumnos', to: '/app/students' },
-    { name: 'Asistencias', to: '/app/attendance' },
-    { name: 'Pagos', to: '/app/payments' },
-    { name: 'Profesores', to: '/app/coaches' },
-    { name: 'Configuración', to: '/app/configuration' },
-    { name: 'Check-in Manual', to: '/app/checkin-manual', badge: 'Beta' },
-    { name: 'Escanear QR', to: '/app/scan' },
+    {
+      section: null,
+      items: [{ name: 'Dashboard', to: '/app' }],
+    },
+    {
+      section: 'Gestión',
+      items: [
+        { name: 'Alumnos', to: '/app/students' },
+        { name: 'Profesores', to: '/app/coaches' },
+      ],
+    },
+    {
+      section: 'Operación diaria',
+      items: [
+        { name: 'Asistencias', to: '/app/attendance' },
+        { name: 'Check-in Manual', to: '/app/checkin-manual', badge: 'Beta' },
+        { name: 'Escanear QR', to: '/app/scan' },
+      ],
+    },
+    {
+      section: 'Finanzas',
+      items: [{ name: 'Pagos', to: '/app/payments' }],
+    },
+    {
+      section: 'Sistema',
+      items: [{ name: 'Configuración', to: '/app/configuration' }],
+    },
   ]
 
   const studentNavigation = [
-    { name: 'Inicio', to: '/app' },
-    { name: 'Horarios', to: '/app/schedule' },
-    { name: 'Calendario', to: '/app/calendar' },
-    { name: 'Cursos', to: '/app/courses' },
-    { name: 'Perfil', to: '/app/profile' },
-    { name: 'QR Clases/Grupo', to: '/app/qr' },
-    { name: 'QR Acceso libre', to: '/app/walkin-qr' },
+    {
+      section: null,
+      items: [{ name: 'Inicio', to: '/app' }],
+    },
+    {
+      section: 'Mi actividad',
+      items: [
+        { name: 'Horarios', to: '/app/schedule' },
+        { name: 'Calendario', to: '/app/calendar' },
+        { name: 'Cursos', to: '/app/courses' },
+      ],
+    },
+    {
+      section: 'Mis códigos QR',
+      items: [
+        { name: 'QR Clases/Grupo', to: '/app/qr' },
+        { name: 'QR Acceso libre', to: '/app/walkin-qr' },
+      ],
+    },
+    {
+      section: 'Cuenta',
+      items: [{ name: 'Perfil', to: '/app/profile' }],
+    },
   ]
 
   const coachNavigation = [
-    { name: 'Alumnos', to: '/app', end: true },
-    { name: 'Asistencias', to: '/app/coach/asistencias', end: true, badge: 'Nuevo' },
-    { name: 'Check-in Manual', to: '/app/coach/checkin', end: true, badge: 'Nuevo' },
-    { name: 'Pagos', to: '/app/coach/cobros-libre', end: true },
-    { name: 'Escanear QR', to: '/app/coach/scan', end: true },
+    {
+      section: null,
+      items: [{ name: 'Alumnos', to: '/app', end: true }],
+    },
+    {
+      section: 'Operación diaria',
+      items: [
+        { name: 'Asistencias', to: '/app/coach/asistencias', end: true, badge: 'Nuevo' },
+        { name: 'Check-in Manual', to: '/app/coach/checkin', end: true, badge: 'Nuevo' },
+        { name: 'Escanear QR', to: '/app/coach/scan', end: true },
+      ],
+    },
+    {
+      section: 'Finanzas',
+      items: [{ name: 'Pagos', to: '/app/coach/cobros-libre', end: true }],
+    },
   ]
 
   const navigation = isAdmin
@@ -103,29 +194,8 @@ function LayoutInner() {
           </div>
         </div>
 
-        <nav className="min-h-0 flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden py-1 pr-0.5">
-          {navigation.map((item) => (
-            <NavLink
-              key={item.name}
-              to={item.to}
-              end={item.end ?? item.to === '/app'}
-              className={({ isActive }) =>
-                classNames(
-                  'flex items-center justify-between rounded px-3 py-2 text-sm font-medium transition',
-                  isActive
-                    ? 'bg-brand-500 text-bg font-semibold'
-                    : 'text-muted hover:bg-surface-2 hover:text-ink',
-                )
-              }
-            >
-              <span>{item.name}</span>
-              {item.badge && (
-                <span className="rounded border border-amber-500/40 bg-amber-950/40 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide text-amber-400">
-                  {item.badge}
-                </span>
-              )}
-            </NavLink>
-          ))}
+        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden py-1 pr-0.5">
+          <NavGroups groups={navigation} />
         </nav>
 
         <div className="mt-4 shrink-0">
@@ -271,30 +341,8 @@ function LayoutInner() {
               </button>
             </div>
 
-            <nav className="mb-4 space-y-1">
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.name}
-                  to={item.to}
-                  end={item.end ?? item.to === '/app'}
-                  onClick={closeMobileMenu}
-                  className={({ isActive }) =>
-                    classNames(
-                      'flex items-center justify-between rounded px-3 py-2 text-sm font-medium',
-                      isActive
-                        ? 'bg-brand-500 text-bg font-semibold'
-                        : 'text-muted hover:bg-surface-2 hover:text-ink',
-                    )
-                  }
-                >
-                  <span>{item.name}</span>
-                  {item.badge && (
-                    <span className="rounded border border-amber-500/40 bg-amber-950/40 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide text-amber-400">
-                      {item.badge}
-                    </span>
-                  )}
-                </NavLink>
-              ))}
+            <nav className="mb-4">
+              <NavGroups groups={navigation} onItemClick={closeMobileMenu} />
             </nav>
 
             <div className="mt-4">

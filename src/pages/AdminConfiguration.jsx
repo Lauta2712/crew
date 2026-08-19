@@ -3,6 +3,7 @@ import { supabase } from '../services/supabaseClient'
 import { useAuth } from '../hooks/useAuth'
 import { useGymCatalog } from '../contexts/GymSettingsContext'
 import { ScheduleTypesEditor } from '../components/ScheduleTypesEditor'
+import { ClassPacksEditor } from '../components/ClassPacksEditor'
 import { SelectField } from '../components/SelectField'
 import { WALK_IN_DISCOUNT_ELIGIBLE_LABEL, WALK_IN_STANDARD_LABEL } from '../constants/packs'
 import { FONT_OPTIONS } from '../utils/theme'
@@ -24,6 +25,16 @@ function cloneScheduleDraft(scheduleTypes) {
   }))
 }
 
+function clonePackDraft(classPacks) {
+  return (classPacks ?? []).map((p) => ({
+    id: p.id,
+    name: p.name ?? '',
+    price: p.price ?? 0,
+    classes_per_month: p.classes_per_month ?? 0,
+    unlimited: !!p.unlimited,
+  }))
+}
+
 export function AdminConfigurationPage() {
   const { profile } = useAuth()
   const {
@@ -36,7 +47,7 @@ export function AdminConfigurationPage() {
     reload,
   } = useGymCatalog()
 
-  const [packPrices, setPackPrices] = useState({})
+  const [packDraft, setPackDraft] = useState([])
   const [fw, setFw] = useState({
     priceDefault: 0,
     priceWithDiscount: 0,
@@ -54,6 +65,8 @@ export function AdminConfigurationPage() {
   const [settingsOk, setSettingsOk] = useState(null)
   const [savingSettings, setSavingSettings] = useState(false)
 
+  const [inviteCopied, setInviteCopied] = useState(false)
+
   const [bulkPhrase, setBulkPhrase] = useState('')
   const [bulkBusy, setBulkBusy] = useState(null)
   const [bulkLog, setBulkLog] = useState('')
@@ -61,11 +74,7 @@ export function AdminConfigurationPage() {
 
   useEffect(() => {
     if (catalogLoading) return
-    const next = {}
-    for (const p of classPacks) {
-      if (p.price != null) next[p.id] = p.price
-    }
-    setPackPrices(next)
+    setPackDraft(clonePackDraft(classPacks))
     setFw({ ...walkIn })
     setScheduleDraft(cloneScheduleDraft(scheduleTypes))
     setThemeDraft({
@@ -83,13 +92,29 @@ export function AdminConfigurationPage() {
 
     setSavingSettings(true)
     try {
-      const classPacksOut = {}
-      for (const id of Object.keys(packPrices)) {
-        const n = Number(packPrices[id])
-        if (!Number.isFinite(n) || n < 0) {
-          throw new Error(`Precio inválido para el pack «${id}».`)
+      const classPacksOut = []
+      for (const p of packDraft) {
+        if (!p.id?.trim()) {
+          throw new Error('Hay un pack sin identificador interno.')
         }
-        classPacksOut[id] = { price: Math.round(n) }
+        if (!p.name?.trim()) {
+          throw new Error(`Completá el nombre del pack «${p.id}».`)
+        }
+        const price = Number(p.price)
+        if (!Number.isFinite(price) || price < 0) {
+          throw new Error(`Precio inválido para el pack «${p.name}».`)
+        }
+        const classesPerMonth = Number(p.classes_per_month)
+        if (!p.unlimited && (!Number.isFinite(classesPerMonth) || classesPerMonth < 0)) {
+          throw new Error(`Cantidad de clases inválida para el pack «${p.name}».`)
+        }
+        classPacksOut.push({
+          id: p.id,
+          name: p.name.trim(),
+          price: Math.round(price),
+          classes_per_month: p.unlimited ? 0 : Math.round(classesPerMonth),
+          unlimited: !!p.unlimited,
+        })
       }
 
       for (const sched of scheduleDraft) {
@@ -124,15 +149,23 @@ export function AdminConfigurationPage() {
       if (themeDraft.font && themeDraft.font !== DEFAULT_FONT) themeOut.font = themeDraft.font
       if (themeDraft.logoUrl.trim()) themeOut.logoUrl = themeDraft.logoUrl.trim()
 
+      const walkInOut = walkIn?.scheduleId
+        ? {
+            scheduleId: walkIn.scheduleId,
+            dailyPackId: walkIn.dailyPackId,
+            discountEligiblePackIds: walkIn.discountEligiblePackIds,
+            priceDefault: Math.round(Number(fw.priceDefault)) || 0,
+            priceWithDiscount: Math.round(Number(fw.priceWithDiscount)) || 0,
+            monthlyDefault: Math.round(Number(fw.monthlyDefault)) || 0,
+            monthlyWithDiscount: Math.round(Number(fw.monthlyWithDiscount)) || 0,
+          }
+        : undefined
+
       await saveSettingsData({
+        catalogMode: 'custom',
         classPacks: classPacksOut,
-        freeWall: {
-          priceDefault: Math.round(Number(fw.priceDefault)) || 0,
-          priceWithPack8: Math.round(Number(fw.priceWithDiscount)) || 0,
-          monthlyDefault: Math.round(Number(fw.monthlyDefault)) || 0,
-          monthlyWithPack8: Math.round(Number(fw.monthlyWithDiscount)) || 0,
-        },
         scheduleTypes: scheduleDraft,
+        ...(walkInOut ? { walkIn: walkInOut } : {}),
         theme: themeOut,
       })
       setSettingsOk('Configuración guardada. Los cambios ya aplican en la app.')
@@ -241,11 +274,44 @@ export function AdminConfigurationPage() {
         </p>
       </div>
 
+      {profile?.gym_id && (
+        <section className="rounded-xl border border-line bg-surface p-4 shadow-sm">
+          <h2 className="text-sm font-semibold text-ink">Link de invitación para alumnos</h2>
+          <p className="mt-1 text-xs text-muted">
+            Compartí este link con tus alumnos para que se registren directamente en tu gimnasio
+            (Crew es un sistema compartido por varios gimnasios — este link asegura que se anoten
+            en el tuyo).
+          </p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <input
+              type="text"
+              readOnly
+              className="w-full min-w-0 flex-1 rounded-lg border border-line bg-bg px-2 py-1.5 font-mono text-xs text-ink"
+              value={`${window.location.origin}/login?gym=${profile.gym_id}`}
+              onFocus={(e) => e.target.select()}
+            />
+            <button
+              type="button"
+              className="btn-secondary shrink-0 px-3 py-1.5 text-xs"
+              onClick={async () => {
+                await navigator.clipboard.writeText(
+                  `${window.location.origin}/login?gym=${profile.gym_id}`,
+                )
+                setInviteCopied(true)
+                setTimeout(() => setInviteCopied(false), 2000)
+              }}
+            >
+              {inviteCopied ? 'Copiado ✓' : 'Copiar'}
+            </button>
+          </div>
+        </section>
+      )}
+
       <section className="rounded-xl border border-line bg-surface p-4 shadow-sm">
         <h2 className="text-sm font-semibold text-ink">Precios y horarios</h2>
         <p className="mt-1 text-xs text-muted">
-          Los montos se guardan en la base y se combinan con los valores por defecto del sistema. Los
-          horarios se editan con el formulario de abajo (sin código).
+          Packs y horarios propios de tu gimnasio — se guardan tal cual los definas acá, sin
+          valores por defecto de otro gimnasio.
         </p>
 
         {settingsError && (
@@ -261,51 +327,44 @@ export function AdminConfigurationPage() {
 
         <form className="mt-4 space-y-5" onSubmit={handleSaveSettings}>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">Packs (ARS)</p>
-            <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              {classPacks.filter((p) => p.price != null).map((p) => (
-                <label key={p.id} className="block text-sm">
-                  <span className="text-muted">{p.name}</span>
-                  <input
-                    type="number"
-                    min={0}
-                    className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
-                    value={packPrices[p.id] ?? ''}
-                    onChange={(e) =>
-                      setPackPrices((prev) => ({ ...prev, [p.id]: e.target.value }))
-                    }
-                  />
-                </label>
-              ))}
-            </div>
+            <h3 className="text-sm font-semibold text-ink">Packs de clases</h3>
+            {catalogLoading ? (
+              <p className="mt-2 text-sm text-muted">Cargando…</p>
+            ) : (
+              <div className="mt-3">
+                <ClassPacksEditor value={packDraft} onChange={setPackDraft} />
+              </div>
+            )}
           </div>
 
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">Acceso libre (ARS)</p>
-            <p className="mt-1 text-[11px] text-muted">
-              Tarifa reducida: {WALK_IN_DISCOUNT_ELIGIBLE_LABEL}. Tarifa estándar:{' '}
-              {WALK_IN_STANDARD_LABEL}.
-            </p>
-            <div className="mt-2 grid gap-3 sm:grid-cols-2">
-              {[
-                ['priceDefault', `Pase diario — ${WALK_IN_STANDARD_LABEL}`],
-                ['priceWithDiscount', `Pase diario — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
-                ['monthlyDefault', `Mensual acceso libre — ${WALK_IN_STANDARD_LABEL}`],
-                ['monthlyWithDiscount', `Mensual acceso libre — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
-              ].map(([key, label]) => (
-                <label key={key} className="block text-sm">
-                  <span className="text-muted">{label}</span>
-                  <input
-                    type="number"
-                    min={0}
-                    className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
-                    value={fw[key] ?? ''}
-                    onChange={(e) => setFw((prev) => ({ ...prev, [key]: e.target.value }))}
-                  />
-                </label>
-              ))}
+          {walkIn?.scheduleId && (
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted">Acceso libre (ARS)</p>
+              <p className="mt-1 text-[11px] text-muted">
+                Tarifa reducida: {WALK_IN_DISCOUNT_ELIGIBLE_LABEL}. Tarifa estándar:{' '}
+                {WALK_IN_STANDARD_LABEL}.
+              </p>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                {[
+                  ['priceDefault', `Pase diario — ${WALK_IN_STANDARD_LABEL}`],
+                  ['priceWithDiscount', `Pase diario — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
+                  ['monthlyDefault', `Mensual acceso libre — ${WALK_IN_STANDARD_LABEL}`],
+                  ['monthlyWithDiscount', `Mensual acceso libre — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
+                ].map(([key, label]) => (
+                  <label key={key} className="block text-sm">
+                    <span className="text-muted">{label}</span>
+                    <input
+                      type="number"
+                      min={0}
+                      className="mt-1 w-full rounded-lg border border-line px-2 py-1.5 text-sm"
+                      value={fw[key] ?? ''}
+                      onChange={(e) => setFw((prev) => ({ ...prev, [key]: e.target.value }))}
+                    />
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div>
             <h3 className="text-sm font-semibold text-ink">Horarios que ven los alumnos</h3>

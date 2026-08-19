@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { GYM_DISPLAY_NAME, THEME_LOGO_URL } from '../constants/gym'
+import { supabase } from '../services/supabaseClient'
 import { toSpanishError } from '../utils/errors'
 import { BrandMark } from '../components/BrandMark'
 import { PasswordInput } from '../components/PasswordInput'
@@ -24,6 +25,36 @@ export function LoginPage() {
   const [success, setSuccess] = useState(null)
   const [name, setName] = useState('')
   const navigate = useNavigate()
+
+  // Link de invitación por gimnasio (compartido desde Configuración → admin):
+  // /login?gym=<gym_id>. Sin este param, el registro cae al gimnasio por defecto
+  // (comportamiento histórico). 'checking' | 'valid' | 'invalid' | null (sin link).
+  const [searchParams] = useSearchParams()
+  const inviteGymId = searchParams.get('gym')
+  const [inviteGymStatus, setInviteGymStatus] = useState(inviteGymId ? 'checking' : null)
+  const [inviteGymName, setInviteGymName] = useState(null)
+
+  useEffect(() => {
+    if (!inviteGymId) return
+    let active = true
+    supabase
+      .from('gyms')
+      .select('id, name')
+      .eq('id', inviteGymId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!active) return
+        if (data) {
+          setInviteGymStatus('valid')
+          setInviteGymName(data.name)
+        } else {
+          setInviteGymStatus('invalid')
+        }
+      })
+    return () => {
+      active = false
+    }
+  }, [inviteGymId])
 
   useEffect(() => {
     const hash = window.location.hash?.replace(/^#/, '')
@@ -51,7 +82,12 @@ export function LoginPage() {
         await signInWithEmail(email, password)
         navigate('/app', { replace: true })
       } else {
-        const data = await signUpWithEmail(email, password, name)
+        const data = await signUpWithEmail(
+          email,
+          password,
+          name,
+          inviteGymStatus === 'valid' ? inviteGymId : null,
+        )
         // Si el proyecto requiere confirmación por email, Supabase no entrega sesión.
         if (!data?.session) {
           setMode('login')
@@ -97,6 +133,18 @@ export function LoginPage() {
             {mode === 'login' ? 'Inicia sesión' : 'Crea una cuenta'}
           </h2>
         </div>
+
+        {mode === 'register' && inviteGymStatus === 'valid' && (
+          <div className="mb-4 rounded-xl border border-accent-500/40 bg-accent-500/10 px-3 py-2.5 text-sm text-accent-600">
+            Te vas a registrar en <span className="font-semibold">{inviteGymName}</span>.
+          </div>
+        )}
+        {mode === 'register' && inviteGymStatus === 'invalid' && (
+          <div className="mb-4 rounded-xl border border-amber-500/40 bg-amber-950/40 px-3 py-2.5 text-sm text-amber-400">
+            El link de invitación no es válido. Pedile al gimnasio un link nuevo antes de
+            registrarte.
+          </div>
+        )}
 
         {blockedAccount && (
           <div className="mb-4 rounded-xl border border-amber-500/40 bg-amber-950/40 px-3 py-2.5 text-sm text-amber-400">
@@ -187,7 +235,7 @@ export function LoginPage() {
 
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || (mode === 'register' && inviteGymStatus === 'invalid')}
             className="btn-primary flex w-full items-center justify-center gap-2"
           >
             {submitting

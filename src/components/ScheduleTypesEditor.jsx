@@ -1,3 +1,20 @@
+function slugify(name, existingIds) {
+  let base = String(name ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '') // tildes tras normalize('NFD')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+  if (!base) base = 'horario'
+  let id = base
+  let n = 2
+  while (existingIds.includes(id)) {
+    id = `${base}_${n}`
+    n++
+  }
+  return id
+}
+
 /**
  * Editor visual de horarios (sin JSON). Misma forma que guarda gym_settings.scheduleTypes.
  * @param {{ value: Array<{ id: string, name: string, slots: Array<{ days: string, time: string }> }>, onChange: (next: typeof value) => void }} props
@@ -30,6 +47,15 @@ export function ScheduleTypesEditor({ value, onChange }) {
     updateSchedule(scheduleIndex, { slots: slots.length ? slots : [{ days: '', time: '' }] })
   }
 
+  const addSchedule = () => {
+    const id = slugify('Horario nuevo', value.map((s) => s.id))
+    onChange([...value, { id, name: 'Horario nuevo', slots: [{ days: '', time: '' }] }])
+  }
+
+  const removeSchedule = (scheduleIndex) => {
+    onChange(value.filter((_, i) => i !== scheduleIndex))
+  }
+
   return (
     <div className="space-y-4">
       <p className="text-xs text-muted">
@@ -57,6 +83,13 @@ export function ScheduleTypesEditor({ value, onChange }) {
             >
               id: {sched.id}
             </span>
+            <button
+              type="button"
+              className="shrink-0 rounded-md border border-red-500/40 px-2 py-1 text-xs font-medium text-red-400 hover:bg-red-950/40"
+              onClick={() => removeSchedule(si)}
+            >
+              Eliminar horario
+            </button>
           </div>
 
           <div className="mt-3 space-y-3">
@@ -108,6 +141,13 @@ export function ScheduleTypesEditor({ value, onChange }) {
           </div>
         </div>
       ))}
+      <button
+        type="button"
+        className="w-full rounded-xl border border-dashed border-line px-3 py-2.5 text-sm font-medium text-muted hover:border-brand-400 hover:text-brand-400"
+        onClick={addSchedule}
+      >
+        + Agregar horario
+      </button>
     </div>
   )
 }
