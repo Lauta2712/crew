@@ -779,7 +779,7 @@ export function AttendanceScanView({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="mt-4 text-2xl font-bold text-ink">
+                <p className="mt-4 break-words text-xl font-bold text-ink sm:text-2xl">
                   {feedback.studentName}
                 </p>
                 <p className="mt-1 text-sm font-medium text-emerald-400">

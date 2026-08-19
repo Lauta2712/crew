@@ -94,7 +94,7 @@ function PlanCard({ plan, billingPeriod, usdArsRate, open, onToggleOpen }) {
         </span>
       )}
 
-      <div className={plan.highlighted ? 'pr-24' : undefined}>
+      <div className={plan.highlighted ? 'pr-20 sm:pr-24' : undefined}>
         <h3 className="text-sm font-semibold text-ink">{plan.name}</h3>
         <p className="mt-0.5 text-[11px] leading-snug text-muted">{plan.description}</p>
       </div>

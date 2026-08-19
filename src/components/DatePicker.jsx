@@ -38,7 +38,7 @@ export function DatePicker({ value, max, onChange, className = '' }) {
   const valueParsed = useMemo(() => parseDate(value), [value])
 
   const [open, setOpen] = useState(false)
-  const [coords, setCoords] = useState({ top: 0, left: 0 })
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: DROPDOWN_W })
   const [viewYear, setViewYear] = useState(valueParsed?.year ?? today.year)
   const [viewMonth, setViewMonth] = useState(valueParsed?.month ?? today.month)
 
@@ -83,10 +83,12 @@ export function DatePicker({ value, max, onChange, className = '' }) {
     // Position below trigger, or above if not enough space below
     const top = spaceBelow >= dropdownH ? rect.bottom + 4 : rect.top - dropdownH - 4
 
-    // Align left with trigger, but clamp to viewport right edge
-    const left = Math.min(rect.left, window.innerWidth - DROPDOWN_W - 8)
+    // Align left with trigger, pero clampeado a ambos bordes del viewport
+    // (en pantallas angostas el ancho fijo del dropdown puede no entrar del todo)
+    const width = Math.min(DROPDOWN_W, window.innerWidth - 16)
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8))
 
-    setCoords({ top, left })
+    setCoords({ top, left, width })
     setOpen((o) => !o)
   }
 
@@ -144,7 +146,7 @@ export function DatePicker({ value, max, onChange, className = '' }) {
   const dropdown = open && createPortal(
     <div
       ref={dropdownRef}
-      style={{ position: 'fixed', top: coords.top, left: coords.left, width: DROPDOWN_W, zIndex: 9999 }}
+      style={{ position: 'fixed', top: coords.top, left: coords.left, width: coords.width, zIndex: 9999 }}
       className="rounded-xl border border-line bg-surface p-3.5"
     >
       {/* Month navigation */}

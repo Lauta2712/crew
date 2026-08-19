@@ -311,7 +311,7 @@ export function AdminPaymentsPage() {
                   type="button"
                   role="tab"
                   aria-selected={selected}
-                  className={`rounded-xl px-2 py-1.5 text-center text-xs font-semibold leading-tight transition sm:px-4 ${
+                  className={`rounded-xl px-2 py-1.5 text-center text-[11px] font-semibold leading-tight transition sm:px-4 sm:text-xs ${
                     selected
                       ? 'bg-[var(--color-brand-900)] text-white shadow-md ring-2 ring-[var(--color-brand-600)] ring-offset-1 ring-offset-surface'
                       : 'border border-line bg-bg text-ink hover:border-line hover:bg-surface'
