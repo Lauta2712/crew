@@ -91,6 +91,7 @@ npm run lint       # ESLint
 | `admin` | Panel completo: alumnos, asistencia, pagos, coaches, configuración, check-in manual, escáner QR |
 | `coach` | Escáner QR limitado a sus alumnos + cobros de muro libre |
 | `student` | Vista personal: horario, planes, calendario, perfil + QR propio |
+| `superadmin` | Gestión interna de Crew (no es un rol de gimnasio cliente): Dashboard global de solo lectura con gimnasios, alumnos y pagos de **todos** los gimnasios (`src/pages/SuperAdminDashboard.jsx`). `gym_id = NULL`. Alta manual por SQL (`UPDATE users SET role='superadmin', gym_id=NULL WHERE email=...`) — sin self-serve. Sin permisos de escritura sobre datos de gimnasios clientes todavía (fase futura: "modo soporte" para entrar a un gimnasio puntual con permisos de admin). |
 
 ### Flujo de autenticación
 

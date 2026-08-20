@@ -62,7 +62,7 @@ export function Layout() {
 }
 
 function LayoutInner() {
-  const { profile, isAdmin, isCoach, signOut } = useAuth()
+  const { profile, isAdmin, isCoach, isSuperAdmin, signOut } = useAuth()
   const { gymName, theme } = useGymCatalog()
   const logoSrc = theme?.logoUrl
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -145,11 +145,20 @@ function LayoutInner() {
     },
   ]
 
-  const navigation = isAdmin
-    ? adminNavigation
-    : isCoach
-      ? coachNavigation
-      : studentNavigation
+  const superAdminNavigation = [
+    {
+      section: null,
+      items: [{ name: 'Dashboard', to: '/app' }],
+    },
+  ]
+
+  const navigation = isSuperAdmin
+    ? superAdminNavigation
+    : isAdmin
+      ? adminNavigation
+      : isCoach
+        ? coachNavigation
+        : studentNavigation
 
   const openMobileMenu = () => {
     setMobileOpen(true)
@@ -203,7 +212,7 @@ function LayoutInner() {
           <p className="truncate text-xs font-semibold text-ink">
             {profile?.name || profile?.name || profile?.email || 'Usuario'}
           </p>
-          {profile?.role && isAdmin && (
+          {profile?.role && (isAdmin || isSuperAdmin) && (
             <p className="text-[10px] capitalize text-muted">
               Rol: {profile.role}
             </p>
@@ -352,7 +361,7 @@ function LayoutInner() {
               <p className="truncate text-xs font-semibold text-ink">
                 {profile?.name || profile?.name || profile?.email || 'Usuario'}
               </p>
-              {profile?.role && isAdmin && (
+              {profile?.role && (isAdmin || isSuperAdmin) && (
                 <p className="text-[10px] capitalize text-muted">
                   Rol: {profile.role}
                 </p>

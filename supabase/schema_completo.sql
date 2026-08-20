@@ -381,6 +381,10 @@ USING (EXISTS (
     AND (me.gym_id IS NULL OR payments.student_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
 ));
 
+-- superadmin: solo lectura cross-gym (Dashboard global), ver current_user_role() más abajo.
+CREATE POLICY "payments_select_superadmin" ON "public"."payments"
+FOR SELECT TO "authenticated" USING (public.current_user_role() = 'superadmin');
+
 CREATE POLICY "payments_select_student_own" ON "public"."payments"
 FOR SELECT TO "authenticated" USING (student_id = auth.uid());
 
@@ -495,6 +499,10 @@ FOR SELECT TO "authenticated" USING (
   AND public.current_user_role() = 'coach'
   AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
 );
+
+-- superadmin: solo lectura cross-gym (Dashboard global) — ve todos los usuarios de todos los gimnasios.
+CREATE POLICY "users_select_superadmin" ON "public"."users"
+FOR SELECT TO "authenticated" USING (public.current_user_role() = 'superadmin');
 
 -- gyms: cualquier autenticado puede leer el nombre de SU gimnasio (lo necesitan
 -- todos los roles para el header/perfil). Sin políticas de escritura — el alta

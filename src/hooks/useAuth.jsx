@@ -255,6 +255,7 @@ function useProvideAuth() {
   const isAdmin = profile?.role === 'admin'
   const isStudent = profile?.role === 'student'
   const isCoach = profile?.role === 'coach'
+  const isSuperAdmin = profile?.role === 'superadmin'
 
   const clearBlockedMessage = () => setBlockedAccount(false)
 
@@ -265,6 +266,7 @@ function useProvideAuth() {
     isAdmin,
     isStudent,
     isCoach,
+    isSuperAdmin,
     authLoading: loading,
     blockedAccount,
     clearBlockedMessage,
