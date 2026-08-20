@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { useGymCatalog } from '../contexts/GymSettingsContext'
+import { AmountValue } from './AmountValue'
 import { formatDate } from '../utils/dateFormatting'
 import { getPackById, getScheduleTypeById, isUnlimitedPack } from '../constants/packs'
 import { computeAttendancePolicy, inclusiveCycleEndLabel } from '../utils/attendancePolicy'
@@ -599,7 +600,7 @@ export function StudentDetailModal({
                             <p className="font-medium text-ink">{formatDate(p.paid_at)}</p>
                             {p.amount != null && (
                               <p className="text-muted">
-                                ${Number(p.amount).toLocaleString('es-AR')}
+                                <AmountValue>${Number(p.amount).toLocaleString('es-AR')}</AmountValue>
                               </p>
                             )}
                           </div>

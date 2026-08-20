@@ -1,16 +1,28 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '../services/supabaseClient'
-import { toSpanishError } from '../utils/errors'
+import { getFunctionsInvokeFailureMessage, toSpanishError } from '../utils/errors'
+import { invokeEdgeFunctionWithUserJwt } from '../utils/edgeFunctions'
+import { saveSupportReturnSession } from '../utils/supportMode'
+import { AmountValue } from '../components/AmountValue'
+
+const LOGIN_AS_GYM_ADMIN_EDGE_FUNCTION =
+  import.meta.env.VITE_SUPABASE_LOGIN_AS_GYM_ADMIN_FUNCTION?.trim() ||
+  'login-as-gym-admin'
 
 function formatCurrency(amount) {
   return `$${Number(amount || 0).toLocaleString('es-AR')}`
 }
 
 export function SuperAdminDashboardPage() {
+  const navigate = useNavigate()
   const [gymRows, setGymRows] = useState([])
   const [totals, setTotals] = useState({ gyms: 0, students: 0, revenueMonth: 0, revenueTotal: 0 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [togglingGymId, setTogglingGymId] = useState(null)
+  const [confirmPauseId, setConfirmPauseId] = useState(null)
+  const [loggingInGymId, setLoggingInGymId] = useState(null)
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -18,7 +30,7 @@ export function SuperAdminDashboardPage() {
     try {
       const [{ data: gyms, error: gymsError }, { data: students, error: studentsError }, { data: payments, error: paymentsError }] =
         await Promise.all([
-          supabase.from('gyms').select('id, name, created_at').order('name', { ascending: true }),
+          supabase.from('gyms').select('id, name, created_at, paused_at').order('name', { ascending: true }),
           supabase.from('users').select('id, gym_id').eq('role', 'student').is('deleted_at', null),
           supabase.from('payments').select('id, amount, paid_at, student_id'),
         ])
@@ -63,6 +75,7 @@ export function SuperAdminDashboardPage() {
         id: g.id,
         name: g.name,
         createdAt: g.created_at,
+        pausedAt: g.paused_at,
         ...(statsByGym.get(g.id) ?? { students: 0, revenueMonth: 0, revenueTotal: 0 }),
       }))
       rows.sort((a, b) => b.revenueMonth - a.revenueMonth)
@@ -85,6 +98,72 @@ export function SuperAdminDashboardPage() {
     loadData()
   }, [loadData])
 
+  const handleTogglePause = async (gymId, pause) => {
+    setTogglingGymId(gymId)
+    setError(null)
+    try {
+      const { error: updateError } = await supabase
+        .from('gyms')
+        .update({ paused_at: pause ? new Date().toISOString() : null })
+        .eq('id', gymId)
+      if (updateError) throw updateError
+      setConfirmPauseId(null)
+      await loadData()
+    } catch (err) {
+      setError(toSpanishError(err, 'No se pudo actualizar el estado del gimnasio'))
+    } finally {
+      setTogglingGymId(null)
+    }
+  }
+
+  const handleLoginAsAdmin = async (gymId, gymName) => {
+    setLoggingInGymId(gymId)
+    setError(null)
+    try {
+      const {
+        data: { session: currentSession },
+        error: sessionError,
+      } = await supabase.auth.getSession()
+      if (sessionError) throw sessionError
+      if (!currentSession) throw new Error('No hay sesión activa.')
+
+      const { data, error: fnError } = await invokeEdgeFunctionWithUserJwt(
+        LOGIN_AS_GYM_ADMIN_EDGE_FUNCTION,
+        { body: { gym_id: gymId } },
+      )
+
+      if (fnError) {
+        const details = await getFunctionsInvokeFailureMessage(
+          fnError,
+          LOGIN_AS_GYM_ADMIN_EDGE_FUNCTION,
+        )
+        throw new Error(details || 'No se pudo iniciar sesión como admin')
+      }
+      if (data?.error) throw new Error(String(data.error))
+      if (!data?.success) {
+        throw new Error(
+          `La función «${LOGIN_AS_GYM_ADMIN_EDGE_FUNCTION}» no confirmó el acceso.`,
+        )
+      }
+
+      // Guardamos la sesión de superadmin ANTES de canjear el token — así "Volver a
+      // superadmin" puede restaurarla sin pedir contraseña de nuevo.
+      saveSupportReturnSession(currentSession, gymName)
+
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        email: data.email,
+        token: data.hashed_token,
+        type: 'magiclink',
+      })
+      if (verifyError) throw verifyError
+
+      navigate('/app', { replace: true })
+    } catch (err) {
+      setError(toSpanishError(err, 'No se pudo iniciar sesión como admin del gimnasio'))
+      setLoggingInGymId(null)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-5">
       <div className="shrink-0 flex flex-wrap items-center justify-between gap-2">
@@ -93,7 +172,8 @@ export function SuperAdminDashboardPage() {
             Panel superadmin
           </h1>
           <p className="text-sm text-muted">
-            Vista global de todos los gimnasios — solo lectura.
+            Vista global de todos los gimnasios. Métricas de solo lectura — podés pausar o
+            reactivar un gimnasio desde acá.
           </p>
         </div>
         <button
@@ -121,12 +201,12 @@ export function SuperAdminDashboardPage() {
         </StatCard>
         <StatCard label="Ingresos este mes" loading={loading}>
           <p className="font-mono text-2xl font-semibold text-brand-500 sm:text-3xl">
-            {formatCurrency(totals.revenueMonth)}
+            <AmountValue>{formatCurrency(totals.revenueMonth)}</AmountValue>
           </p>
         </StatCard>
         <StatCard label="Ingresos históricos" loading={loading}>
           <p className="font-mono text-2xl font-semibold text-ink sm:text-3xl">
-            {formatCurrency(totals.revenueTotal)}
+            <AmountValue>{formatCurrency(totals.revenueTotal)}</AmountValue>
           </p>
         </StatCard>
       </div>
@@ -146,7 +226,14 @@ export function SuperAdminDashboardPage() {
                 key={row.id}
                 className="card-muted flex flex-wrap items-center justify-between gap-3 py-2.5"
               >
-                <p className="min-w-0 flex-1 truncate font-semibold text-ink">{row.name}</p>
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  <p className="min-w-0 truncate font-semibold text-ink">{row.name}</p>
+                  {row.pausedAt && (
+                    <span className="shrink-0 rounded border border-amber-500/40 bg-amber-950/40 px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide text-amber-400">
+                      Pausado
+                    </span>
+                  )}
+                </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-4 text-right">
                   <div>
                     <p className="text-[10px] uppercase tracking-wide text-muted">Alumnos</p>
@@ -154,12 +241,68 @@ export function SuperAdminDashboardPage() {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wide text-muted">Este mes</p>
-                    <p className="font-mono text-sm text-brand-500">{formatCurrency(row.revenueMonth)}</p>
+                    <p className="font-mono text-sm text-brand-500">
+                      <AmountValue>{formatCurrency(row.revenueMonth)}</AmountValue>
+                    </p>
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wide text-muted">Histórico</p>
-                    <p className="font-mono text-sm text-ink">{formatCurrency(row.revenueTotal)}</p>
+                    <p className="font-mono text-sm text-ink">
+                      <AmountValue>{formatCurrency(row.revenueTotal)}</AmountValue>
+                    </p>
                   </div>
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 py-1.5 text-[11px]"
+                    onClick={() => handleLoginAsAdmin(row.id, row.name)}
+                    disabled={loggingInGymId === row.id || Boolean(row.pausedAt)}
+                    title={
+                      row.pausedAt
+                        ? 'Reactivá el gimnasio para poder entrar como soporte.'
+                        : 'Entrar como el admin de este gimnasio (modo soporte)'
+                    }
+                  >
+                    {loggingInGymId === row.id ? 'Ingresando…' : 'Ingresar'}
+                  </button>
+                  {confirmPauseId === row.id ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] text-amber-400">¿Pausar «{row.name}»?</span>
+                      <button
+                        type="button"
+                        className="rounded-lg border border-red-500/40 bg-surface px-2 py-1 text-[11px] font-medium text-red-400 hover:bg-red-950/40 disabled:opacity-50"
+                        onClick={() => handleTogglePause(row.id, true)}
+                        disabled={togglingGymId === row.id}
+                      >
+                        {togglingGymId === row.id ? 'Pausando…' : 'Sí, pausar'}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary px-2 py-1 text-[11px]"
+                        onClick={() => setConfirmPauseId(null)}
+                        disabled={togglingGymId === row.id}
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : row.pausedAt ? (
+                    <button
+                      type="button"
+                      className="btn-secondary px-3 py-1.5 text-[11px]"
+                      onClick={() => handleTogglePause(row.id, false)}
+                      disabled={togglingGymId === row.id}
+                    >
+                      {togglingGymId === row.id ? 'Reactivando…' : 'Reactivar'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="rounded-lg border border-red-500/40 bg-surface px-3 py-1.5 text-[11px] font-medium text-red-400 hover:bg-red-950/40 disabled:opacity-50"
+                      onClick={() => setConfirmPauseId(row.id)}
+                      disabled={togglingGymId === row.id}
+                    >
+                      Pausar
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

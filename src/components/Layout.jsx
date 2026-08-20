@@ -2,7 +2,49 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { BrandMark } from './BrandMark'
 import { useAuth } from '../hooks/useAuth'
+import { AmountVisibilityProvider, useAmountVisibility } from '../hooks/useAmountVisibility'
 import { GymSettingsProvider, useGymCatalog } from '../contexts/GymSettingsContext'
+import { supabase } from '../services/supabaseClient'
+import {
+  clearSupportReturnSession,
+  getSupportReturnSession,
+} from '../utils/supportMode'
+
+function EyeIcon({ hidden }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width="18"
+      height="18"
+      aria-hidden="true"
+    >
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+      {hidden && <line x1="3" y1="3" x2="21" y2="21" />}
+    </svg>
+  )
+}
+
+function AmountVisibilityToggle({ className = '' }) {
+  const { amountsHidden, toggleAmountsHidden } = useAmountVisibility()
+  return (
+    <button
+      type="button"
+      onClick={toggleAmountsHidden}
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded text-muted hover:bg-surface-2 hover:text-ink ${className}`}
+      aria-pressed={amountsHidden}
+      aria-label={amountsHidden ? 'Mostrar montos' : 'Ocultar montos'}
+      title={amountsHidden ? 'Mostrar montos' : 'Ocultar montos'}
+    >
+      <EyeIcon hidden={amountsHidden} />
+    </button>
+  )
+}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -55,9 +97,11 @@ function NavGroups({ groups, onItemClick }) {
 
 export function Layout() {
   return (
-    <GymSettingsProvider>
-      <LayoutInner />
-    </GymSettingsProvider>
+    <AmountVisibilityProvider>
+      <GymSettingsProvider>
+        <LayoutInner />
+      </GymSettingsProvider>
+    </AmountVisibilityProvider>
   )
 }
 
@@ -68,7 +112,40 @@ function LayoutInner() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileAnimatingIn, setMobileAnimatingIn] = useState(false)
   const [emailConfirmedNotice, setEmailConfirmedNotice] = useState(false)
+  const [supportReturn, setSupportReturn] = useState(() => getSupportReturnSession())
+  const [returningToSuperadmin, setReturningToSuperadmin] = useState(false)
   const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    clearSupportReturnSession()
+    try {
+      await signOut()
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error cerrando sesión', error)
+    } finally {
+      navigate('/', { replace: true })
+    }
+  }
+
+  const handleReturnToSuperadmin = async () => {
+    if (!supportReturn) return
+    setReturningToSuperadmin(true)
+    try {
+      const { error } = await supabase.auth.setSession({
+        access_token: supportReturn.access_token,
+        refresh_token: supportReturn.refresh_token,
+      })
+      if (error) throw error
+      clearSupportReturnSession()
+      setSupportReturn(null)
+      navigate('/app', { replace: true })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error volviendo a superadmin', error)
+      setReturningToSuperadmin(false)
+    }
+  }
 
   const adminNavigation = [
     {
@@ -148,7 +225,10 @@ function LayoutInner() {
   const superAdminNavigation = [
     {
       section: null,
-      items: [{ name: 'Dashboard', to: '/app' }],
+      items: [
+        { name: 'Dashboard', to: '/app', end: true },
+        { name: 'Nuevo gimnasio', to: '/app/superadmin/gyms/new', end: true, badge: 'Nuevo' },
+      ],
     },
   ]
 
@@ -220,16 +300,7 @@ function LayoutInner() {
           <button
             type="button"
             className="btn-secondary mt-2 w-full px-2 py-1.5 text-[11px]"
-            onClick={async () => {
-              try {
-                await signOut()
-              } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error('Error cerrando sesión', error)
-              } finally {
-                navigate('/', { replace: true })
-              }
-            }}
+            onClick={handleSignOut}
           >
             Cerrar sesión
           </button>
@@ -268,6 +339,7 @@ function LayoutInner() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            {(isAdmin || isCoach || isSuperAdmin) && <AmountVisibilityToggle />}
             <p className="hidden text-xs text-muted sm:block">
               {profile?.name || profile?.name || profile?.email}
             </p>
@@ -275,21 +347,28 @@ function LayoutInner() {
             <button
               type="button"
               className="btn-secondary hidden px-3 py-1 text-xs md:inline-flex"
-              onClick={async () => {
-                try {
-                  await signOut()
-                } catch (error) {
-                  // eslint-disable-next-line no-console
-                  console.error('Error cerrando sesión', error)
-                } finally {
-                  navigate('/', { replace: true })
-                }
-              }}
+              onClick={handleSignOut}
             >
               Salir
             </button>
           </div>
         </header>
+
+        {supportReturn && (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-amber-500/40 bg-amber-950/40 px-5 py-2 text-xs text-amber-400 md:px-6">
+            <p>
+              Modo soporte: viendo como admin de «{supportReturn.gym_name || 'gimnasio'}».
+            </p>
+            <button
+              type="button"
+              className="font-semibold underline-offset-2 hover:underline disabled:opacity-50"
+              onClick={handleReturnToSuperadmin}
+              disabled={returningToSuperadmin}
+            >
+              {returningToSuperadmin ? 'Volviendo…' : 'Volver a superadmin'}
+            </button>
+          </div>
+        )}
 
         <main className="min-h-0 flex-1 overflow-y-auto px-5 pt-5 pb-28 md:px-6 md:pt-5 md:pb-12">
           <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-3 min-w-0">
@@ -369,16 +448,9 @@ function LayoutInner() {
               <button
                 type="button"
                 className="btn-secondary mt-2 w-full px-2 py-1.5 text-[11px]"
-                onClick={async () => {
-                  try {
-                    await signOut()
-                  } catch (error) {
-                    // eslint-disable-next-line no-console
-                    console.error('Error cerrando sesión', error)
-                  } finally {
-                    closeMobileMenu()
-                    navigate('/', { replace: true })
-                  }
+                onClick={() => {
+                  closeMobileMenu()
+                  handleSignOut()
                 }}
               >
                 Cerrar sesión

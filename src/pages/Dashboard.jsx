@@ -13,6 +13,7 @@ import {
   Cell,
 } from 'recharts'
 import { supabase } from '../services/supabaseClient'
+import { AmountValue } from '../components/AmountValue'
 import { useAuth } from '../hooks/useAuth'
 import { useGymCatalog } from '../contexts/GymSettingsContext'
 import { isWalkInSchedule } from '../constants/packs'
@@ -263,7 +264,7 @@ export function DashboardPage() {
           <p className="font-mono text-2xl font-semibold text-ink sm:text-3xl">{stats?.paymentsCount ?? 0}</p>
           {stats?.paymentsTotal != null && stats.paymentsTotal > 0 && (
             <p className="mt-0.5 font-mono text-xs font-medium text-muted">
-              ${Number(stats.paymentsTotal).toLocaleString('es-AR')} total
+              <AmountValue>${Number(stats.paymentsTotal).toLocaleString('es-AR')}</AmountValue> total
             </p>
           )}
         </StatCard>

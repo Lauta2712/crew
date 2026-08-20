@@ -17,6 +17,17 @@ export function useAuth() {
   return ctx
 }
 
+/** Un gimnasio pausado bloquea el login de su admin/coach/student — superadmin no tiene gym_id y no aplica. */
+async function isGymPaused(profile) {
+  if (!profile || profile.role === 'superadmin' || !profile.gym_id) return false
+  const { data: gym } = await supabase
+    .from('gyms')
+    .select('paused_at')
+    .eq('id', profile.gym_id)
+    .maybeSingle()
+  return Boolean(gym?.paused_at)
+}
+
 function isInvalidRefreshTokenError(error) {
   const message = `${error?.message ?? ''}`.toLowerCase()
   return (
@@ -31,6 +42,7 @@ function useProvideAuth() {
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [blockedAccount, setBlockedAccount] = useState(false)
+  const [gymPausedAccount, setGymPausedAccount] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -38,6 +50,7 @@ function useProvideAuth() {
     async function loadSessionAndProfile() {
       setLoading(true)
       setBlockedAccount(false)
+      setGymPausedAccount(false)
       const {
         data: { session },
         error,
@@ -96,8 +109,16 @@ function useProvideAuth() {
             }
           }
 
+          const gymPaused = await isGymPaused(profile)
+
           if (profile?.blocked) {
             setBlockedAccount(true)
+            await supabase.auth.signOut()
+            setSession(null)
+            setUser(null)
+            setProfile(null)
+          } else if (gymPaused) {
+            setGymPausedAccount(true)
             await supabase.auth.signOut()
             setSession(null)
             setUser(null)
@@ -153,8 +174,16 @@ function useProvideAuth() {
             }
           }
 
+          const gymPaused = await isGymPaused(profile)
+
           if (profile?.blocked) {
             setBlockedAccount(true)
+            await supabase.auth.signOut()
+            setSession(null)
+            setUser(null)
+            setProfile(null)
+          } else if (gymPaused) {
+            setGymPausedAccount(true)
             await supabase.auth.signOut()
             setSession(null)
             setUser(null)
@@ -258,6 +287,7 @@ function useProvideAuth() {
   const isSuperAdmin = profile?.role === 'superadmin'
 
   const clearBlockedMessage = () => setBlockedAccount(false)
+  const clearGymPausedMessage = () => setGymPausedAccount(false)
 
   return {
     session,
@@ -270,6 +300,8 @@ function useProvideAuth() {
     authLoading: loading,
     blockedAccount,
     clearBlockedMessage,
+    gymPausedAccount,
+    clearGymPausedMessage,
     signInWithEmail,
     signUpWithEmail,
     signOut,

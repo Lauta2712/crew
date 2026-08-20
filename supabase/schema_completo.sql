@@ -76,10 +76,13 @@ CREATE TRIGGER on_auth_user_created
 -- Tablas
 -- ---------------------------------------------------------------------
 
+-- paused_at: NULL = activo, con fecha = pausado (bloquea login de admin/coach/student
+-- de ese gym, ver useAuth.jsx) — mismo patrón nullable-timestamp que users.deleted_at.
 CREATE TABLE IF NOT EXISTS "public"."gyms" (
     "id" uuid DEFAULT gen_random_uuid() NOT NULL,
     "name" text NOT NULL,
-    "created_at" timestamp without time zone DEFAULT now()
+    "created_at" timestamp without time zone DEFAULT now(),
+    "paused_at" timestamptz
 );
 
 CREATE TABLE IF NOT EXISTS "public"."users" (
@@ -520,6 +523,12 @@ FOR SELECT TO "authenticated" USING (
 -- ahí todavía no hay sesión para que aplique gyms_select_own.
 CREATE POLICY "gyms_select_public" ON "public"."gyms"
 FOR SELECT TO "anon", "authenticated" USING (true);
+
+-- Solo superadmin puede pausar/reactivar un gimnasio (paused_at) — panel superadmin.
+CREATE POLICY "gyms_update_superadmin" ON "public"."gyms"
+FOR UPDATE TO "authenticated"
+USING (public.current_user_role() = 'superadmin')
+WITH CHECK (public.current_user_role() = 'superadmin');
 
 -- plans: lectura scoped por gym (usada por AdminPayments/Students para
 -- alinear el pack pagado con un plan). Sin escritura desde el cliente hoy.

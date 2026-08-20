@@ -24,6 +24,7 @@ import { CoachWalkInPaymentsPage } from './pages/CoachWalkInPaymentsPage'
 import { CoachScanPage } from './pages/CoachScan'
 import { CoachAttendancePage } from './pages/CoachAttendancePage'
 import { CoachCheckinPage } from './pages/CoachCheckinPage'
+import { SuperAdminNewGymPage } from './pages/SuperAdminNewGym'
 
 function App() {
   return (
@@ -66,6 +67,11 @@ function App() {
                 <Route path="payments" element={<AdminPaymentsPage />} />
                 <Route path="configuration" element={<AdminConfigurationPage />} />
                 <Route path="coaches" element={<CoachesPage />} />
+              </Route>
+
+              {/* Vista solo superadmin */}
+              <Route element={<ProtectedRoute allowedRoles={['superadmin']} />}>
+                <Route path="superadmin/gyms/new" element={<SuperAdminNewGymPage />} />
               </Route>
             </Route>
           </Route>
