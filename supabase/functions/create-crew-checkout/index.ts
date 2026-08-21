@@ -108,7 +108,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // 2) Crear la suscripción (preapproval) en Mercado Pago.
-    const siteUrl = Deno.env.get('CREW_SITE_URL') ?? 'https://crew.example.com'
+    const siteUrl = (Deno.env.get('CREW_SITE_URL') ?? 'https://crew.example.com').replace(/\/+$/, '')
     const mpResponse = await fetch('https://api.mercadopago.com/preapproval', {
       method: 'POST',
       headers: {
@@ -134,6 +134,7 @@ Deno.serve(async (req: Request) => {
     const mpData = await mpResponse.json()
 
     if (!mpResponse.ok) {
+      console.error('Mercado Pago rechazó el preapproval:', mpResponse.status, JSON.stringify(mpData))
       await supabaseAdmin
         .from('crew_subscriptions')
         .update({ status: 'cancelled' })
