@@ -197,6 +197,7 @@ export function StudentWalkInQrPage() {
                   student_id: profile.id,
                   valid_until: qrState.validUntil,
                   pack_type: qrState.isDayPass ? walkIn.dailyPackId : unlimitedPackId,
+                  schedule_type_id: walkIn.scheduleId ?? null,
                 }),
               )}`}
               alt="QR acceso libre"

@@ -6,40 +6,29 @@ import { AttendanceScanView } from '../components/AttendanceScanView'
 import { loadCoachScopedStudents } from '../utils/coachScopeStudents'
 import { toSpanishError } from '../utils/errors'
 
-const ESCUELA_SCHEDULE_IDS = ['escuela_multi', 'escuela_gordo', 'escuelita']
-
-function deriveAllowedPackIds(assignmentRows, { classPacks, walkIn } = {}) {
-  const scheduleIds = (assignmentRows ?? []).map((r) => r.schedule_type_id)
-  if (scheduleIds.length === 0) return []
-  const allowed = new Set()
-  if (walkIn?.scheduleId && scheduleIds.includes(walkIn.scheduleId)) {
-    const unlimitedPack = (classPacks ?? []).find((p) => p.unlimited)
-    if (unlimitedPack) allowed.add(unlimitedPack.id)
-    if (walkIn.dailyPackId) allowed.add(walkIn.dailyPackId)
-  }
-  if (scheduleIds.includes('grupo_entrenamiento')) {
-    allowed.add('grupo_entrenamiento')
-  }
-  if (scheduleIds.some((id) => ESCUELA_SCHEDULE_IDS.includes(id))) {
-    allowed.add('single')
-    allowed.add('pack4')
-    allowed.add('pack8')
-  }
-  return [...allowed]
+/**
+ * Un coach puede escanear cualquier pack pagado a UNO de sus horarios asignados
+ * (coach_assignments.schedule_type_id) — sin importar de qué gimnasio sea ni qué
+ * ids de pack/horario use su catálogo. Reemplaza la comparación anterior contra
+ * ids de pack hardcodeados de Crux (single/pack4/pack8/grupo_entrenamiento), que
+ * dejaba a cualquier gimnasio con catálogo custom sin ningún pack autorizado.
+ */
+function deriveAllowedScheduleTypeIds(assignmentRows) {
+  return new Set((assignmentRows ?? []).map((r) => r.schedule_type_id).filter(Boolean))
 }
 
 export function CoachScanPage() {
   const { profile, isCoach } = useAuth()
-  const { classPacks, scheduleTypes, walkIn } = useGymCatalog()
+  const { scheduleTypes } = useGymCatalog()
   const [students, setStudents] = useState([])
   const [allowedStudentIds, setAllowedStudentIds] = useState(() => new Set())
   const [assignmentRows, setAssignmentRows] = useState([])
   const [loadingStudents, setLoadingStudents] = useState(true)
   const [loadError, setLoadError] = useState(null)
 
-  const allowedPackIds = useMemo(
-    () => deriveAllowedPackIds(assignmentRows, { classPacks, walkIn }),
-    [assignmentRows, classPacks, walkIn],
+  const allowedScheduleTypeIds = useMemo(
+    () => deriveAllowedScheduleTypeIds(assignmentRows),
+    [assignmentRows],
   )
 
   useEffect(() => {
@@ -93,7 +82,7 @@ export function CoachScanPage() {
       )}
       <AttendanceScanView
         allowedStudentIds={allowedStudentIds}
-        allowedPackIds={allowedPackIds}
+        allowedScheduleTypeIds={allowedScheduleTypeIds}
         students={students}
         loadingStudents={loadingStudents}
         title="Escanear QR — profesor"

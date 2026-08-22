@@ -161,7 +161,7 @@ export function CoachDashboardPage() {
                     {last ? (
                       <p className="mt-1 text-[11px] text-muted">
                         Última asistencia: {formatDateTime(last.attended_at)} ·{' '}
-                        {formatCheckinMethod(last.method)}
+                        {formatCheckinMethod(last.checkin_method)}
                       </p>
                     ) : (
                       <p className="mt-1 text-[11px] text-muted">Sin asistencias recientes</p>

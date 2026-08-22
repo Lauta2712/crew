@@ -125,6 +125,7 @@ export function StudentClassQrPage() {
                   student_id: profile.id,
                   valid_until: qrState.validUntil,
                   pack_type: qrState.latestPayment.pack_type,
+                  schedule_type_id: qrState.latestPayment.schedule_type ?? null,
                 }),
               )}`}
               alt="QR asistencia a clases"

@@ -24,7 +24,7 @@ function isSameDay(a, b) {
 /**
  * @param {object} props
  * @param {Set<string> | null} props.allowedStudentIds - null = admin (todos los alumnos cargados)
- * @param {string[] | null} [props.allowedPackIds] - null/undefined = admin (sin restricción); array = coach (solo esos pack IDs)
+ * @param {Set<string> | null} [props.allowedScheduleTypeIds] - null/undefined = admin (sin restricción); Set = coach (solo asistencias de esos schedule_type_id, los de sus horarios asignados)
  * @param {Array<{id: string, name?: string, email?: string}>} props.students
  * @param {boolean} props.loadingStudents
  * @param {string} props.title
@@ -32,7 +32,7 @@ function isSameDay(a, b) {
  */
 export function AttendanceScanView({
   allowedStudentIds,
-  allowedPackIds = null,
+  allowedScheduleTypeIds = null,
   students,
   loadingStudents,
   title,
@@ -244,8 +244,8 @@ export function AttendanceScanView({
         }
 
         const visible =
-          allowedPackIds !== null && allowedPackIds !== undefined
-            ? active.filter((p) => allowedPackIds.includes(p.id))
+          allowedScheduleTypeIds !== null && allowedScheduleTypeIds !== undefined
+            ? active.filter((p) => allowedScheduleTypeIds.has(p.schedule_type_id))
             : active
         setStudentPacks(visible)
         setSelectedPackType(visible.length === 1 ? visible[0].id : '')
@@ -256,7 +256,7 @@ export function AttendanceScanView({
         setLoadingStudentPacks(false)
       }
     },
-    [classPacks, walkIn, allowedPackIds],
+    [classPacks, walkIn, allowedScheduleTypeIds],
   )
 
   useEffect(() => {
@@ -431,12 +431,14 @@ export function AttendanceScanView({
         return
       }
 
-      // Coach restriction: only allow pack types that match the coach's assignments
+      // Coach restriction: only allow attendances for schedules the coach is assigned to.
+      // Sin schedule_type_id en el payload (QR generado antes de este cambio) no se puede
+      // validar — se deja pasar, igual que el fallback histórico para QRs sin pack_type.
       if (
-        allowedPackIds !== null &&
-        allowedPackIds !== undefined &&
-        payload.pack_type != null &&
-        !allowedPackIds.includes(payload.pack_type)
+        allowedScheduleTypeIds !== null &&
+        allowedScheduleTypeIds !== undefined &&
+        payload.schedule_type_id != null &&
+        !allowedScheduleTypeIds.has(payload.schedule_type_id)
       ) {
         fail('Este tipo de asistencia no está habilitado para tu perfil de instructor.')
         return
@@ -590,7 +592,7 @@ export function AttendanceScanView({
         scheduleSlot: payload.schedule_slot ?? null,
       })
     },
-    [allowedStudentIds, allowedPackIds, classPacks, walkIn, showFeedback],
+    [allowedStudentIds, allowedScheduleTypeIds, classPacks, walkIn, showFeedback],
   )
 
   const handleConfirmAttendance = async () => {
