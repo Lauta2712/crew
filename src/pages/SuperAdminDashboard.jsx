@@ -5,13 +5,38 @@ import { getFunctionsInvokeFailureMessage, toSpanishError } from '../utils/error
 import { invokeEdgeFunctionWithUserJwt } from '../utils/edgeFunctions'
 import { saveSupportReturnSession } from '../utils/supportMode'
 import { AmountValue } from '../components/AmountValue'
+import { WaitModal } from '../components/WaitModal'
+import { getSubscriptionPlan } from '../constants/subscriptionPlans'
 
 const LOGIN_AS_GYM_ADMIN_EDGE_FUNCTION =
   import.meta.env.VITE_SUPABASE_LOGIN_AS_GYM_ADMIN_FUNCTION?.trim() ||
   'login-as-gym-admin'
 
+const LIST_CREW_SUBSCRIPTIONS_EDGE_FUNCTION =
+  import.meta.env.VITE_SUPABASE_LIST_CREW_SUBSCRIPTIONS_FUNCTION?.trim() ||
+  'list-crew-subscriptions'
+
+const SUBSCRIPTION_STATUS_LABEL = {
+  pending: 'Pendiente',
+  authorized: 'Al día',
+  paused: 'Pausada',
+  cancelled: 'Cancelada',
+}
+
+const SUBSCRIPTION_STATUS_CLASS = {
+  pending: 'border-amber-500/40 bg-amber-950/40 text-amber-400',
+  authorized: 'border-emerald-500/40 bg-emerald-950/40 text-emerald-400',
+  paused: 'border-amber-500/40 bg-amber-950/40 text-amber-400',
+  cancelled: 'border-red-500/40 bg-red-950/40 text-red-400',
+}
+
 function formatCurrency(amount) {
   return `$${Number(amount || 0).toLocaleString('es-AR')}`
+}
+
+function formatShortDate(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 export function SuperAdminDashboardPage() {
@@ -23,6 +48,39 @@ export function SuperAdminDashboardPage() {
   const [togglingGymId, setTogglingGymId] = useState(null)
   const [confirmPauseId, setConfirmPauseId] = useState(null)
   const [loggingInGymId, setLoggingInGymId] = useState(null)
+  const [loggingInGymName, setLoggingInGymName] = useState('')
+
+  const [subscriptions, setSubscriptions] = useState([])
+  const [loadingSubs, setLoadingSubs] = useState(true)
+  const [subsError, setSubsError] = useState(null)
+
+  const loadSubscriptions = useCallback(async () => {
+    setLoadingSubs(true)
+    setSubsError(null)
+    try {
+      const { data, error: fnError } = await invokeEdgeFunctionWithUserJwt(
+        LIST_CREW_SUBSCRIPTIONS_EDGE_FUNCTION,
+        { body: {} },
+      )
+      if (fnError) {
+        const details = await getFunctionsInvokeFailureMessage(
+          fnError,
+          LIST_CREW_SUBSCRIPTIONS_EDGE_FUNCTION,
+        )
+        throw new Error(details || 'No se pudieron cargar las suscripciones')
+      }
+      if (data?.error) throw new Error(String(data.error))
+      setSubscriptions(data?.subscriptions ?? [])
+    } catch (err) {
+      setSubsError(toSpanishError(err, 'No se pudieron cargar las suscripciones a Crew'))
+    } finally {
+      setLoadingSubs(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadSubscriptions()
+  }, [loadSubscriptions])
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -118,6 +176,7 @@ export function SuperAdminDashboardPage() {
 
   const handleLoginAsAdmin = async (gymId, gymName) => {
     setLoggingInGymId(gymId)
+    setLoggingInGymName(gymName)
     setError(null)
     try {
       const {
@@ -151,8 +210,7 @@ export function SuperAdminDashboardPage() {
       saveSupportReturnSession(currentSession, gymName)
 
       const { error: verifyError } = await supabase.auth.verifyOtp({
-        email: data.email,
-        token: data.hashed_token,
+        token_hash: data.hashed_token,
         type: 'magiclink',
       })
       if (verifyError) throw verifyError
@@ -161,11 +219,27 @@ export function SuperAdminDashboardPage() {
     } catch (err) {
       setError(toSpanishError(err, 'No se pudo iniciar sesión como admin del gimnasio'))
       setLoggingInGymId(null)
+      setLoggingInGymName('')
     }
+  }
+
+  const handleCreateGymFromSubscription = (sub) => {
+    navigate('/app/superadmin/gyms/new', {
+      state: {
+        gymName: sub.gym_name ?? '',
+        adminName: sub.contact_name ?? '',
+        adminEmail: sub.contact_email ?? '',
+      },
+    })
   }
 
   return (
     <div className="flex flex-col gap-5">
+      <WaitModal
+        open={Boolean(loggingInGymId)}
+        title={`Entrando como admin de «${loggingInGymName}»…`}
+        message="Si el gimnasio no tiene una cuenta admin activa, se crea una de soporte automáticamente antes de continuar."
+      />
       <div className="shrink-0 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">
@@ -303,6 +377,82 @@ export function SuperAdminDashboardPage() {
                       Pausar
                     </button>
                   )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="card p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted">
+            Suscripciones a Crew — quién pagó y todavía no tiene gimnasio creado
+          </p>
+          <button
+            type="button"
+            onClick={loadSubscriptions}
+            disabled={loadingSubs}
+            className="btn-secondary px-3 py-1 text-xs"
+          >
+            {loadingSubs ? 'Actualizando…' : 'Actualizar'}
+          </button>
+        </div>
+
+        {subsError && (
+          <p className="mb-3 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-300">
+            {subsError}
+          </p>
+        )}
+
+        {loadingSubs ? (
+          <p className="text-sm text-muted">Cargando…</p>
+        ) : subscriptions.length === 0 ? (
+          <p className="text-sm text-muted">Todavía no hay suscripciones registradas.</p>
+        ) : (
+          <div className="space-y-2 overflow-x-auto">
+            {subscriptions.map((sub) => (
+              <div
+                key={sub.id}
+                className="card-muted flex flex-wrap items-center justify-between gap-3 py-2.5"
+              >
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="min-w-0 truncate font-semibold text-ink">
+                      {sub.gym_name || sub.contact_name}
+                    </p>
+                    <span
+                      className={`shrink-0 rounded border px-1.5 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-wide ${
+                        SUBSCRIPTION_STATUS_CLASS[sub.status] ?? SUBSCRIPTION_STATUS_CLASS.pending
+                      }`}
+                    >
+                      {SUBSCRIPTION_STATUS_LABEL[sub.status] ?? sub.status}
+                    </span>
+                  </div>
+                  <p className="truncate text-xs text-muted">
+                    {sub.contact_name} · {sub.contact_email}
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap items-center gap-4 text-right">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted">Plan</p>
+                    <p className="text-sm text-ink">
+                      {getSubscriptionPlan(sub.plan_id)?.name ?? sub.plan_id}
+                      <span className="text-muted"> · </span>
+                      {sub.billing_period === 'annual' ? 'anual' : 'mensual'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted">Desde</p>
+                    <p className="font-mono text-xs text-ink">{formatShortDate(sub.created_at)}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 py-1.5 text-[11px]"
+                    onClick={() => handleCreateGymFromSubscription(sub)}
+                  >
+                    Crear gimnasio
+                  </button>
                 </div>
               </div>
             ))}

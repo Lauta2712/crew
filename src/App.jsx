@@ -7,7 +7,6 @@ import { AppHomePage } from './pages/AppHome'
 import { StudentsPage } from './pages/Students'
 import { AttendancePage } from './pages/Attendance'
 import { StudentSchedulePage } from './pages/StudentSchedule'
-import { StudentPacksPage } from './pages/StudentPacks'
 import { StudentCalendarPage } from './pages/StudentCalendar'
 import { StudentCoursesPage } from './pages/StudentCourses'
 import { StudentProfilePage } from './pages/StudentProfile'
@@ -16,6 +15,7 @@ import { StudentWalkInQrPage } from './pages/StudentWalkInQrPage'
 import { AdminScanPage } from './pages/AdminScan'
 import { CheckinManualPage } from './pages/CheckinManual'
 import { LandingPage } from './pages/Landing'
+import { CrewThankYouPage } from './pages/CrewThankYou'
 import { AdminPaymentsPage } from './pages/AdminPayments'
 import { AdminConfigurationPage } from './pages/AdminConfiguration'
 import { CoachesPage } from './pages/Coaches'
@@ -33,6 +33,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/crew/gracias" element={<CrewThankYouPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/app" element={<Layout />}>
@@ -41,7 +42,6 @@ function App() {
               {/* Vistas de alumno */}
               <Route element={<ProtectedRoute allowedRoles={['student']} />}>
                 <Route path="schedule" element={<StudentSchedulePage />} />
-                <Route path="packs" element={<StudentPacksPage />} />
                 <Route path="calendar" element={<StudentCalendarPage />} />
                 <Route path="courses" element={<StudentCoursesPage />} />
                 <Route path="profile" element={<StudentProfilePage />} />

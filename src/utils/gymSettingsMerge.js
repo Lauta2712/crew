@@ -109,7 +109,8 @@ function mergeWalkIn(data) {
 /**
  * Identidad visual del gimnasio (color primario/acento/fuente) — ver `src/utils/theme.js`
  * (`applyTheme`) para cómo se convierte esto en CSS custom properties. Sin merge/derivación
- * acá: un gimnasio sin `theme` configurado devuelve `{}` y no se toca ningún default.
+ * acá: un gimnasio sin `theme` configurado devuelve `{}` — es `applyTheme` quien resuelve
+ * ese `{}` contra el tema de bootstrap del deploy (o lo resetea), no esta función.
  * @param {unknown} raw
  * @returns {{ primaryColor?: string, accentColor?: string, font?: string, logoUrl?: string }}
  */

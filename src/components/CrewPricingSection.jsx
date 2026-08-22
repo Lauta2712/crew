@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { SUBSCRIPTION_PLANS, getPlanPriceUsd } from '../constants/subscriptionPlans'
+import { getFunctionsInvokeFailureMessage } from '../utils/errors'
 
 /**
  * Sección de precios de Crew (el producto) para dueños de gimnasio interesados en
@@ -157,15 +158,14 @@ function CheckoutForm({ plan, billingPeriod, onClose }) {
           },
         },
       )
-      if (invokeError) throw invokeError
+      if (invokeError) {
+        const details = await getFunctionsInvokeFailureMessage(invokeError, 'create-crew-checkout')
+        throw new Error(details || 'No se pudo iniciar el pago. Probá de nuevo.')
+      }
       if (!data?.init_point) throw new Error('No se pudo iniciar el pago. Probá de nuevo.')
       window.location.href = data.init_point
     } catch (err) {
-      setError(
-        err?.context?.body?.error ??
-          err?.message ??
-          'No se pudo iniciar la suscripción. Probá de nuevo en unos minutos.',
-      )
+      setError(err?.message || 'No se pudo iniciar la suscripción. Probá de nuevo en unos minutos.')
     } finally {
       setSubmitting(false)
     }

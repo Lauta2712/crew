@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { useAuth } from '../hooks/useAuth'
 import { toSpanishError } from '../utils/errors'
@@ -6,18 +6,15 @@ import { toSpanishError } from '../utils/errors'
 export function StudentProfilePage() {
   const { profile, user } = useAuth()
   const [form, setForm] = useState({ name: '', phone: '' })
-  const [avatarPreview, setAvatarPreview] = useState(null)
   const [projects, setProjects] = useState([])
   const [newProject, setNewProject] = useState('')
   const [saving, setSaving] = useState(false)
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [error, setError] = useState(null)
-  const avatarInputRef = useRef(null)
 
   useEffect(() => {
     if (profile) {
       setForm({ name: profile.name ?? '', phone: profile.phone ?? '' })
-      setAvatarPreview(null)
     }
   }, [profile])
 
@@ -34,7 +31,7 @@ export function StudentProfilePage() {
       if (error) throw error
       setProjects(data ?? [])
     } catch (err) {
-      setError(toSpanishError(err, 'No se pudieron cargar los proyectos.'))
+      setError(toSpanishError(err, 'No se pudieron cargar los objetivos.'))
     } finally {
       setLoadingProjects(false)
     }
@@ -80,7 +77,7 @@ export function StudentProfilePage() {
       setProjects((prev) => [data, ...prev])
       setNewProject('')
     } catch (err) {
-      setError(toSpanishError(err, 'No se pudo guardar el proyecto.'))
+      setError(toSpanishError(err, 'No se pudo guardar el objetivo.'))
     } finally {
       setSaving(false)
     }
@@ -90,7 +87,7 @@ export function StudentProfilePage() {
     <div className="flex min-h-0 flex-col gap-3">
       <div className="shrink-0">
         <h1 className="font-display text-base font-bold uppercase tracking-wide text-ink sm:text-lg">Mi perfil</h1>
-        <p className="text-xs text-muted">Datos de contacto y proyectos de escalada.</p>
+        <p className="text-xs text-muted">Datos de contacto y objetivos personales.</p>
       </div>
 
       {error && (
@@ -106,39 +103,15 @@ export function StudentProfilePage() {
         >
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-surface-2 text-sm font-semibold text-ink">
-              {avatarPreview ? (
-                <img src={avatarPreview} alt="Foto de perfil previa" className="h-full w-full object-cover" />
-              ) : (
-                (profile?.name || profile?.email || '?')
-                  .split(' ')
-                  .map((part) => part[0])
-                  .join('')
-                  .slice(0, 2)
-              )}
+              {(profile?.name || profile?.email || '?')
+                .split(' ')
+                .map((part) => part[0])
+                .join('')
+                .slice(0, 2)}
             </div>
-            <div className="space-y-0.5">
-              <p className="text-xs font-semibold text-ink">
-                {profile?.name || 'Tu nombre'}
-              </p>
-              <button
-                type="button"
-                className="text-[11px] font-medium text-brand-600 hover:text-brand-400"
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                Cambiar foto
-              </button>
-              <input
-                ref={avatarInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(event) => {
-                  const file = event.target.files?.[0]
-                  if (!file) return
-                  setAvatarPreview(URL.createObjectURL(file))
-                }}
-              />
-            </div>
+            <p className="text-xs font-semibold text-ink">
+              {profile?.name || 'Tu nombre'}
+            </p>
           </div>
 
           <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
@@ -192,12 +165,12 @@ export function StudentProfilePage() {
 
         <div className="card min-h-0 flex-1 space-y-1.5 overflow-auto p-3">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
-            Proyectos
+            Objetivos
           </p>
           <form onSubmit={handleAddProject} className="flex flex-col gap-1.5 sm:flex-row">
             <input
               className="input flex-1 py-1.5 text-xs"
-              placeholder="Vía o proyecto (ej. 6b)"
+              placeholder="Objetivo personal (ej. Sentadilla 100kg, Maratón 10k)"
               value={newProject}
               onChange={(e) => setNewProject(e.target.value)}
             />
@@ -216,7 +189,7 @@ export function StudentProfilePage() {
               ))}
             </div>
           ) : projects.length === 0 ? (
-            <p className="text-[11px] text-muted">Sin proyectos. Añadí tus vías objetivo.</p>
+            <p className="text-[11px] text-muted">Sin objetivos. Añadí tus metas personales.</p>
           ) : (
             <ul className="mt-1 grid grid-cols-1 gap-1.5 text-[11px] text-ink sm:grid-cols-2 lg:grid-cols-3">
               {projects.slice(0, 9).map((project) => (

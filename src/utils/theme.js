@@ -2,12 +2,30 @@
  * Theming en runtime: cada gimnasio puede definir un color primario y uno de acento
  * (ver `gym_settings.data.theme` en `gymSettingsMerge.js`); acá se deriva la escala
  * completa de tonalidades (mismo espíritu que un generador de paleta de Tailwind, no
- * pixel-perfect) y se aplica como CSS custom properties sobre `:root`. Si no se pasa
- * nada, no se toca ninguna variable — quedan los defaults literales de `index.css`.
+ * pixel-perfect) y se aplica como CSS custom properties sobre `:root`. Un campo ausente
+ * cae al tema de bootstrap del deploy (`BOOTSTRAP_THEME`, mismas env vars que main.jsx),
+ * y si tampoco hay bootstrap, se remueve la property y cae a los defaults literales de
+ * `index.css` — nunca queda "pegado" el valor de un gimnasio anterior en la misma pestaña.
  */
 
 const BRAND_STEPS = [50, 100, 200, 300, 400, 600, 700, 800, 900]
 const ACCENT_STEPS = [100, 200, 300, 400, 600, 700]
+
+/**
+ * Tema de bootstrap del deploy (mismas env vars que lee main.jsx) — el fallback real
+ * cuando un gimnasio no tiene `theme` propio, no los defaults literales de index.css.
+ * Necesario para poder RESETEAR (no solo "no tocar") cuando se cambia de un gimnasio
+ * con tema propio a uno sin tema, en la misma pestaña sin recargar (ej. modo soporte).
+ */
+const BOOTSTRAP_THEME = {
+  primaryColor: import.meta.env.VITE_THEME_PRIMARY_COLOR?.trim() || undefined,
+  accentColor: import.meta.env.VITE_THEME_ACCENT_COLOR?.trim() || undefined,
+  font: import.meta.env.VITE_THEME_FONT?.trim() || undefined,
+}
+const BOOTSTRAP_LOGO_URL = import.meta.env.VITE_THEME_LOGO_URL?.trim() || undefined
+/** Favicon/theme-color estáticos de index.html — último fallback si tampoco hay bootstrap. */
+const DEFAULT_FAVICON_URL = '/favicon.svg?v=3'
+const DEFAULT_THEME_COLOR = '#0b0c10'
 
 /** Lightness objetivo (0-100) por paso, independiente del color de entrada. El paso base (500) usa el lightness real del hex ingresado. */
 const LIGHTNESS_BY_STEP = {
@@ -118,31 +136,43 @@ function loadGoogleFont(fontName) {
 
 /**
  * Aplica el tema del gimnasio como CSS custom properties sobre `document.documentElement`.
- * Llamar con `undefined`/`{}` (gimnasio sin `theme` configurado) es un no-op seguro:
- * no toca ninguna variable, quedan los defaults literales de `index.css`.
+ * Un campo ausente en `theme` cae al tema de bootstrap del deploy (env vars, mismo
+ * fallback que main.jsx) en vez de dejar sin tocar lo que haya quedado seteado por un
+ * gimnasio anterior en la misma pestaña (ej. superadmin en modo soporte cambiando de
+ * gimnasio, o dos sesiones de gimnasios distintos sin recargar la página entre una y
+ * otra) — si tampoco hay bootstrap, se remueve la property y cae al default de index.css.
  * @param {{ primaryColor?: string, accentColor?: string, font?: string }} [theme]
  */
 export function applyTheme(theme) {
-  if (typeof document === 'undefined' || !theme) return
+  if (typeof document === 'undefined') return
   const root = document.documentElement
+  const resolved = { ...BOOTSTRAP_THEME, ...theme }
 
-  if (theme.primaryColor) {
-    const brand = deriveColorScale(theme.primaryColor, BRAND_STEPS)
+  if (resolved.primaryColor) {
+    const brand = deriveColorScale(resolved.primaryColor, BRAND_STEPS)
     for (const [step, value] of Object.entries(brand)) {
       root.style.setProperty(`--color-brand-${step}`, value)
     }
+  } else {
+    root.style.removeProperty('--color-brand-500')
+    for (const step of BRAND_STEPS) root.style.removeProperty(`--color-brand-${step}`)
   }
 
-  if (theme.accentColor) {
-    const accent = deriveColorScale(theme.accentColor, ACCENT_STEPS)
+  if (resolved.accentColor) {
+    const accent = deriveColorScale(resolved.accentColor, ACCENT_STEPS)
     for (const [step, value] of Object.entries(accent)) {
       root.style.setProperty(`--color-accent-${step}`, value)
     }
+  } else {
+    root.style.removeProperty('--color-accent-500')
+    for (const step of ACCENT_STEPS) root.style.removeProperty(`--color-accent-${step}`)
   }
 
-  if (theme.font) {
-    root.style.setProperty('--font-sans', `'${theme.font}'`)
-    loadGoogleFont(theme.font)
+  if (resolved.font) {
+    root.style.setProperty('--font-sans', `'${resolved.font}'`)
+    loadGoogleFont(resolved.font)
+  } else {
+    root.style.removeProperty('--font-sans')
   }
 }
 
@@ -179,11 +209,13 @@ export function applyBrandChrome(brand) {
     document.title = `${brand.name} · Sistema de asistencias`
     setMetaContent('apple-mobile-web-app-title', brand.name)
   }
-  if (brand.logoUrl) {
-    setLinkHref('icon', brand.logoUrl)
-    setLinkHref('apple-touch-icon', brand.logoUrl)
-  }
-  if (brand.primaryColor) {
-    setMetaContent('theme-color', brand.primaryColor)
-  }
+  // logoUrl/primaryColor SÍ caen a un default explícito (bootstrap o el estático de
+  // index.html) cuando el gimnasio no los tiene — mismo motivo que en applyTheme: sin
+  // esto, el favicon/theme-color de un gimnasio anterior queda pegado al cambiar de
+  // gimnasio en la misma pestaña (modo soporte).
+  const logoUrl = brand.logoUrl || BOOTSTRAP_LOGO_URL || DEFAULT_FAVICON_URL
+  setLinkHref('icon', logoUrl)
+  setLinkHref('apple-touch-icon', logoUrl)
+
+  setMetaContent('theme-color', brand.primaryColor || BOOTSTRAP_THEME.primaryColor || DEFAULT_THEME_COLOR)
 }

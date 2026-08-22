@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { PasswordInput } from '../components/PasswordInput'
+import { WaitModal } from '../components/WaitModal'
 import { invokeEdgeFunctionWithUserJwt } from '../utils/edgeFunctions'
 import { getFunctionsInvokeFailureMessage, toSpanishError } from '../utils/errors'
 
@@ -16,7 +18,16 @@ const EMPTY_FORM = {
 }
 
 export function SuperAdminNewGymPage() {
-  const [form, setForm] = useState(EMPTY_FORM)
+  // Prefill al venir del botón "Crear gimnasio" de una suscripción a Crew ya pagada
+  // (SuperAdminDashboard.jsx) — evita retipear/errar el email de contacto.
+  const location = useLocation()
+  const prefill = location.state ?? null
+  const [form, setForm] = useState(() => ({
+    ...EMPTY_FORM,
+    gymName: prefill?.gymName ?? '',
+    adminName: prefill?.adminName ?? '',
+    adminEmail: prefill?.adminEmail ?? '',
+  }))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
   const [createdCredentials, setCreatedCredentials] = useState(null)
@@ -83,6 +94,11 @@ export function SuperAdminNewGymPage() {
 
   return (
     <div className="flex flex-col gap-5">
+      <WaitModal
+        open={saving}
+        title="Creando el gimnasio…"
+        message="Se está creando el gimnasio, su configuración inicial y la cuenta admin. No cierres esta pantalla."
+      />
       <div className="space-y-1">
         <h1 className="font-display text-xl font-bold uppercase tracking-wide text-ink">
           Nuevo gimnasio
@@ -91,6 +107,13 @@ export function SuperAdminNewGymPage() {
           Crea el gimnasio y su primera cuenta admin. No modifica gimnasios existentes.
         </p>
       </div>
+
+      {prefill && (
+        <p className="rounded-lg border border-accent-500/40 bg-accent-500/10 px-3 py-2.5 text-sm text-accent-600">
+          Datos precargados desde una suscripción a Crew ya paga. Revisalos antes de crear el
+          gimnasio.
+        </p>
+      )}
 
       {error && (
         <p className="rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-xs text-red-400">

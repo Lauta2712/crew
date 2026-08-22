@@ -100,17 +100,77 @@ Deno.serve(async (req: Request) => {
       )
     }
 
-    if (!targetAdmin?.email) {
-      return new Response(
-        JSON.stringify({ error: 'Este gimnasio no tiene una cuenta admin activa para iniciar sesión.' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    let adminEmail = targetAdmin?.email
+    let adminName = targetAdmin?.name
+
+    // 3b) Ningún gimnasio debería quedar bloqueado por falta de un admin operable —
+    // en vez de frenar al superadmin con un error que exige una query manual, se
+    // autoprovisiona una cuenta admin de soporte para el gimnasio (por algo el
+    // caller ya probó ser superadmin en el paso 1). El email se deriva del propio
+    // email del superadmin vía "+alias" para que quede trazable y sea único por
+    // gimnasio, sin depender de que esa dirección reciba mail de verdad — el
+    // login se resuelve enteramente con el hashed_token, nunca se manda un email.
+    if (!adminEmail) {
+      const [callerLocal, callerDomain] = String(caller.email ?? '').split('@')
+      if (!callerLocal || !callerDomain) {
+        return new Response(
+          JSON.stringify({
+            error: 'Este gimnasio no tiene una cuenta admin y no se pudo autoprovisionar una.',
+          }),
+          { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
+      }
+
+      const { data: gymRow } = await supabaseAdmin
+        .from('gyms')
+        .select('name')
+        .eq('id', gymId)
+        .maybeSingle()
+
+      const supportEmail = `${callerLocal}+support-${gymId.slice(0, 8)}@${callerDomain}`
+      const supportName = `Soporte — ${gymRow?.name ?? 'gimnasio'}`
+
+      const { data: createdAuth, error: createAuthError } = await supabaseAdmin.auth.admin.createUser({
+        email: supportEmail,
+        email_confirm: true,
+        user_metadata: { name: supportName, role: 'admin', gym_id: gymId },
+      })
+
+      if (createAuthError || !createdAuth?.user?.id) {
+        return new Response(
+          JSON.stringify({ error: createAuthError?.message || 'No se pudo autoprovisionar la cuenta admin.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
+      }
+
+      const { error: upsertUserError } = await supabaseAdmin.from('users').upsert(
+        {
+          id: createdAuth.user.id,
+          email: supportEmail,
+          name: supportName,
+          role: 'admin',
+          gym_id: gymId,
+          blocked: false,
+        },
+        { onConflict: 'id' },
       )
+
+      if (upsertUserError) {
+        await supabaseAdmin.auth.admin.deleteUser(createdAuth.user.id)
+        return new Response(
+          JSON.stringify({ error: upsertUserError.message }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        )
+      }
+
+      adminEmail = supportEmail
+      adminName = supportName
     }
 
     // 4) Generar un token de acceso de un solo uso para ese admin (sin conocer su contraseña)
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
-      email: targetAdmin.email,
+      email: adminEmail,
     })
 
     if (linkError || !linkData?.properties?.hashed_token) {
@@ -123,8 +183,8 @@ Deno.serve(async (req: Request) => {
     return new Response(
       JSON.stringify({
         success: true,
-        email: targetAdmin.email,
-        admin_name: targetAdmin.name,
+        email: adminEmail,
+        admin_name: adminName,
         hashed_token: linkData.properties.hashed_token,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
