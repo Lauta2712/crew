@@ -62,7 +62,7 @@ export function DashboardPage() {
           .select('id, role')
           .eq('role', 'student')
           .is('deleted_at', null)
-        if (gymFilter) studentsQuery = studentsQuery.or(`gym_id.eq.${gymFilter},gym_id.is.null`)
+        if (gymFilter) studentsQuery = studentsQuery.eq('gym_id', gymFilter)
 
         // Fetch timestamps (not just count) so we can build daily and weekday charts
         let attendancesMonthQuery = supabase

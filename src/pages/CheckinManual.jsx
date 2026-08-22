@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { useAuth } from '../hooks/useAuth'
 import { useGymCatalog } from '../contexts/GymSettingsContext'
+import { isWalkInSchedule } from '../constants/packs'
 import { SelectField } from '../components/SelectField'
 import { AttendanceHistoryTable } from '../components/AttendanceHistoryTable'
 import { formatCheckinMethod } from '../utils/checkinMethodLabels'
@@ -23,7 +24,7 @@ function isSameDay(a, b) {
 
 export function CheckinManualPage() {
   const { profile } = useAuth()
-  const { scheduleTypes } = useGymCatalog()
+  const { scheduleTypes, walkIn } = useGymCatalog()
   const [students, setStudents] = useState([])
   const [selectedStudentId, setSelectedStudentId] = useState('')
   const [history, setHistory] = useState([])
@@ -46,14 +47,22 @@ export function CheckinManualPage() {
     return history.find((row) => row.student_id === selectedStudentId) ?? null
   }, [history, selectedStudentId])
 
+  // La asistencia a registrar es "acceso libre" o "clases" según el horario elegido (o
+  // "clases" por defecto si se deja sin especificar) — igual criterio que CoachCheckinPage,
+  // para que acceso libre y clases nunca se bloqueen entre sí como pistas independientes.
+  const isWalkInCheckin = isWalkInSchedule(selectedScheduleTypeId, walkIn)
+
   const alreadyCheckedOnDate = useMemo(() => {
     if (!selectedStudentId) return false
     const [y, m, d] = selectedDate.split('-').map(Number)
     const selDate = new Date(y, m - 1, d, 12, 0, 0)
     return history.some(
-      (row) => row.student_id === selectedStudentId && isSameDay(row.attended_at, selDate),
+      (row) =>
+        row.student_id === selectedStudentId &&
+        isSameDay(row.attended_at, selDate) &&
+        isWalkInSchedule(row.schedule_type_id, walkIn) === isWalkInCheckin,
     )
-  }, [history, selectedStudentId, selectedDate])
+  }, [history, selectedStudentId, selectedDate, isWalkInCheckin, walkIn])
 
   useEffect(() => {
     let active = true
@@ -67,7 +76,7 @@ export function CheckinManualPage() {
           .select('id, name, email, gym_id, role')
           .eq('role', 'student')
           .is('deleted_at', null)
-        if (gymFilter) query = query.or(`gym_id.eq.${gymFilter},gym_id.is.null`)
+        if (gymFilter) query = query.eq('gym_id', gymFilter)
         const { data, error } = await query.order('name', { ascending: true })
         if (error) throw error
         if (!active) return
@@ -85,7 +94,7 @@ export function CheckinManualPage() {
       try {
         let query = supabase
           .from('attendances')
-          .select(`id, attended_at, gym_id, checkin_method, users (id, name, deleted_at)`)
+          .select(`id, attended_at, gym_id, checkin_method, schedule_type_id, users (id, name, deleted_at)`)
         if (gymFilter) query = query.eq('gym_id', gymFilter)
         const { data, error } = await query
           .order('attended_at', { ascending: false })
@@ -100,6 +109,7 @@ export function CheckinManualPage() {
               student_id: row.users?.id ?? null,
               attended_at: row.attended_at,
               method: formatCheckinMethod(row.checkin_method),
+              schedule_type_id: row.schedule_type_id ?? null,
               user_name: row.users?.name ?? '—',
             })) ?? [],
         )
@@ -121,7 +131,7 @@ export function CheckinManualPage() {
     try {
       let query = supabase
         .from('attendances')
-        .select(`id, attended_at, checkin_method, users (id, name, deleted_at)`)
+        .select(`id, attended_at, checkin_method, schedule_type_id, users (id, name, deleted_at)`)
       if (gymFilter) query = query.eq('gym_id', gymFilter)
       const { data, error } = await query
         .order('attended_at', { ascending: false })
@@ -135,6 +145,7 @@ export function CheckinManualPage() {
             student_id: row.users?.id ?? null,
             attended_at: row.attended_at,
             method: formatCheckinMethod(row.checkin_method),
+            schedule_type_id: row.schedule_type_id ?? null,
             user_name: row.users?.name ?? '—',
           })) ?? [],
       )
@@ -157,13 +168,20 @@ export function CheckinManualPage() {
       const [y, m, d] = selectedDate.split('-').map(Number)
       const dayStart = new Date(y, m - 1, d, 0, 0, 0)
       const dayEnd = new Date(y, m - 1, d, 23, 59, 59, 999)
-      const { data: dupRows, error: dupError } = await supabase
+      const walkInId = walkIn?.scheduleId
+      let dupQuery = supabase
         .from('attendances')
         .select('id')
         .eq('student_id', selectedStudentId)
         .gte('attended_at', dayStart.toISOString())
         .lte('attended_at', dayEnd.toISOString())
         .limit(1)
+      dupQuery = isWalkInCheckin
+        ? dupQuery.eq('schedule_type_id', walkInId)
+        : walkInId
+          ? dupQuery.or(`schedule_type_id.neq.${walkInId},schedule_type_id.is.null`)
+          : dupQuery
+      const { data: dupRows, error: dupError } = await dupQuery
       if (dupError) throw dupError
       if (dupRows?.length > 0) {
         throw new Error('Este alumno ya tiene una asistencia registrada ese día.')

@@ -180,7 +180,7 @@ export function AdminConfigurationPage() {
   const loadStudentIds = useCallback(async () => {
     let query = supabase.from('users').select('id').eq('role', 'student').is('deleted_at', null)
     if (profile?.gym_id) {
-      query = query.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+      query = query.eq('gym_id', profile.gym_id)
     }
     const { data, error: qErr } = await query
     if (qErr) throw qErr
@@ -190,7 +190,7 @@ export function AdminConfigurationPage() {
   const loadCoachIds = useCallback(async () => {
     let query = supabase.from('users').select('id').eq('role', 'coach')
     if (profile?.gym_id) {
-      query = query.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+      query = query.eq('gym_id', profile.gym_id)
     }
     const { data, error: qErr } = await query
     if (qErr) throw qErr

@@ -37,10 +37,18 @@ export function AdminPaymentsPage() {
   const [savingGrupo, setSavingGrupo] = useState(false)
 
   const catalog = { classPacks, walkIn }
+  // "Grupo" es un concepto propio de Crux (un pack fijo con exclusión mutua con Escuelas).
+  // Un gimnasio con catálogo custom que no cargó ese pack no debe ver una pestaña que no
+  // hace nada al enviarla — se oculta en vez de fallar en silencio.
+  const hasGrupoPack = classPacks.some((pack) => pack.id === GRUPO_PACK_ID)
   const generalPacks = classPacks.filter((pack) => pack.id !== GRUPO_PACK_ID && !pack.unlimited)
   const generalSchedules = scheduleTypes.filter(
     (schedule) => schedule.id !== GRUPO_SCHEDULE_ID && !isWalkInSchedule(schedule.id, walkIn),
   )
+
+  useEffect(() => {
+    if (mainTab === 'grupo' && !hasGrupoPack) setMainTab('general')
+  }, [mainTab, hasGrupoPack])
 
   // The schedule object currently selected in the Escuelas form
   const selectedScheduleType = generalSchedules.find((s) => s.id === scheduleId) ?? null
@@ -69,7 +77,7 @@ export function AdminPaymentsPage() {
           .order('name', { ascending: true })
 
         if (profile?.gym_id) {
-          query = query.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+          query = query.eq('gym_id', profile.gym_id)
         }
 
         const { data, error: qErr } = await query
@@ -295,14 +303,14 @@ export function AdminPaymentsPage() {
 
         <div className="shrink-0 rounded-2xl border border-line bg-surface p-1.5 shadow-sm">
           <div
-            className="grid grid-cols-3 gap-1.5"
+            className={`grid gap-1.5 ${hasGrupoPack ? 'grid-cols-3' : 'grid-cols-2'}`}
             role="tablist"
             aria-label="Tipo de pago"
           >
             {[
               { id: 'general', label: 'Escuelas' },
               { id: 'muro', label: 'Acceso libre' },
-              { id: 'grupo', label: 'Grupo' },
+              ...(hasGrupoPack ? [{ id: 'grupo', label: 'Grupo' }] : []),
             ].map((t) => {
               const selected = mainTab === t.id
               return (

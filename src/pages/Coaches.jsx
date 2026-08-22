@@ -69,7 +69,7 @@ export function CoachesPage() {
         .eq('role', 'coach')
         .order('name', { ascending: true })
       if (profile?.gym_id) {
-        query = query.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+        query = query.eq('gym_id', profile.gym_id)
       }
       const { data: coachRows, error: qErr } = await query
       if (qErr) throw qErr
@@ -300,6 +300,13 @@ export function CoachesPage() {
           <p className="text-xs font-semibold uppercase tracking-wide text-muted">
             Crear profesor
           </p>
+          {scheduleTypes.length === 0 && (
+            <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-xs text-amber-400">
+              Todavía no hay horarios configurados. Cargá al menos uno en{' '}
+              <span className="font-medium">Configuración</span> antes de crear profesores —
+              cada profesor necesita un horario asignado.
+            </p>
+          )}
           <div className="space-y-1">
             <label className="text-xs font-medium text-muted">Nombre</label>
             <input
@@ -350,7 +357,11 @@ export function CoachesPage() {
             disabled={saving}
             variant="light"
           />
-          <button type="submit" className="btn-primary w-full" disabled={saving}>
+          <button
+            type="submit"
+            className="btn-primary w-full"
+            disabled={saving || !form.email || !form.password || !form.scheduleTypeId}
+          >
             {saving ? 'Creando…' : 'Crear profesor'}
           </button>
         </form>

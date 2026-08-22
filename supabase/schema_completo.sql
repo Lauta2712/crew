@@ -297,12 +297,13 @@ ALTER TABLE ONLY "public"."student_projects" ADD CONSTRAINT "student_projects_st
 
 ALTER TABLE "public"."gym_settings" ENABLE ROW LEVEL SECURITY;
 
+-- Scoped estricto por gym_id — sin ramas gym_id IS NULL ni "cualquier admin
+-- de cualquier gimnasio" (esa rama sin scoping era en sí un hueco de
+-- aislamiento, corregido junto con el resto en 20260821000000).
 CREATE POLICY "gym_settings_select_scoped" ON "public"."gym_settings"
 FOR SELECT TO "authenticated"
 USING (
-  EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin')
-  OR gym_id IS NULL
-  OR gym_id = (SELECT u2.gym_id FROM public.users u2 WHERE u2.id = auth.uid())
+  gym_id = (SELECT u2.gym_id FROM public.users u2 WHERE u2.id = auth.uid())
 );
 
 CREATE POLICY "gym_settings_insert_admin" ON "public"."gym_settings"
@@ -324,12 +325,12 @@ CREATE POLICY "attendances_admin_scoped_all" ON "public"."attendances" TO "authe
 USING (EXISTS (
   SELECT 1 FROM public.users me
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR attendances.gym_id IS NULL OR attendances.gym_id = me.gym_id)
+    AND attendances.gym_id = me.gym_id
 ))
 WITH CHECK (EXISTS (
   SELECT 1 FROM public.users me
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR attendances.gym_id IS NULL OR attendances.gym_id = me.gym_id)
+    AND attendances.gym_id = me.gym_id
 ));
 
 CREATE POLICY "attendances_select_student_own" ON "public"."attendances"
@@ -341,7 +342,7 @@ USING (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = attendances.student_id
   WHERE me.id = auth.uid() AND me.role = 'coach'
-    AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 CREATE POLICY "attendances_insert_coach_scoped" ON "public"."attendances"
@@ -350,7 +351,7 @@ WITH CHECK (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = attendances.student_id
   WHERE me.id = auth.uid() AND me.role = 'coach'
-    AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 ALTER TABLE "public"."coach_assignments" ENABLE ROW LEVEL SECURITY;
@@ -372,7 +373,7 @@ WITH CHECK (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = payments.student_id
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR payments.student_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 CREATE POLICY "payments_select_admin_scoped" ON "public"."payments"
@@ -381,7 +382,7 @@ USING (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = payments.student_id
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR payments.student_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 -- superadmin: solo lectura cross-gym (Dashboard global), ver current_user_role() más abajo.
@@ -397,7 +398,7 @@ USING (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = payments.student_id
   WHERE me.id = auth.uid() AND me.role = 'coach'
-    AND (payments.student_id IS NULL OR me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 CREATE POLICY "payments_insert_coach_scoped" ON "public"."payments"
@@ -406,7 +407,7 @@ WITH CHECK (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = payments.student_id
   WHERE me.id = auth.uid() AND me.role = 'coach'
-    AND (payments.student_id IS NULL OR me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 ALTER TABLE "public"."subscriptions" ENABLE ROW LEVEL SECURITY;
@@ -416,13 +417,13 @@ USING (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = subscriptions.student_id
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ))
 WITH CHECK (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = subscriptions.student_id
   WHERE me.id = auth.uid() AND me.role = 'admin'
-    AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 CREATE POLICY "subscriptions_select_student_own" ON "public"."subscriptions"
@@ -434,7 +435,7 @@ USING (EXISTS (
   SELECT 1 FROM public.users me
   LEFT JOIN public.users st ON st.id = subscriptions.student_id
   WHERE me.id = auth.uid() AND me.role = 'coach'
-    AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+    AND st.gym_id = me.gym_id
 ));
 
 -- crew_subscriptions: sin políticas — solo accesible con la service role key
@@ -482,25 +483,25 @@ FOR UPDATE TO "authenticated" USING (id = auth.uid()) WITH CHECK (id = auth.uid(
 CREATE POLICY "users_select_admin_scoped" ON "public"."users"
 FOR SELECT TO "authenticated" USING (
   public.current_user_role() = 'admin'
-  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
+  AND users.gym_id = public.current_user_gym_id()
 );
 
 CREATE POLICY "users_update_admin_scoped" ON "public"."users"
 FOR UPDATE TO "authenticated"
 USING (
   public.current_user_role() = 'admin'
-  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
+  AND users.gym_id = public.current_user_gym_id()
 )
 WITH CHECK (
   public.current_user_role() = 'admin'
-  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
+  AND users.gym_id = public.current_user_gym_id()
 );
 
 CREATE POLICY "users_select_coach_scoped" ON "public"."users"
 FOR SELECT TO "authenticated" USING (
   users.role = 'student'
   AND public.current_user_role() = 'coach'
-  AND (public.current_user_gym_id() IS NULL OR users.gym_id IS NULL OR users.gym_id = public.current_user_gym_id())
+  AND users.gym_id = public.current_user_gym_id()
 );
 
 -- superadmin: solo lectura cross-gym (Dashboard global) — ve todos los usuarios de todos los gimnasios.
@@ -515,7 +516,6 @@ ALTER TABLE "public"."gyms" ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "gyms_select_own" ON "public"."gyms"
 FOR SELECT TO "authenticated" USING (
   id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
-  OR EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin' AND u.gym_id IS NULL)
 );
 
 -- Lectura pública (sin sesión): solo id/name viven en esta tabla, nada sensible.
@@ -536,9 +536,7 @@ ALTER TABLE "public"."plans" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "plans_select_scoped" ON "public"."plans"
 FOR SELECT TO "authenticated" USING (
-  gym_id IS NULL
-  OR gym_id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
-  OR EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin' AND u.gym_id IS NULL)
+  gym_id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
 );
 
 -- courses: lectura scoped por gym (StudentCourses, StudentDashboard). Sin
@@ -547,9 +545,7 @@ ALTER TABLE "public"."courses" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "courses_select_scoped" ON "public"."courses"
 FOR SELECT TO "authenticated" USING (
-  gym_id IS NULL
-  OR gym_id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
-  OR EXISTS (SELECT 1 FROM public.users u WHERE u.id = auth.uid() AND u.role = 'admin' AND u.gym_id IS NULL)
+  gym_id = (SELECT u.gym_id FROM public.users u WHERE u.id = auth.uid())
 );
 
 -- checkin_sessions: legacy, no referenciada por el frontend actual. Se cierra
@@ -572,7 +568,7 @@ FOR SELECT TO "authenticated" USING (
     SELECT 1 FROM public.users me
     LEFT JOIN public.users st ON st.id = student_projects.student_id
     WHERE me.id = auth.uid() AND me.role = 'admin'
-      AND (me.gym_id IS NULL OR st.gym_id IS NULL OR st.gym_id = me.gym_id)
+      AND st.gym_id = me.gym_id
   )
 );
 

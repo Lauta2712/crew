@@ -130,7 +130,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
         .order('name', { ascending: true })
 
       if (profile?.gym_id) {
-        usersQuery = usersQuery.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+        usersQuery = usersQuery.eq('gym_id', profile.gym_id)
       }
 
       const [

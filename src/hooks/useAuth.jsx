@@ -72,7 +72,7 @@ function useProvideAuth() {
       setUser(session?.user || null)
 
       if (session?.user) {
-        let { data: profile, error: profileError } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('users')
           .select('*')
           .eq('id', session.user.id) // mismo uuid que auth.users.id
@@ -84,31 +84,6 @@ function useProvideAuth() {
         }
 
         if (active) {
-          // Aseguramos que los estudiantes siempre tengan gym_id para que RLS
-          // (si filtra por gym_id) no les bloquee lecturas como payments/subscriptions.
-          if (
-            profile?.role === 'student' &&
-            (profile.gym_id == null || profile.gym_id === '')
-          ) {
-            try {
-              await supabase
-                .from('users')
-                .update({ gym_id: DEFAULT_GYM_ID })
-                .eq('id', session.user.id)
-
-              const { data: updatedProfile } = await supabase
-                .from('users')
-                .select('*')
-                .eq('id', session.user.id)
-                .maybeSingle()
-
-              profile = updatedProfile ?? profile
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.error('No se pudo normalizar gym_id del estudiante', e)
-            }
-          }
-
           const gymPaused = await isGymPaused(profile)
 
           if (profile?.blocked) {
@@ -146,33 +121,11 @@ function useProvideAuth() {
       } else {
         // recargar perfil cuando cambie la sesión
         ;(async () => {
-          let { data: profile } = await supabase
+          const { data: profile } = await supabase
             .from('users')
             .select('*')
             .eq('id', newSession.user.id)
             .maybeSingle()
-
-          if (
-            profile?.role === 'student' &&
-            (profile.gym_id == null || profile.gym_id === '')
-          ) {
-            try {
-              await supabase
-                .from('users')
-                .update({ gym_id: DEFAULT_GYM_ID })
-                .eq('id', newSession.user.id)
-
-              const { data: updatedProfile } = await supabase
-                .from('users')
-                .select('*')
-                .eq('id', newSession.user.id)
-                .maybeSingle()
-              profile = updatedProfile ?? profile
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.error('No se pudo normalizar gym_id del estudiante', e)
-            }
-          }
 
           const gymPaused = await isGymPaused(profile)
 

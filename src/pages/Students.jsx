@@ -70,7 +70,7 @@ export function StudentsPage() {
           .is('deleted_at', null)
 
         if (gymFilter) {
-          query = query.or(`gym_id.eq.${gymFilter},gym_id.is.null`)
+          query = query.eq('gym_id', gymFilter)
         }
 
         const { data, error } = await query

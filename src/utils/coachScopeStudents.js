@@ -47,7 +47,7 @@ export async function loadCoachScopedStudents(supabase, profile, options = {}) {
     .is('deleted_at', null)
 
   if (profile.gym_id) {
-    usersQuery = usersQuery.or(`gym_id.eq.${profile.gym_id},gym_id.is.null`)
+    usersQuery = usersQuery.eq('gym_id', profile.gym_id)
   }
 
   // Only include payments made within the last month (1-month validity window)
