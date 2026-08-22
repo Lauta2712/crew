@@ -74,8 +74,23 @@ claro en vez de romper — pensado para poder deployar antes de tener las creden
 reales de Mercado Pago.
 
 `MP_ACCESS_TOKEN` y `CREW_SITE_URL` ya están configurados como secrets de Edge Function
-en el proyecto Supabase "CREW" — probado de punta a punta (hay una suscripción de
-prueba con `status = 'authorized'` en `crew_subscriptions`, generada el 2026-08-21).
+en el proyecto Supabase "CREW". El flujo se probó de punta a punta en sandbox (2026-08-21,
+credenciales de test) y el 2026-08-22 se activaron las credenciales de producción de
+Mercado Pago — `MP_ACCESS_TOKEN` pasó a ser el de producción (`APP_USR-...`). Confirmado
+con una cuenta de MP real: el checkout llega hasta la pantalla de pago real (no
+sirve pagarse a uno mismo — MP rechaza con "Payer and collector cannot be the same
+user" si `payer_email` es la misma cuenta dueña del access token, hay que usar una
+cuenta distinta para probar). `crew_subscriptions` se limpió de filas de prueba el
+2026-08-22 (quedó en 0 filas) — desde ahí, cualquier fila que aparezca es un lead real.
+
+> ⚠️ **Punto ciego conocido:** nunca se completó un pago real de punta a punta en
+> producción — no se observó el webhook procesando una notificación de producción, ni
+> la redirección real a `/crew/gracias`. Riesgo bajo (mismo código que ya funcionó en
+> sandbox) pero no confirmado. Tampoco hay ninguna notificación automática cuando una
+> fila pasa a `authorized` — depende de que alguien entre a mirar el Dashboard de
+> superadmin. Y `create-crew-checkout` pide la cotización a `dolarapi.com` antes de
+> insertar la fila `pending`: si esa API externa está caída, el checkout falla sin
+> dejar registro del intento.
 
 Tras completar el pago, Mercado Pago redirige a `/crew/gracias` (`src/pages/CrewThankYou.jsx`,
 ruta pública) — no consulta el estado real, solo confirma que el pago se envió y que el
