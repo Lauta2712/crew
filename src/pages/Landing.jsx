@@ -9,10 +9,12 @@ export function LandingPage() {
       <header className="shrink-0 px-4 py-3">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded bg-surface sm:h-10 sm:w-10">
-              <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
-            </div>
-            <p className="hidden font-display text-sm font-bold uppercase tracking-wide text-ink md:block">
+            {THEME_LOGO_URL && (
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded bg-surface sm:h-10 sm:w-10">
+                <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
+              </div>
+            )}
+            <p className="font-display text-sm font-bold uppercase tracking-wide text-ink">
               {GYM_DISPLAY_NAME}
             </p>
           </div>

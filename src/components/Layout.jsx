@@ -270,9 +270,11 @@ function LayoutInner() {
       {/* Sidebar */}
       <aside className="hidden w-64 shrink-0 flex-col overflow-hidden bg-surface p-3 md:flex">
         <div className="mb-4 flex shrink-0 items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded bg-bg">
-            <BrandMark src={logoSrc} alt={gymName} />
-          </div>
+          {logoSrc && (
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded bg-bg">
+              <BrandMark src={logoSrc} alt={gymName} />
+            </div>
+          )}
           <div>
             <p className="font-display text-sm font-bold uppercase tracking-wide text-ink">
               {gymName}
@@ -325,9 +327,11 @@ function LayoutInner() {
                 <span className="block h-0.5 w-4 rounded bg-ink" />
               </span>
             </button>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-bg md:hidden">
-              <BrandMark src={logoSrc} alt={gymName} />
-            </div>
+            {logoSrc && (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded bg-bg md:hidden">
+                <BrandMark src={logoSrc} alt={gymName} />
+              </div>
+            )}
             <div className="min-w-0 md:hidden">
               <p className="text-sm font-semibold text-ink">
                 {gymName}
@@ -408,9 +412,11 @@ function LayoutInner() {
           >
             <div className="mb-4 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded bg-bg">
-                  <BrandMark src={logoSrc} alt={gymName} />
-                </div>
+                {logoSrc && (
+                  <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded bg-bg">
+                    <BrandMark src={logoSrc} alt={gymName} />
+                  </div>
+                )}
                 <div>
                   <p className="text-xs font-semibold text-ink">
                     {gymName}

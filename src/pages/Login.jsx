@@ -113,9 +113,11 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-bg px-4">
       <div className="mx-auto w-full max-w-md rounded border border-line bg-surface/95 p-8 backdrop-blur">
         <div className="mb-6 flex flex-col items-center justify-center text-center">
-          <div className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded bg-bg">
-            <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
-          </div>
+          {THEME_LOGO_URL && (
+            <div className="mb-2 flex h-14 w-14 items-center justify-center overflow-hidden rounded bg-bg">
+              <BrandMark src={THEME_LOGO_URL} alt={GYM_DISPLAY_NAME} />
+            </div>
+          )}
           <h1 className="font-display text-lg font-bold uppercase tracking-wide text-ink">
             {GYM_DISPLAY_NAME}
           </h1>
