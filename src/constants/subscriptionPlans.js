@@ -12,8 +12,8 @@ export const SUBSCRIPTION_PLANS = [
     id: 'basico',
     name: 'Básico',
     description: 'Para gimnasios que recién arrancan a digitalizar la gestión.',
-    monthlyPriceUsd: 38,
-    annualPriceUsd: 380, // 10x mensual = 2 meses gratis pagando anual
+    monthlyPriceUsd: 10,
+    annualPriceUsd: 100, // 10x mensual = 2 meses gratis pagando anual
     highlighted: false,
     maxActiveStudents: 60,
     maxCoaches: 1,
@@ -29,8 +29,8 @@ export const SUBSCRIPTION_PLANS = [
     id: 'pro',
     name: 'Pro',
     description: 'Para gimnasios en crecimiento que necesitan su propia identidad.',
-    monthlyPriceUsd: 78,
-    annualPriceUsd: 780,
+    monthlyPriceUsd: 20,
+    annualPriceUsd: 200,
     highlighted: true,
     maxActiveStudents: null, // ilimitado
     maxCoaches: null,

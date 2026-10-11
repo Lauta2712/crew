@@ -303,7 +303,7 @@ export function CoachesPage() {
           {scheduleTypes.length === 0 && (
             <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-xs text-amber-400">
               Todavía no hay horarios configurados. Cargá al menos uno en{' '}
-              <span className="font-medium">Configuración</span> antes de crear profesores —
+              <span className="font-medium">Configuración</span> antes de crear profesores:
               cada profesor necesita un horario asignado.
             </p>
           )}

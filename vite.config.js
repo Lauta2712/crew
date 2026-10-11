@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: gymName,
           short_name: shortName,
-          description: `Sistema de asistencias y gestión — ${gymName}`,
+          description: `Sistema de asistencias y gestión de ${gymName}`,
           theme_color: themeColor,
           background_color: '#0b0c10',
           display: 'standalone',

@@ -222,7 +222,7 @@ export function CoachCheckinPage() {
             }}
             options={students.map((s) => ({
               value: s.id,
-              label: `${s.name} — ${s.schedule_name}`,
+              label: `${s.name} · ${s.schedule_name}`,
             }))}
             disabled={loading || students.length === 0}
             variant="light"

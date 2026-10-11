@@ -8,8 +8,8 @@ const corsHeaders = {
 // Fuente de verdad de precios del lado del servidor — nunca confiar en un precio que
 // mande el cliente. Debe reflejar `src/constants/subscriptionPlans.js`.
 const PLANS: Record<string, { name: string; monthlyPriceUsd: number; annualPriceUsd: number }> = {
-  basico: { name: 'Básico', monthlyPriceUsd: 38, annualPriceUsd: 380 },
-  pro: { name: 'Pro', monthlyPriceUsd: 78, annualPriceUsd: 780 },
+  basico: { name: 'Básico', monthlyPriceUsd: 10, annualPriceUsd: 100 },
+  pro: { name: 'Pro', monthlyPriceUsd: 20, annualPriceUsd: 200 },
 }
 
 function jsonResponse(body: unknown, status: number) {
@@ -116,7 +116,7 @@ Deno.serve(async (req: Request) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        reason: `Crew — Plan ${plan.name} (${billingPeriod === 'annual' ? 'anual' : 'mensual'})`,
+        reason: `Crew · Plan ${plan.name} (${billingPeriod === 'annual' ? 'anual' : 'mensual'})`,
         external_reference: pendingRow.id,
         payer_email: contactEmail,
         back_url: `${siteUrl}/crew/gracias`,

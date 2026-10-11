@@ -52,7 +52,7 @@ test.describe('Registro de pagos — Escuelas', () => {
     await expect(page.getByRole('tab', { name: 'Escuelas' })).toHaveAttribute('aria-selected', 'true')
 
     await selectOption(page, 'Seleccionar estudiante', 'Alumno Test')
-    await selectOption(page, 'Seleccionar pack', 'Pack 4 clases mensuales — $27.000')
+    await selectOption(page, 'Seleccionar pack', 'Pack 4 clases mensuales · $27.000')
     await selectOption(page, 'Seleccionar horario', 'Escuela (Profe Multi)')
     // escuela_multi tiene 2 turnos — hay que elegir uno para habilitar el botón
     await selectOption(page, 'Seleccionar turno', 'Lunes y Miércoles · 9:00 – 10:30')
@@ -67,7 +67,7 @@ test.describe('Registro de pagos — Escuelas', () => {
   test('muestra error si se intenta registrar el mismo horario dos veces en el mes', async ({ page }) => {
     // El test anterior ya registró un pago para escuela_multi. Intentamos otro.
     await selectOption(page, 'Seleccionar estudiante', 'Alumno Test')
-    await selectOption(page, 'Seleccionar pack', 'Pack 4 clases mensuales — $27.000')
+    await selectOption(page, 'Seleccionar pack', 'Pack 4 clases mensuales · $27.000')
     await selectOption(page, 'Seleccionar horario', 'Escuela (Profe Multi)')
     await selectOption(page, 'Seleccionar turno', 'Lunes y Miércoles · 9:00 – 10:30')
     await page.getByRole('button', { name: 'Registrar pago' }).click()

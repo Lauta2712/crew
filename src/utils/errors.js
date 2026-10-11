@@ -126,7 +126,7 @@ export function toSpanishError(error, fallback = 'Ocurrió un error inesperado.'
       return rawStr
     }
     if (fallback && !fallback.includes(rawStr)) {
-      return `${fallback} — ${rawStr}`
+      return `${fallback} (${rawStr})`
     }
     return rawStr
   }

@@ -124,14 +124,14 @@ export function SuperAdminNewGymPage() {
       {createdCredentials && (
         <div className="card mx-auto w-full max-w-md space-y-2 border-emerald-500/40 bg-emerald-950/20">
           <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
-            Gimnasio creado — «{createdCredentials.gymName}»
+            Gimnasio creado: «{createdCredentials.gymName}»
           </p>
           <p className="text-sm text-ink">
             Admin: <span className="font-medium">{createdCredentials.adminEmail}</span>
           </p>
           <div className="space-y-1">
             <p className="text-xs text-muted">
-              Contraseña temporal — no se vuelve a mostrar, copiala y pasásela al dueño del
+              Contraseña temporal: no se vuelve a mostrar, copiala y pasásela al dueño del
               gimnasio por fuera de Crew:
             </p>
             <div className="flex items-center gap-2">

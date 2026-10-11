@@ -128,7 +128,7 @@ Deno.serve(async (req: Request) => {
         .maybeSingle()
 
       const supportEmail = `${callerLocal}+support-${gymId.slice(0, 8)}@${callerDomain}`
-      const supportName = `Soporte — ${gymRow?.name ?? 'gimnasio'}`
+      const supportName = `Soporte · ${gymRow?.name ?? 'gimnasio'}`
 
       const { data: createdAuth, error: createAuthError } = await supabaseAdmin.auth.admin.createUser({
         email: supportEmail,

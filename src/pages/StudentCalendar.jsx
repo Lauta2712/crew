@@ -373,7 +373,7 @@ export function StudentCalendarPage() {
           <div className="mb-1 shrink-0 flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-950/40 px-2.5 py-1.5 text-[10px] text-rose-400 sm:text-xs">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
             <span>
-              Pack activo —{' '}
+              Pack activo:{' '}
               <span className="font-semibold">vence el {inclusiveCycleEndLabel(policy.validUntil)}</span>
             </span>
           </div>
@@ -559,7 +559,7 @@ export function StudentCalendarPage() {
                         <div
                           key={p.id}
                           className="flex items-start gap-0.5 rounded bg-amber-950/40 px-0.5 py-0.5 text-amber-400"
-                          title={`Pago — ${packShortLabel(p.pack_type, classPacks)}`}
+                          title={`Pago: ${packShortLabel(p.pack_type, classPacks)}`}
                         >
                           <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
                           <span className="break-words">

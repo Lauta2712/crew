@@ -274,7 +274,7 @@ export function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="card p-4 lg:col-span-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
-            Asistencias por día — {currentMonthLabel}
+            Asistencias por día · {currentMonthLabel}
           </p>
           <div className="mt-3 h-36 sm:h-48">
             {loading ? (
@@ -307,7 +307,7 @@ export function DashboardPage() {
 
         <div className="card p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
-            Packs contratados — {currentMonthLabel}
+            Packs contratados · {currentMonthLabel}
           </p>
           {loading ? (
             <div className="mt-3 h-36 sm:h-48">
@@ -360,7 +360,7 @@ export function DashboardPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="card p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
-            Recaudación — últimos 6 meses
+            Recaudación de los últimos 6 meses
           </p>
           <div className="mt-3 h-36 sm:h-48">
             {loading ? (
@@ -392,7 +392,7 @@ export function DashboardPage() {
 
         <div className="card p-4">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
-            Asistencias por día de semana — {currentMonthLabel}
+            Asistencias por día de semana · {currentMonthLabel}
           </p>
           <div className="mt-3 h-36 sm:h-48">
             {loading ? (

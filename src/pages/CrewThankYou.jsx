@@ -41,7 +41,7 @@ export function CrewThankYouPage() {
         </div>
 
         <p className="rounded-lg border border-line bg-bg px-3 py-2 text-xs text-muted">
-          Si Mercado Pago no llegó a confirmar el pago, no te preocupes — te vamos a escribir
+          Si Mercado Pago no llegó a confirmar el pago, no te preocupes: te vamos a escribir
           igual para coordinar.
         </p>
 

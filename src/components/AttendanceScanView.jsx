@@ -216,7 +216,7 @@ export function AttendanceScanView({
         ) {
           active.push({
             id: unlimitedPolicy.currentPayment.pack_type,
-            label: 'Acceso libre — mensual',
+            label: 'Acceso libre · mensual',
             detail: 'Acceso ilimitado',
             validUntil: unlimitedPolicy.validUntil,
             schedule_type_id: unlimitedPolicy.currentPayment.schedule_type ?? walkIn.scheduleId,
@@ -236,7 +236,7 @@ export function AttendanceScanView({
         if (hasDayPass && walkIn.dailyPackId) {
           active.push({
             id: walkIn.dailyPackId,
-            label: 'Acceso libre — pase diario',
+            label: 'Acceso libre · pase diario',
             detail: 'Válido hasta las 23:59 de hoy',
             validUntil: null,
             schedule_type_id: walkIn.scheduleId,
@@ -518,7 +518,7 @@ export function AttendanceScanView({
           payload,
           method: effectiveMethod,
           pack_type: payload.pack_type,
-          packLabel: 'Acceso libre — pase diario',
+          packLabel: 'Acceso libre · pase diario',
           attendedAt: now.toISOString(),
           scheduleTypeId: payload.schedule_type_id ?? walkIn.scheduleId,
           scheduleSlot: payload.schedule_slot ?? null,
@@ -575,7 +575,7 @@ export function AttendanceScanView({
 
       // Derive a human-readable label for the confirmation modal
       const packLabel = isUnlimitedQr
-        ? 'Acceso libre — mensual'
+        ? 'Acceso libre · mensual'
         : (classPacks?.find((p) => p.id === payload.pack_type)?.name ?? null)
 
       // All validations passed — show confirmation modal for both QR and manual
@@ -987,7 +987,7 @@ export function AttendanceScanView({
 
           {isManualPastDate && (
             <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-[11px] text-amber-400">
-              Registrando asistencia pasada — se guardará como &ldquo;Retroactivo&rdquo;.
+              Registrando asistencia pasada: se guardará como &ldquo;Retroactivo&rdquo;.
             </p>
           )}
 
@@ -1092,7 +1092,7 @@ export function AttendanceScanView({
           {selectedPackType && currentSlots.length === 1 && (
             <p className="rounded-lg border border-line bg-bg px-3 py-2 text-[11px] text-muted">
               <span className="font-medium text-ink">Horario:</span>{' '}
-              {currentSlots[0].days} — {currentSlots[0].time}
+              {currentSlots[0].days} · {currentSlots[0].time}
             </p>
           )}
 

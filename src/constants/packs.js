@@ -36,7 +36,7 @@ export const CLASS_PACKS = [
   },
   {
     id: 'grupo_entrenamiento',
-    name: 'Grupo de entrenamiento — 8 clases mensuales',
+    name: 'Grupo de entrenamiento · 8 clases mensuales',
     price: 55000,
     classes_per_month: 8,
   },
@@ -135,13 +135,13 @@ export function formatPackOptionLabel(pack, walkIn = null) {
   if (pack.unlimited) {
     const mLow = walkIn?.monthlyWithDiscount ?? WALK_IN_MONTHLY_PRICE_WITH_DISCOUNT
     const mHi = walkIn?.monthlyDefault ?? WALK_IN_MONTHLY_PRICE_DEFAULT
-    return `${pack.name} — $${mLow.toLocaleString('es-AR')} (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT}) / $${mHi.toLocaleString('es-AR')} (${WALK_IN_STANDARD_SHORT})`
+    return `${pack.name} · $${mLow.toLocaleString('es-AR')} (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT}) / $${mHi.toLocaleString('es-AR')} (${WALK_IN_STANDARD_SHORT})`
   }
   const pricePart =
     pack.price != null
       ? `$${pack.price.toLocaleString('es-AR')}`
       : 'precio a confirmar'
-  return `${pack.name} — ${pricePart}`
+  return `${pack.name} · ${pricePart}`
 }
 
 export const SCHEDULE_TYPES = [

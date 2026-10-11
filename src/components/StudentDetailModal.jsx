@@ -166,7 +166,7 @@ function StudentDetailCalendar({ attendances, policy, classPacks, scheduleTypes 
         <div className="mb-2 flex items-center gap-1.5 rounded-lg border border-rose-500/40 bg-rose-950/40 px-2.5 py-1.5 text-[10px] text-rose-400">
           <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400" />
           <span>
-            Pack activo —{' '}
+            Pack activo:{' '}
             <span className="font-semibold">
               vence el {inclusiveCycleEndLabel(policy.validUntil)}
             </span>

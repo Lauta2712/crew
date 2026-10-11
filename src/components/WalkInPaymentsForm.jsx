@@ -81,11 +81,11 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
     () => [
       {
         value: VISITOR_DAY_PASS_ID,
-        label: `Visitante (sin cuenta) — $${walkIn.priceDefault.toLocaleString('es-AR')}`,
+        label: `Visitante (sin cuenta) · $${walkIn.priceDefault.toLocaleString('es-AR')}`,
       },
       ...freeWallPaymentProfiles.map((s) => ({
         value: s.id,
-        label: `${s.name} — $${s.freeWallPrice.toLocaleString('es-AR')}${s.muroDiscount ? ' · tarifa reducida' : ''}`,
+        label: `${s.name} · $${s.freeWallPrice.toLocaleString('es-AR')}${s.muroDiscount ? ' · tarifa reducida' : ''}`,
       })),
     ],
     [freeWallPaymentProfiles, walkIn.priceDefault],
@@ -329,7 +329,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
   }
 
   const loading = loadingAssignments || loadingProfiles
-  const heading = title ?? (mode === 'admin' ? 'Acceso libre' : 'Registrar pagos — acceso libre')
+  const heading = title ?? (mode === 'admin' ? 'Acceso libre' : 'Registrar pagos de acceso libre')
 
   const pricesCard = (
     <div className="rounded-xl border border-line bg-surface p-4 shadow-sm">
@@ -412,9 +412,9 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
               <span className="font-semibold">Total a cobrar:</span>{' '}
               ${selectedPaymentStudent.freeWallPrice.toLocaleString('es-AR')}
               {selectedPaymentStudent.isVisitor
-                ? ' (visitante — tarifa estándar)'
+                ? ' (visitante, tarifa estándar)'
                 : selectedPaymentStudent.muroDiscount
-                  ? ` (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT} — tarifa reducida)`
+                  ? ` (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT}, tarifa reducida)`
                   : ''}
             </p>
           )}
@@ -441,7 +441,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
             onChange={(value) => { setMonthlyMuroStudentId(value); clearMessages() }}
             options={freeWallPaymentProfiles.map((s) => ({
               value: s.id,
-              label: `${s.name} — $${s.freeWallMonthlyPrice.toLocaleString('es-AR')}${s.muroDiscount ? ' · tarifa reducida' : ''}`,
+              label: `${s.name} · $${s.freeWallMonthlyPrice.toLocaleString('es-AR')}${s.muroDiscount ? ' · tarifa reducida' : ''}`,
             }))}
             disabled={freeWallPaymentProfiles.length === 0 || registeringMonthlyPayment}
             variant="light"
@@ -451,7 +451,7 @@ export function WalkInPaymentsForm({ mode, title, hideHeading = false, className
               <span className="font-semibold">Total a cobrar:</span>{' '}
               ${selectedMonthlyMuroStudent.freeWallMonthlyPrice.toLocaleString('es-AR')}
               {selectedMonthlyMuroStudent.muroDiscount
-                ? ` (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT} — tarifa reducida)`
+                ? ` (${WALK_IN_DISCOUNT_ELIGIBLE_SHORT}, tarifa reducida)`
                 : ''}
             </p>
           )}

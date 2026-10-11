@@ -279,7 +279,7 @@ export function AdminConfigurationPage() {
           <h2 className="text-sm font-semibold text-ink">Link de invitación para alumnos</h2>
           <p className="mt-1 text-xs text-muted">
             Compartí este link con tus alumnos para que se registren directamente en tu gimnasio
-            (Crew es un sistema compartido por varios gimnasios — este link asegura que se anoten
+            (Crew es un sistema compartido por varios gimnasios: este link asegura que se anoten
             en el tuyo).
           </p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
@@ -310,7 +310,7 @@ export function AdminConfigurationPage() {
       <section className="rounded-xl border border-line bg-surface p-4 shadow-sm">
         <h2 className="text-sm font-semibold text-ink">Precios y horarios</h2>
         <p className="mt-1 text-xs text-muted">
-          Packs y horarios propios de tu gimnasio — se guardan tal cual los definas acá, sin
+          Packs y horarios propios de tu gimnasio: se guardan tal cual los definas acá, sin
           valores por defecto de otro gimnasio.
         </p>
 
@@ -346,10 +346,10 @@ export function AdminConfigurationPage() {
               </p>
               <div className="mt-2 grid gap-3 sm:grid-cols-2">
                 {[
-                  ['priceDefault', `Pase diario — ${WALK_IN_STANDARD_LABEL}`],
-                  ['priceWithDiscount', `Pase diario — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
-                  ['monthlyDefault', `Mensual acceso libre — ${WALK_IN_STANDARD_LABEL}`],
-                  ['monthlyWithDiscount', `Mensual acceso libre — ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
+                  ['priceDefault', `Pase diario · ${WALK_IN_STANDARD_LABEL}`],
+                  ['priceWithDiscount', `Pase diario · ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
+                  ['monthlyDefault', `Mensual acceso libre · ${WALK_IN_STANDARD_LABEL}`],
+                  ['monthlyWithDiscount', `Mensual acceso libre · ${WALK_IN_DISCOUNT_ELIGIBLE_LABEL}`],
                 ].map(([key, label]) => (
                   <label key={key} className="block text-sm">
                     <span className="text-muted">{label}</span>
@@ -448,7 +448,7 @@ export function AdminConfigurationPage() {
       </section>
 
       <section className="rounded-xl border border-amber-500/40 bg-amber-950/40/80 p-4">
-        <h2 className="text-sm font-semibold text-amber-400">Zona peligrosa — borrado masivo</h2>
+        <h2 className="text-sm font-semibold text-amber-400">Zona peligrosa: borrado masivo</h2>
         <p className="mt-1 text-xs text-amber-400/90">
           Elimina <span className="font-semibold">todos</span> los alumnos o{' '}
           <span className="font-semibold">todos</span> los profesores visibles para tu alcance

@@ -246,7 +246,7 @@ export function SuperAdminDashboardPage() {
             Panel superadmin
           </h1>
           <p className="text-sm text-muted">
-            Vista global de todos los gimnasios. Métricas de solo lectura — podés pausar o
+            Vista global de todos los gimnasios. Métricas de solo lectura: podés pausar o
             reactivar un gimnasio desde acá.
           </p>
         </div>
@@ -287,7 +287,7 @@ export function SuperAdminDashboardPage() {
 
       <div className="card p-4">
         <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted">
-          Por gimnasio — ordenado por ingresos del mes
+          Por gimnasio, ordenado por ingresos del mes
         </p>
         {loading ? (
           <p className="text-sm text-muted">Cargando…</p>
@@ -387,7 +387,7 @@ export function SuperAdminDashboardPage() {
       <div className="card p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
-            Suscripciones a Crew — quién pagó y todavía no tiene gimnasio creado
+            Suscripciones a Crew: quién pagó y todavía no tiene gimnasio creado
           </p>
           <button
             type="button"

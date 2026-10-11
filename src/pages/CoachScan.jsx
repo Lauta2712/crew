@@ -85,7 +85,7 @@ export function CoachScanPage() {
         allowedScheduleTypeIds={allowedScheduleTypeIds}
         students={students}
         loadingStudents={loadingStudents}
-        title="Escanear QR — profesor"
+        title="Escanear QR (profesor)"
         subtitle="Solo podés registrar alumnos de tus horarios asignados (con pago registrado a ese horario). Misma validación de pack y clases que en recepción."
       />
     </div>

@@ -288,7 +288,7 @@ export function CheckinManualPage() {
 
           {isPastDate && (
             <p className="rounded-lg border border-amber-500/40 bg-amber-950/40 px-3 py-2 text-[11px] text-amber-400">
-              Registrando asistencia pasada — se guardará como &ldquo;Retroactivo&rdquo;.
+              Registrando asistencia pasada: se guardará como &ldquo;Retroactivo&rdquo;.
             </p>
           )}
 
@@ -312,11 +312,11 @@ export function CheckinManualPage() {
 
           <SelectField
             label="Horario (opcional)"
-            placeholder="— Sin especificar —"
+            placeholder="Sin especificar"
             value={selectedScheduleTypeId}
             onChange={setSelectedScheduleTypeId}
             options={[
-              { value: '', label: '— Sin especificar —' },
+              { value: '', label: 'Sin especificar' },
               ...(scheduleTypes ?? []).map((s) => ({ value: s.id, label: s.name })),
             ]}
             variant="light"
